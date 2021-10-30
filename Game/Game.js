@@ -38,34 +38,35 @@ const RecalcShadows = () => {
   return null
 }
 
-// const loadingManager = new THREE.LoadingManager(
-//   // Loaded
-//   () =>
-//   {
-//       // Wait a little
-//       (() =>
-//       {
-//           // Animate overlay
+const loadingManager = new THREE.LoadingManager(
+  // Loaded
+  () =>
+  {
+      // Wait a little
+      (() =>
+      {
+          // Animate overlay
 
 
-//           // Update loadingBarElement
+          // Update loadingBarElement
 
-//       }, 500)
+      }, 500)
+      console.log('loading')
 
-//       window.setTimeout(() =>
-//       {
-//           sceneReady = true
-//       }, 2000)
-//   },
+      window.setTimeout(() =>
+      {
+        console.log('loading')
+      }, 2000)
+  },
 
-//   // Progress
-//   (itemUrl, itemsLoaded, itemsTotal) =>
-//   {
-//       // Calculate the progress and update the loadingBarElement
-//       const progressRatio = itemsLoaded / itemsTotal
-//       loadingBarElement.style.transform = `scaleX(${progressRatio})`
-//   }
-// )
+  // Progress
+  (itemUrl, itemsLoaded, itemsTotal) =>
+  {
+      // Calculate the progress and update the loadingBarElement
+      const progressRatio = itemsLoaded / itemsTotal
+      loadingBarElement.style.transform = `scaleX(${progressRatio})`
+  }
+)
 
 const Game = props => {
     const [gltf, set] = useState()
