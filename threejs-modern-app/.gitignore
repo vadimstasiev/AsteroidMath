@@ -1,6 +1,0 @@
-build/
-public/app.js
-public/app.js.map
-
-node_modules/
-*.log
