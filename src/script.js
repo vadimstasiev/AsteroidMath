@@ -105,17 +105,16 @@ const updateAllMaterials = () =>
  * Environment map
  */
 const environmentMap = cubeTextureLoader.load([
-    '/textures/environmentMaps/0/px.jpg',
-    '/textures/environmentMaps/0/nx.jpg',
-    '/textures/environmentMaps/0/py.jpg',
-    '/textures/environmentMaps/0/ny.jpg',
-    '/textures/environmentMaps/0/pz.jpg',
-    '/textures/environmentMaps/0/nz.jpg'
+    '/textures/environmentMaps/stars/px.jpg',
+    '/textures/environmentMaps/stars/nx.jpg',
+    '/textures/environmentMaps/stars/py.jpg',
+    '/textures/environmentMaps/stars/ny.jpg',
+    '/textures/environmentMaps/stars/pz.jpg',
+    '/textures/environmentMaps/stars/nz.jpg'
 ])
 
 environmentMap.encoding = THREE.sRGBEncoding
 
-scene.background = environmentMap
 scene.environment = environmentMap
 
 debugObject.envMapIntensity = 5
@@ -140,18 +139,18 @@ gltfLoader.load(
  */
 const raycaster = new THREE.Raycaster()
 const points = [
-    {
-        position: new THREE.Vector3(1.55, 0.3, - 0.6),
-        element: document.querySelector('.point-0')
-    },
-    {
-        position: new THREE.Vector3(0.5, 0.8, - 1.6),
-        element: document.querySelector('.point-1')
-    },
-    {
-        position: new THREE.Vector3(1.6, - 1.3, - 0.7),
-        element: document.querySelector('.point-2')
-    }
+    // {
+    //     position: new THREE.Vector3(1.55, 0.3, - 0.6),
+    //     element: document.querySelector('.point-0')
+    // },
+    // {
+    //     position: new THREE.Vector3(0.5, 0.8, - 1.6),
+    //     element: document.querySelector('.point-1')
+    // },
+    // {
+    //     position: new THREE.Vector3(1.6, - 1.3, - 0.7),
+    //     element: document.querySelector('.point-2')
+    // }
 ]
 
 /**
