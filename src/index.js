@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
-
+import generateGalaxy from './Components/Galaxy'
 /**
  * Loaders
  */
@@ -163,6 +163,43 @@ directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(0.25, 3, - 2.25)
 scene.add(directionalLight)
+
+
+/**
+ * Galaxies
+ */
+
+const parametersPoints1 = {}
+parametersPoints1.count = 100000
+parametersPoints1.size = 0.003
+parametersPoints1.radius = 10
+parametersPoints1.branches = 5
+parametersPoints1.spin = -1
+parametersPoints1.randomness = 1.3
+parametersPoints1.randomnessPower = 4
+parametersPoints1.concentration = 0.5
+parametersPoints1.insideColor = '#e8cc00'
+parametersPoints1.outsideColor = '#1b3984'
+
+let points1 = generateGalaxy(parametersPoints1)
+
+const parametersPoints2 = {}
+parametersPoints2.count = 51000
+parametersPoints2.size = 0.004
+parametersPoints2.radius = 0.97
+parametersPoints2.branches = 5
+parametersPoints2.spin = -17
+parametersPoints2.randomness = 0.3
+parametersPoints2.randomnessPower = 10
+parametersPoints2.concentration = 0.7
+parametersPoints2.insideColor = '#ff0000'
+parametersPoints2.outsideColor = '#841b65'
+let points2 = generateGalaxy(parametersPoints2)
+
+const galaxies = new THREE.Group();
+galaxies.add(points1)
+galaxies.add(points2)
+scene.add(galaxies)
 
 /**
  * Sizes
