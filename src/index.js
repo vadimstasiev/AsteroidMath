@@ -128,7 +128,7 @@ gltfLoader.load(
     {
         gltf.scene.scale.set(2.5, 2.5, 2.5)
         gltf.scene.rotation.y = Math.PI * 0.5
-        scene.add(gltf.scene)
+        // scene.add(gltf.scene)
 
         updateAllMaterials()
     }

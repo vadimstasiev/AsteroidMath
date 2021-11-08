@@ -50,10 +50,13 @@ const generateGalaxy = (parameters, points=null) =>
 
         const spinAngle = radius * parameters.spin
         const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
-        
-        const randomX = Math.random() * (Math.random() < 0.5 ? 1 : - 1) * (parameters.randomness / radius) /parameters.concentration
+        const randomX = Math.random() * (Math.random() < 0.5 ? 1 : - 1) * (((parameters.randomness / radius) /parameters.concentration)<1?((parameters.randomness / radius) /parameters.concentration):1)
         const randomY = Math.random() * parameters.randomness * Math.cos((radius/parameters.radius)*parameters.randomnessPower/2) * Math.pow((radius/parameters.radius)*parameters.randomnessPower, Math.random()) * (Math.random() < 0.5 ? 1 : - 1)
-        const randomZ = Math.random() * (Math.random() < 0.5 ? 1 : - 1) * (parameters.randomness / radius) /parameters.concentration
+        const randomZ = Math.random() * (Math.random() < 0.5 ? 1 : - 1) * (((parameters.randomness / radius) /parameters.concentration)<1?((parameters.randomness / radius) /parameters.concentration):1)
+
+        if (i<300 && ((parameters.randomness / radius) /parameters.concentration)>1){
+            console.log(parameters.randomness , radius ,parameters.concentration,(parameters.randomness / radius) /parameters.concentration)
+        }
 
         positions[i3    ] = Math.cos(branchAngle + spinAngle) * radius + randomX
         positions[i3 + 1] = randomY
@@ -66,9 +69,6 @@ const generateGalaxy = (parameters, points=null) =>
         colors[i3    ] = mixedColor.r
         colors[i3 + 1] = mixedColor.g
         colors[i3 + 2] = mixedColor.b
-        if(radius>1){
-            console.log('radius', radius)
-        }
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
@@ -141,7 +141,7 @@ points1Folder.add(parametersPoints1, 'branches').min(2).max(20).step(1).onFinish
 points1Folder.add(parametersPoints1, 'spin').min(- 50).max(50).step(0.001).onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
 points1Folder.add(parametersPoints1, 'randomness').min(0).max(2).step(0.001).onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
 points1Folder.add(parametersPoints1, 'randomnessPower').min(1).max(10).step(0.001).onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
-points1Folder.add(parametersPoints1, 'concentration').min(0.1).max(100).step(0.1).onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
+points1Folder.add(parametersPoints1, 'concentration').min(0.1).max(5).step(0.01).onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
 points1Folder.addColor(parametersPoints1, 'insideColor').onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
 points1Folder.addColor(parametersPoints1, 'outsideColor').onFinishChange(()=>{points1=generateGalaxy(parametersPoints1, points1)})
 
@@ -153,7 +153,7 @@ points2Folder.add(parametersPoints2, 'branches').min(2).max(20).step(1).onFinish
 points2Folder.add(parametersPoints2, 'spin').min(- 50).max(50).step(0.001).onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
 points2Folder.add(parametersPoints2, 'randomness').min(0).max(2).step(0.001).onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
 points2Folder.add(parametersPoints2, 'randomnessPower').min(1).max(10).step(0.001).onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
-points2Folder.add(parametersPoints2, 'concentration').min(0.1).max(100).step(0.1).onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
+points2Folder.add(parametersPoints2, 'concentration').min(0.1).max(5).step(0.01).onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
 points2Folder.addColor(parametersPoints2, 'insideColor').onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
 points2Folder.addColor(parametersPoints2, 'outsideColor').onFinishChange(()=>{points2=generateGalaxy(parametersPoints2, points2)})
 
