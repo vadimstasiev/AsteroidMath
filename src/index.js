@@ -361,28 +361,45 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    if(sceneReady) {
+        // Animate Galaxy Points
 
-    // Animate Galaxy Points
+        // const positions = geometry.attributes.position.array
 
-    // const positions = geometry.attributes.position.array
+        for(let i = 0; i < geometry.attributes.position.array.length; i++){
+            // Position
+            const i3 = i * 3
 
-    for(let i = 0; i < geometry.attributes.position.array.length; i++){
-        // Position
-        const i3 = i * 3
-        geometry.attributes.position.array[i3    ] += Math.cos(elapsedTime)
-        geometry.attributes.position.array[i3 + 2] += Math.sin(elapsedTime)
-        // geometry.attributes.position.array[i3    ] = 100
-        // geometry.attributes.position.array[i3 + 2] = 100
-    }
+            const center = geometry.boundingSphere.center
+            const radius = center.distanceTo(new THREE.Vector3(
+                geometry.attributes.position.array[i3    ],
+                geometry.attributes.position.array[i3 + 1],
+                geometry.attributes.position.array[i3 + 2]
+            ))
+            // geometry.boundingSphere.center
+            // const spinAngle = radius * parameters.spin
+            // const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
 
+            const x = geometry.attributes.position.array[i3    ]
+            const z = geometry.attributes.position.array[i3 + 2]
+            geometry.attributes.position.array[i3    ] = Math.cos(elapsedTime)*0.05* radius
+            // geometry.attributes.position.array[i3 + 1] += Math.cos(elapsedTime)*0.05 * radius
+            geometry.attributes.position.array[i3 + 2] = Math.sin(elapsedTime)*0.05* radius
+            // geometry.attributes.position.array[i3    ] = 100
+            // geometry.attributes.position.array[i3 + 2] = 100
+            if(elapsedTime<5){
+                console.log(radius)
+            }
+        }
 
-    // Update particles
-    for(let i = 0; i < geometry.attributes.position.array.length; i++)
-    {
-        let i3 = i * 3
+        // Update particles
+        // for(let i = 0; i < geometry.attributes.position.array.length; i++)
+        // {
+        //     let i3 = i * 3
 
-        const x = geometry.attributes.position.array[i3]
-        geometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+        //     const x = geometry.attributes.position.array[i3]
+        //     geometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+        // }
     }
     geometry.attributes.position.needsUpdate = true
 
