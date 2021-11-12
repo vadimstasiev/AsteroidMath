@@ -1,12 +1,15 @@
 import * as THREE from 'three'
 
-const generateGalaxy = (parameters) =>
-{
-    /**
-     * Geometry
-     */
+const materialDefault = new THREE.PointsMaterial({
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true
+})
 
-    const geometry = new THREE.BufferGeometry()
+
+const generateGalaxy = (parameters, geometry = new THREE.BufferGeometry(), material = materialDefault) => {
+    material.size = parameters.size
 
     const positions = new Float32Array(parameters.count * 3)
     const colors = new Float32Array(parameters.count * 3)
@@ -39,32 +42,19 @@ const generateGalaxy = (parameters) =>
         colors[i3    ] = mixedColor.r
         colors[i3 + 1] = mixedColor.g
         colors[i3 + 2] = mixedColor.b
-        if(radius>1){
-            console.log('radius', radius)
-        }
+        // if(radius>1){
+        //     console.log('radius', radius)
+        // }
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
     /**
-     * Material
-     */
-
-
-    const material = new THREE.PointsMaterial({
-        size: parameters.size,
-        sizeAttenuation: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        vertexColors: true
-    })
-
-    /**
      * Points
      */
     const points = new THREE.Points(geometry, material)
-    return points
+    return {points, geometry, material}
 }
 
 export default generateGalaxy

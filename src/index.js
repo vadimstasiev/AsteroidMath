@@ -164,13 +164,18 @@ directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(0.25, 3, - 2.25)
 scene.add(directionalLight)
 
+/**
+ * Points Geometry
+ */
+const geometry = new THREE.BufferGeometry()
 
 /**
  * Galaxies
  */
 
 const parametersPoints1 = {}
-parametersPoints1.count = 100000
+parametersPoints1.count = 1000
+// parametersPoints1.count = 100000
 parametersPoints1.size = 0.003
 parametersPoints1.radius = 10
 parametersPoints1.branches = 5
@@ -181,11 +186,14 @@ parametersPoints1.concentration = 0.5
 parametersPoints1.insideColor = '#e8cc00'
 parametersPoints1.outsideColor = '#1b3984'
 
-let points1 = generateGalaxy(parametersPoints1)
+
+
+let {points: points1, geometry: geometry1, material: material1} = generateGalaxy(parametersPoints1, geometry)
 
 const parametersPoints2 = {}
-parametersPoints2.count = 51000
-parametersPoints2.size = 0.004
+parametersPoints2.count = 510
+// parametersPoints2.count = 51000
+parametersPoints2.size = 0.006
 parametersPoints2.radius = 0.97
 parametersPoints2.branches = 5
 parametersPoints2.spin = -17
@@ -194,12 +202,13 @@ parametersPoints2.randomnessPower = 10
 parametersPoints2.concentration = 0.7
 parametersPoints2.insideColor = '#ff0000'
 parametersPoints2.outsideColor = '#841b65'
-let points2 = generateGalaxy(parametersPoints2)
+let {points: points2, geometry: geometry2, material: material2} = generateGalaxy(parametersPoints2)
 
 const galaxies = new THREE.Group();
-galaxies.add(points1)
-galaxies.add(points2)
-scene.add(galaxies)
+// galaxies.add(points1)
+// galaxies.add(points2)
+scene.add(points1)
+// scene.add(galaxies)
 
 /**
  * Sizes
@@ -229,7 +238,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(4, 1, - 4)
+camera.position.set(10, 2, - 10)
 scene.add(camera)
 
 // Controls
@@ -255,58 +264,130 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Animate
  */
+const clock = new THREE.Clock()
+
+// const tick = () =>
+// {
+//     const elapsedTime = clock.getElapsedTime()
+
+
+//     // Update controls
+//     controls.update()
+
+//     // Update points only when the scene is ready
+//     if(sceneReady)
+//     {
+//         // Animate Galaxy Points
+
+//         // const positions = geometry.attributes.position.array
+
+//         for(let i = 0; i < geometry.attributes.position.array.length; i++){
+//             // Position
+//             const i3 = i * 3
+//             // geometry.attributes.position.array[i3    ] += Math.cos(elapsedTime)
+//             // geometry.attributes.position.array[i3 + 2] += Math.sin(elapsedTime)
+//             geometry.attributes.position.array[i3    ] = 100
+//             geometry.attributes.position.array[i3 + 2] = 100
+//         }
+//         // // geometry1.setAttribute('position', new THREE.BufferAttribute(positions1, 3))
+//         // points1.geometry.verticesNeedUpdate = true
+//         // points1.geometry.elementsNeedUpdate = true;
+//         // points1.computeVertexNormals()
+//         if(elapsedTime<5){
+//             // console.log(geometry)
+//         }
+
+//         // const angle = elapsedTime * 0.5
+//         // points1.geometry.position.x = Math.cos(angle) * 4
+//         // points1.geometry.position.z = Math.sin(angle) * 4
+//         // points1.geometry.position.y = Math.sin(elapsedTime * 3)
+
+//         // Go through each html point
+//         for(const point of points)
+//         {
+//             // Get 2D screen position
+//             const screenPosition = point.position.clone()
+//             screenPosition.project(camera)
+    
+//             // Set the raycaster
+//             raycaster.setFromCamera(screenPosition, camera)
+//             const intersects = raycaster.intersectObjects(scene.children, true)
+    
+//             // No intersect found
+//             if(intersects.length === 0)
+//             {
+//                 // Show
+//                 point.element.classList.add('visible')
+//             }
+
+//             // Intersect found
+//             else
+//             {
+//                 // Get the distance of the intersection and the distance of the point
+//                 const intersectionDistance = intersects[0].distance
+//                 const pointDistance = point.position.distanceTo(camera.position)
+    
+//                 // Intersection is close than the point
+//                 if(intersectionDistance < pointDistance)
+//                 {
+//                     // Hide
+//                     point.element.classList.remove('visible')
+//                 }
+//                 // Intersection is further than the point
+//                 else
+//                 {
+//                     // Show
+//                     point.element.classList.add('visible')
+//                 }
+//             }
+    
+//             const translateX = screenPosition.x * sizes.width * 0.5
+//             const translateY = - screenPosition.y * sizes.height * 0.5
+//             point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
+//         }
+//     }
+
+//     geometry.attributes.position.needsUpdate = true
+
+//     // Render
+//     renderer.render(scene, camera)
+
+//     // Call tick again on the next frame
+//     window.requestAnimationFrame(tick)
+// }
+
+
 const tick = () =>
 {
+    const elapsedTime = clock.getElapsedTime()
+
+
+    // Animate Galaxy Points
+
+    // const positions = geometry.attributes.position.array
+
+    for(let i = 0; i < geometry.attributes.position.array.length; i++){
+        // Position
+        const i3 = i * 3
+        geometry.attributes.position.array[i3    ] += Math.cos(elapsedTime)
+        geometry.attributes.position.array[i3 + 2] += Math.sin(elapsedTime)
+        // geometry.attributes.position.array[i3    ] = 100
+        // geometry.attributes.position.array[i3 + 2] = 100
+    }
+
+
+    // Update particles
+    for(let i = 0; i < geometry.attributes.position.array.length; i++)
+    {
+        let i3 = i * 3
+
+        const x = geometry.attributes.position.array[i3]
+        geometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+    }
+    geometry.attributes.position.needsUpdate = true
+
     // Update controls
     controls.update()
-
-    // Update points only when the scene is ready
-    if(sceneReady)
-    {
-        // Go through each point
-        for(const point of points)
-        {
-            // Get 2D screen position
-            const screenPosition = point.position.clone()
-            screenPosition.project(camera)
-    
-            // Set the raycaster
-            raycaster.setFromCamera(screenPosition, camera)
-            const intersects = raycaster.intersectObjects(scene.children, true)
-    
-            // No intersect found
-            if(intersects.length === 0)
-            {
-                // Show
-                point.element.classList.add('visible')
-            }
-
-            // Intersect found
-            else
-            {
-                // Get the distance of the intersection and the distance of the point
-                const intersectionDistance = intersects[0].distance
-                const pointDistance = point.position.distanceTo(camera.position)
-    
-                // Intersection is close than the point
-                if(intersectionDistance < pointDistance)
-                {
-                    // Hide
-                    point.element.classList.remove('visible')
-                }
-                // Intersection is further than the point
-                else
-                {
-                    // Show
-                    point.element.classList.add('visible')
-                }
-            }
-    
-            const translateX = screenPosition.x * sizes.width * 0.5
-            const translateY = - screenPosition.y * sizes.height * 0.5
-            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
-        }
-    }
 
     // Render
     renderer.render(scene, camera)
