@@ -54,7 +54,7 @@ const generateGalaxy = (parameters, geometry = new THREE.BufferGeometry(), mater
      * Points
      */
     const points = new THREE.Points(geometry, material)
-    return {points, geometry, material}
+    return points
 }
 
 export default generateGalaxy
