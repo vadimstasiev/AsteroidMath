@@ -229,21 +229,24 @@ parametersPoints2.insideColor = '#ff0000'
 parametersPoints2.outsideColor = '#841b65'
 const points2 = generateGalaxy(parametersPoints2)
 
+const galaxies = new THREE.Group()
+galaxies.add(points1)
+galaxies.add(points2)
+scene.add(galaxies)
+
 const bgStarsParameters = {}
 bgStarsParameters.count = 7000
 bgStarsParameters.size = 0.01
 bgStarsParameters.width = 100
-bgStarsParameters.color = '#1b3984'
-parametersPoints2.insideColor = '#ff0000'
-parametersPoints2.outsideColor = '#841b65'
+parametersPoints2.color1 = '#ff0000'
+parametersPoints2.color2 = '#841b65'
 
 const bgStars = generateBgStars(bgStarsParameters)
 
-const galaxies = new THREE.Group()
-galaxies.add(points1)
-galaxies.add(points2)
-galaxies.add(bgStars)
-scene.add(galaxies)
+
+const bgStarsG = new THREE.Group()
+bgStarsG.add(bgStars)
+scene.add(bgStarsG)
 
 
 window.addEventListener('resize', () =>
@@ -297,12 +300,12 @@ const tick = () =>
 
         const angle = elapsedTime * 0.5
         galaxies.rotation.y = -0.01 * angle
-        // galaxies.position.z = Math.sin(angle) * 4
-        // galaxies.position.y = Math.sin(elapsedTime * 3)
 
-        if(elapsedTime<3){
-            // console.log(galaxies)
-        }
+        // Animate bgStars
+
+        bgStarsG.rotation.x = 0.01 * angle
+        bgStarsG.rotation.y = 0.01 * angle
+
 
         // Go through each html point
         for(const point of points)

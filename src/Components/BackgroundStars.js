@@ -15,8 +15,8 @@ const generateBgStars = (parameters, geometry = new THREE.BufferGeometry(), mate
     const positions = new Float32Array(parameters.count * 3)
     const colors = new Float32Array(parameters.count * 3)
 
-    const colorInside = new THREE.Color(parameters.insideColor)
-    const colorOutside = new THREE.Color(parameters.outsideColor)
+    const color1 = new THREE.Color(parameters.color1)
+    const color2 = new THREE.Color(parameters.color2)
 
     for(let i = 0; i < parameters.count; i++)
     {
@@ -28,8 +28,8 @@ const generateBgStars = (parameters, geometry = new THREE.BufferGeometry(), mate
         positions[i3 + 2] = (Math.random() - 0.5) * parameters.width
 
         // Mixed Color
-        const mixedColor = colorInside.clone()
-        mixedColor.lerp(colorOutside, Math.random())
+        const mixedColor = color1.clone()
+        mixedColor.lerp(color2, Math.random())
         
         colors[i3    ] = mixedColor.r
         colors[i3 + 1] = mixedColor.g
