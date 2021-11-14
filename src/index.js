@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
+import generateBgStars from './Components/BackgroundStars'
+import propulsionParticles from './Components/PropulsionParticles'
 /**
  * Loaders
  */
@@ -53,6 +55,26 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Sizes
+ */
+ const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
+
+/**
+ * Camera
+ */
+// Base camera
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+camera.position.set(10, 2, - 10)
+scene.add(camera)
+
+// Controls
+const controls = new OrbitControls(camera, canvas)
+controls.enableDamping = true
 
 /**
  * Overlay
@@ -135,6 +157,14 @@ gltfLoader.load(
 )
 
 
+/**
+ * Spaceship propulsion particle system
+ */
+const particles = new propulsionParticles({
+    parent: scene,
+    camera: camera,
+});
+
 
 /**
  * Points of interest
@@ -167,11 +197,6 @@ directionalLight.position.set(0.25, 3, - 2.25)
 scene.add(directionalLight)
 
 /**
- * Points Geometry
- */
-const geometry = new THREE.BufferGeometry()
-
-/**
  * Galaxies
  */
 
@@ -189,7 +214,7 @@ parametersPoints1.outsideColor = '#1b3984'
 
 
 
-let points1 = generateGalaxy(parametersPoints1, geometry)
+const points1 = generateGalaxy(parametersPoints1)
 
 const parametersPoints2 = {}
 parametersPoints2.count = 51000
@@ -202,20 +227,22 @@ parametersPoints2.randomnessPower = 10
 parametersPoints2.concentration = 0.7
 parametersPoints2.insideColor = '#ff0000'
 parametersPoints2.outsideColor = '#841b65'
-let points2 = generateGalaxy(parametersPoints2)
+const points2 = generateGalaxy(parametersPoints2)
 
-const galaxies = new THREE.Group();
-galaxies.add(points1)
-galaxies.add(points2)
+const bgStarsParameters = {}
+bgStarsParameters.count = 70000
+bgStarsParameters.size = 0.01
+bgStarsParameters.radius = 1
+bgStarsParameters.color = '#1b3984'
+
+const bgStars = generateBgStars(bgStarsParameters)
+
+const galaxies = new THREE.Group()
+// galaxies.add(points1)
+// galaxies.add(points2)
+galaxies.add(bgStars)
 scene.add(galaxies)
 
-/**
- * Sizes
- */
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-}
 
 window.addEventListener('resize', () =>
 {
@@ -231,18 +258,6 @@ window.addEventListener('resize', () =>
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
-
-/**
- * Camera
- */
-// Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(10, 2, - 10)
-scene.add(camera)
-
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
 
 /**
  * Renderer
@@ -279,7 +294,7 @@ const tick = () =>
         // Animate Galaxy 
 
         const angle = elapsedTime * 0.5
-        galaxies.rotation.y = -0.001 * angle
+        galaxies.rotation.y = -0.01 * angle
         // galaxies.position.z = Math.sin(angle) * 4
         // galaxies.position.y = Math.sin(elapsedTime * 3)
 
