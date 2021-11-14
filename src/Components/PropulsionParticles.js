@@ -73,14 +73,15 @@ class LinearSpline {
 }
 
 
-class propulsionParticles {
+class generatePropulsionParticles {
   constructor(params) {
+    this.params = params
     const uniforms = {
         diffuseTexture: {
             value: new THREE.TextureLoader().load('./textures/fire.png')
         },
         pointMultiplier: {
-            value: window.innerHeight / (2.0 * Math.tan(0.5 * 60.0 * Math.PI / 180.0))
+            value: window.innerHeight / (2.0 * Math.tan(0.5 * 60.0 * Math.PI / params.size))
         }
     };
 
@@ -91,7 +92,6 @@ class propulsionParticles {
         blending: THREE.AdditiveBlending,
         depthTest: true,
         depthWrite: false,
-        transparent: true,
         vertexColors: true
     });
 
@@ -129,19 +129,10 @@ class propulsionParticles {
     this._sizeSpline.AddPoint(0.0, 1.0);
     this._sizeSpline.AddPoint(0.5, 5.0);
     this._sizeSpline.AddPoint(1.0, 1.0);
-
-    document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
   
     this._UpdateGeometry();
   }
 
-  _onKeyUp(event) {
-    switch(event.keyCode) {
-      case 32: // SPACE
-        this._AddParticles();
-        break;
-    }
-  }
 
   _AddParticles(timeElapsed) {
     if (!this.gdfsghk) {
@@ -152,12 +143,12 @@ class propulsionParticles {
     this.gdfsghk -= n / 75.0;
 
     for (let i = 0; i < n; i++) {
-      const life = (Math.random() * 0.75 + 0.25) * 10.0;
+      const life = (Math.random() * 0.75 + 0.25) * this.params.length;
       this._particles.push({
           position: new THREE.Vector3(
-              (Math.random() * 2 - 1) * 1.0,
-              (Math.random() * 2 - 1) * 1.0,
-              (Math.random() * 2 - 1) * 1.0),
+              (Math.random() * 1 - 1) * 1.0,
+              (Math.random() * 1 - 1) * 1.0,
+              (Math.random() * 1 - 1) * 1.0),
           size: (Math.random() * 0.5 + 0.5) * 4.0,
           colour: new THREE.Color(),
           alpha: 1.0,
@@ -168,35 +159,7 @@ class propulsionParticles {
       });
     }
   }
-
-  _UpdateGeometry() {
-    const positions = [];
-    const sizes = [];
-    const colours = [];
-    const angles = [];
-
-    for (let p of this._particles) {
-      positions.push(p.position.x, p.position.y, p.position.z);
-      colours.push(p.colour.r, p.colour.g, p.colour.b, p.alpha);
-      sizes.push(p.currentSize);
-      angles.push(p.rotation);
-    }
-
-    this._geometry.setAttribute(
-        'position', new THREE.Float32BufferAttribute(positions, 3));
-    this._geometry.setAttribute(
-        'size', new THREE.Float32BufferAttribute(sizes, 1));
-    this._geometry.setAttribute(
-        'colour', new THREE.Float32BufferAttribute(colours, 4));
-    this._geometry.setAttribute(
-        'angle', new THREE.Float32BufferAttribute(angles, 1));
   
-    this._geometry.attributes.position.needsUpdate = true;
-    this._geometry.attributes.size.needsUpdate = true;
-    this._geometry.attributes.colour.needsUpdate = true;
-    this._geometry.attributes.angle.needsUpdate = true;
-  }
-
   _UpdateParticles(timeElapsed) {
     for (let p of this._particles) {
       p.life -= timeElapsed;
@@ -240,6 +203,34 @@ class propulsionParticles {
     });
   }
 
+  _UpdateGeometry() {
+    const positions = [];
+    const sizes = [];
+    const colours = [];
+    const angles = [];
+
+    for (let p of this._particles) {
+      positions.push(p.position.x, p.position.y, p.position.z);
+      colours.push(p.colour.r, p.colour.g, p.colour.b, p.alpha);
+      sizes.push(p.currentSize);
+      angles.push(p.rotation);
+    }
+
+    this._geometry.setAttribute(
+        'position', new THREE.Float32BufferAttribute(positions, 3));
+    this._geometry.setAttribute(
+        'size', new THREE.Float32BufferAttribute(sizes, 1));
+    this._geometry.setAttribute(
+        'colour', new THREE.Float32BufferAttribute(colours, 4));
+    this._geometry.setAttribute(
+        'angle', new THREE.Float32BufferAttribute(angles, 1));
+  
+    this._geometry.attributes.position.needsUpdate = true;
+    this._geometry.attributes.size.needsUpdate = true;
+    this._geometry.attributes.colour.needsUpdate = true;
+    this._geometry.attributes.angle.needsUpdate = true;
+  }
+
   Step(timeElapsed) {
     this._AddParticles(timeElapsed);
     this._UpdateParticles(timeElapsed);
@@ -247,4 +238,4 @@ class propulsionParticles {
   }
 }
 
-export default propulsionParticles
+export default generatePropulsionParticles

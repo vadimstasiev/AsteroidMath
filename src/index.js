@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
-import propulsionParticles from './Components/PropulsionParticles'
+import generatePropulsionParticles from './Components/PropulsionParticles'
 /**
  * Loaders
  */
@@ -71,6 +71,8 @@ const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(10, 2, - 10)
 scene.add(camera)
+
+
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -160,10 +162,20 @@ gltfLoader.load(
 /**
  * Spaceship propulsion particle system
  */
-const particles = new propulsionParticles({
-    parent: scene,
+const propulsionParticlesG = new THREE.Group()
+
+
+const propulsionParticles = new generatePropulsionParticles({
+    parent: propulsionParticlesG,
     camera: camera,
+    size: 70,
+    length: 0.2
 });
+
+scene.add(propulsionParticlesG)
+
+// RAF: Request Animation Frame
+const previousRAF = null
 
 
 /**
@@ -229,10 +241,10 @@ parametersPoints2.insideColor = '#ff0000'
 parametersPoints2.outsideColor = '#841b65'
 const points2 = generateGalaxy(parametersPoints2)
 
-const galaxies = new THREE.Group()
-galaxies.add(points1)
-galaxies.add(points2)
-scene.add(galaxies)
+const galaxiesG = new THREE.Group()
+galaxiesG.add(points1)
+galaxiesG.add(points2)
+scene.add(galaxiesG)
 
 const bgStarsParameters = {}
 bgStarsParameters.count = 7000
@@ -288,24 +300,26 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-
-
+    const deltaTime = clock.getDelta ()
     // Update controls
     controls.update()
-
     // Update points only when the scene is ready
     if(sceneReady)
     {
         // Animate Galaxy 
 
         const angle = elapsedTime * 0.5
-        galaxies.rotation.y = -0.01 * angle
+        galaxiesG.rotation.y = -0.01 * angle
 
         // Animate bgStars
 
         bgStarsG.rotation.x = 0.01 * angle
         bgStarsG.rotation.y = 0.01 * angle
 
+        // Propulsion Particles
+
+
+        propulsionParticles.Step(0.01);
 
         // Go through each html point
         for(const point of points)
