@@ -230,16 +230,18 @@ parametersPoints2.outsideColor = '#841b65'
 const points2 = generateGalaxy(parametersPoints2)
 
 const bgStarsParameters = {}
-bgStarsParameters.count = 70000
+bgStarsParameters.count = 7000
 bgStarsParameters.size = 0.01
-bgStarsParameters.radius = 1
+bgStarsParameters.width = 100
 bgStarsParameters.color = '#1b3984'
+parametersPoints2.insideColor = '#ff0000'
+parametersPoints2.outsideColor = '#841b65'
 
 const bgStars = generateBgStars(bgStarsParameters)
 
 const galaxies = new THREE.Group()
-// galaxies.add(points1)
-// galaxies.add(points2)
+galaxies.add(points1)
+galaxies.add(points2)
 galaxies.add(bgStars)
 scene.add(galaxies)
 
