@@ -203,7 +203,7 @@ const points = [
  * Lights
  */
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
-directionalLight.castShadow = true
+// directionalLight.castShadow = true
 directionalLight.shadow.camera.far = 15
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
