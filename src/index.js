@@ -6,6 +6,7 @@ import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
 import generatePropulsionParticles from './Components/PropulsionParticles'
+import { Vector3 } from 'three'
 /**
  * Loaders
  */
@@ -168,14 +169,15 @@ const propulsionParticlesG = new THREE.Group()
 const propulsionParticles = new generatePropulsionParticles({
     parent: propulsionParticlesG,
     camera: camera,
-    size: 70,
-    length: 0.2
+    size: 78,
+    length: 0.7
 });
+
+propulsionParticlesG.rotation.z = (Math.PI/2) * 3
+propulsionParticlesG.position.set(2,-4.5,12.5)
 
 scene.add(propulsionParticlesG)
 
-// RAF: Request Animation Frame
-const previousRAF = null
 
 
 /**
@@ -244,7 +246,7 @@ const points2 = generateGalaxy(parametersPoints2)
 const galaxiesG = new THREE.Group()
 galaxiesG.add(points1)
 galaxiesG.add(points2)
-scene.add(galaxiesG)
+// scene.add(galaxiesG)
 
 const bgStarsParameters = {}
 bgStarsParameters.count = 7000
@@ -258,7 +260,7 @@ const bgStars = generateBgStars(bgStarsParameters)
 
 const bgStarsG = new THREE.Group()
 bgStarsG.add(bgStars)
-scene.add(bgStarsG)
+// scene.add(bgStarsG)
 
 
 window.addEventListener('resize', () =>
@@ -313,6 +315,7 @@ const tick = () =>
 
         // Animate bgStars
 
+        
         bgStarsG.rotation.x = 0.01 * angle
         bgStarsG.rotation.y = 0.01 * angle
 
