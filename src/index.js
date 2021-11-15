@@ -246,7 +246,7 @@ const points2 = generateGalaxy(parametersPoints2)
 const galaxiesG = new THREE.Group()
 galaxiesG.add(points1)
 galaxiesG.add(points2)
-// scene.add(galaxiesG)
+scene.add(galaxiesG)
 
 const bgStarsParameters = {}
 bgStarsParameters.count = 7000
@@ -260,7 +260,7 @@ const bgStars = generateBgStars(bgStarsParameters)
 
 const bgStarsG = new THREE.Group()
 bgStarsG.add(bgStars)
-// scene.add(bgStarsG)
+scene.add(bgStarsG)
 
 
 window.addEventListener('resize', () =>
