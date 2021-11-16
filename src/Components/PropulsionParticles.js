@@ -136,11 +136,11 @@ class generatePropulsionParticles {
   }
 
 
-  _AddParticles(timeElapsed) {
+  _AddParticles(animationSpeed) {
     if (!this.gdfsghk) {
       this.gdfsghk = 0.0;
     }
-    this.gdfsghk += timeElapsed;
+    this.gdfsghk += animationSpeed;
     const n = Math.floor(this.gdfsghk * 75.0);
     this.gdfsghk -= n / 75.0;
 
@@ -148,10 +148,10 @@ class generatePropulsionParticles {
       const life = (Math.random() * 0.75 + 0.25) * this.params.length;
       this._particles.push({
           position: new THREE.Vector3(
-              (Math.random() * 1 - 1) * 1.0,
-              (Math.random() * 1 - 1) * 1.0,
-              (Math.random() * 1 - 1) * 1.0),
-          size: (Math.random() * 0.5 + 0.5) * 4.0,
+              (Math.random() * 1 - 1) * this.params.spread,
+              (Math.random() * 1 - 1) * this.params.spread,
+              (Math.random() * 1 - 1) * this.params.spread),
+          size: (Math.random() * 0.5 + 0.5) * this.params.width,
           colour: new THREE.Color(),
           alpha: 1.0,
           life: life,
@@ -162,9 +162,9 @@ class generatePropulsionParticles {
     }
   }
   
-  _UpdateParticles(timeElapsed) {
+  _UpdateParticles(animationSpeed) {
     for (let p of this._particles) {
-      p.life -= timeElapsed;
+      p.life -= animationSpeed;
     }
 
     this._particles = this._particles.filter(p => {
@@ -174,15 +174,15 @@ class generatePropulsionParticles {
     for (let p of this._particles) {
       const t = 1.0 - p.life / p.maxLife;
 
-      p.rotation += timeElapsed * 0.5;
+      p.rotation += animationSpeed * 0.5;
       p.alpha = this._alphaSpline.Get(t);
       p.currentSize = p.size * this._sizeSpline.Get(t);
       p.colour.copy(this._colourSpline.Get(t));
 
-      p.position.add(p.velocity.clone().multiplyScalar(timeElapsed));
+      p.position.add(p.velocity.clone().multiplyScalar(animationSpeed));
 
       const drag = p.velocity.clone();
-      drag.multiplyScalar(timeElapsed * 0.1);
+      drag.multiplyScalar(animationSpeed * 0.1);
       drag.x = Math.sign(p.velocity.x) * Math.min(Math.abs(drag.x), Math.abs(p.velocity.x));
       drag.y = Math.sign(p.velocity.y) * Math.min(Math.abs(drag.y), Math.abs(p.velocity.y));
       drag.z = Math.sign(p.velocity.z) * Math.min(Math.abs(drag.z), Math.abs(p.velocity.z));
@@ -233,9 +233,12 @@ class generatePropulsionParticles {
     this._geometry.attributes.angle.needsUpdate = true;
   }
 
-  Step(timeElapsed) {
-    this._AddParticles(timeElapsed);
-    this._UpdateParticles(timeElapsed);
+  Step(timeElapsed = 1) {
+    const animationSpeed = this.params.speed
+    // const animationSpeed = this.params.speed*timeElapsed
+
+    this._AddParticles(animationSpeed);
+    this._UpdateParticles(animationSpeed);
     this._UpdateGeometry();
   }
 }

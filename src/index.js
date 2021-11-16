@@ -6,7 +6,7 @@ import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
 import generatePropulsionParticles from './Components/PropulsionParticles'
-import { Vector3 } from 'three'
+import { Vector2, Vector3 } from 'three'
 /**
  * Loaders
  */
@@ -72,7 +72,6 @@ const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(10, 2, - 10)
 scene.add(camera)
-
 
 
 // Controls
@@ -151,10 +150,13 @@ gltfLoader.load(
     '/models/Spaceship/glTF/Spaceship.gltf',
     (gltf) =>
     {
-        gltf.scene.scale.set(0.1, 0.1, 0.1)
-        gltf.scene.rotation.y = Math.PI * 0.5
-        scene.add(gltf.scene)
-
+        const model = gltf.scene.children[0]
+        model.scale.set(0.015, 0.015, 0.015)
+        // model.position.set(8,0,-8)
+        model.position.set(0,0,0)
+        // model.rotation.z=Math.PI
+        spaceshipG.add(model)
+        // controls.target.set(model.position)
         updateAllMaterials()
     }
 )
@@ -169,14 +171,26 @@ const propulsionParticlesG = new THREE.Group()
 const propulsionParticles = new generatePropulsionParticles({
     parent: propulsionParticlesG,
     camera: camera,
-    size: 78,
-    length: 0.7
+    size: 69,
+    length: 0.3,
+    spread: 1/100,
+    width: 3,
+    speed: 0.005
 });
 
-propulsionParticlesG.rotation.z = (Math.PI/2) * 3
-propulsionParticlesG.position.set(2,-4.5,12.5)
+propulsionParticlesG.rotation.z = Math.PI/2
+propulsionParticlesG.rotation.y = Math.PI/2
+propulsionParticlesG.position.set(0.0,0.02,-0.5)
 
-scene.add(propulsionParticlesG)
+const spaceshipG = new THREE.Group()
+
+spaceshipG.add(propulsionParticlesG)
+
+spaceshipG.position.set(8,0,-8)
+scene.add(spaceshipG)
+
+
+
 
 
 
@@ -298,16 +312,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
+let oldElapsedTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-    const deltaTime = clock.getDelta ()
+    const deltaTime = elapsedTime - oldElapsedTime
+    oldElapsedTime = elapsedTime
+
     // Update controls
     controls.update()
     // Update points only when the scene is ready
     if(sceneReady)
-    {
+    {        
+        
         // Animate Galaxy 
 
         const angle = elapsedTime * 0.5
@@ -321,8 +339,7 @@ const tick = () =>
 
         // Propulsion Particles
 
-
-        propulsionParticles.Step(0.01);
+        propulsionParticles.Step();
 
         // Go through each html point
         for(const point of points)
