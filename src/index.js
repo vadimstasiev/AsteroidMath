@@ -70,7 +70,7 @@ const scene = new THREE.Scene()
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
-camera.position.set(10, 2, - 10)
+// camera.position.set(10, 2, - 10)
 scene.add(camera)
 
 
@@ -320,10 +320,10 @@ const tick = () =>
 
         // Animate Spaceship trajectory
 
-        const spaceshipSpeed = 6
+        const spaceshipSpeed = 9
         const spaceshipRadius = 6
         const ellipticDistance = 1.3
-        const heightDistance = 1.4
+        const heightDistance = 1.3
         const heightOscilation = 6
         spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*ellipticDistance
         spaceshipG.position.y = Math.cos(elapsedTime/heightOscilation)*heightDistance
@@ -341,15 +341,13 @@ const tick = () =>
 
 
 
-        // const cameraPosition = new THREE.Vector3()
-        // const cameraOffset = 3
-        // cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*2
-        // cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance
-        // cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*2
-        // controls.target.set(cameraPosition)
-        // console.log(cameraPosition)
-
-        // camera.lookAt(spaceshipG)   
+        const cameraPosition = new THREE.Vector3()  
+        const cameraOffset = 0.3
+        cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*0.7
+        cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance*1.2
+        cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*0.7
+        camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
+        controls.target = spaceshipG.position
 
         // Animate bgStars
 
@@ -361,49 +359,49 @@ const tick = () =>
 
         propulsionParticles.Step();
 
-        // // Go through each html point
-        // for(const point of points)
-        // {
-        //     // Get 2D screen position
-        //     const screenPosition = point.position.clone()
-        //     screenPosition.project(camera)
+        // Go through each html point
+        for(const point of points)
+        {
+            // Get 2D screen position
+            const screenPosition = point.position.clone()
+            screenPosition.project(camera)
     
-        //     // Set the raycaster
-        //     raycaster.setFromCamera(screenPosition, camera)
-        //     const intersects = raycaster.intersectObjects(scene.children, true)
+            // Set the raycaster
+            raycaster.setFromCamera(screenPosition, camera)
+            const intersects = raycaster.intersectObjects(scene.children, true)
     
-        //     // No intersect found
-        //     if(intersects.length === 0)
-        //     {
-        //         // Show
-        //         point.element.classList.add('visible')
-        //     }
+            // No intersect found
+            if(intersects.length === 0)
+            {
+                // Show
+                point.element.classList.add('visible')
+            }
 
-        //     // Intersect found
-        //     else
-        //     {
-        //         // Get the distance of the intersection and the distance of the point
-        //         const intersectionDistance = intersects[0].distance
-        //         const pointDistance = point.position.distanceTo(camera.position)
+            // Intersect found
+            else
+            {
+                // Get the distance of the intersection and the distance of the point
+                const intersectionDistance = intersects[0].distance
+                const pointDistance = point.position.distanceTo(camera.position)
     
-        //         // Intersection is close than the point
-        //         if(intersectionDistance < pointDistance)
-        //         {
-        //             // Hide
-        //             point.element.classList.remove('visible')
-        //         }
-        //         // Intersection is further than the point
-        //         else
-        //         {
-        //             // Show
-        //             point.element.classList.add('visible')
-        //         }
-        //     }
+                // Intersection is close than the point
+                if(intersectionDistance < pointDistance)
+                {
+                    // Hide
+                    point.element.classList.remove('visible')
+                }
+                // Intersection is further than the point
+                else
+                {
+                    // Show
+                    point.element.classList.add('visible')
+                }
+            }
     
-        //     const translateX = screenPosition.x * sizes.width * 0.5
-        //     const translateY = - screenPosition.y * sizes.height * 0.5
-        //     point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
-        // }
+            const translateX = screenPosition.x * sizes.width * 0.5
+            const translateY = - screenPosition.y * sizes.height * 0.5
+            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
+        }
     }
 
     // Update orbit controls

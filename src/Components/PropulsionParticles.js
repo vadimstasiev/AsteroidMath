@@ -122,7 +122,7 @@ class generatePropulsionParticles {
       const c = a.clone();
       return c.lerp(b, t);
     });
-    this._colourSpline.AddPoint(0.0, new THREE.Color(0xFFFF80));
+    this._colourSpline.AddPoint(0.0, new THREE.Color(0xff80ff));
     this._colourSpline.AddPoint(1.0, new THREE.Color(0xFF8080));
 
     this._sizeSpline = new LinearSpline((t, a, b) => {
