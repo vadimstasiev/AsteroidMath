@@ -152,11 +152,8 @@ gltfLoader.load(
     {
         const model = gltf.scene.children[0]
         model.scale.set(0.015, 0.015, 0.015)
-        // model.position.set(8,0,-8)
         model.position.set(0,0,0)
-        // model.rotation.z=Math.PI
         spaceshipG.add(model)
-        // controls.target.set(model.position)
         updateAllMaterials()
     }
 )
@@ -186,12 +183,8 @@ const spaceshipG = new THREE.Group()
 
 spaceshipG.add(propulsionParticlesG)
 
-spaceshipG.position.set(8,0,-8)
+spaceshipG.position.set(8,0,0)
 scene.add(spaceshipG)
-
-
-
-
 
 
 /**
@@ -312,13 +305,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
-let oldElapsedTime = 0
-
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-    const deltaTime = elapsedTime - oldElapsedTime
-    oldElapsedTime = elapsedTime
 
     // Update controls
     controls.update()
@@ -331,6 +320,17 @@ const tick = () =>
         const angle = elapsedTime * 0.5
         galaxiesG.rotation.y = -0.01 * angle
 
+        // Animate Spaceship trajectory
+
+        const spaceshipSpeed = 3
+        const spaceshipRadius = 6
+        const ellipticDistance = 1.2
+        spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*ellipticDistance
+        spaceshipG.position.z = Math.sin(elapsedTime/spaceshipSpeed)*spaceshipRadius
+        spaceshipG.lookAt(new THREE.Vector3(0,0,0))
+        const quaternion = new THREE.Quaternion()
+        quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 )
+        spaceshipG.quaternion.multiply(quaternion) 
         // Animate bgStars
 
         

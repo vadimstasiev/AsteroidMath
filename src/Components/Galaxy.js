@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 
 const materialDefault = new THREE.PointsMaterial({
-    sizeAttenuation: true,
+    sizeAttenuation: false,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     vertexColors: true
