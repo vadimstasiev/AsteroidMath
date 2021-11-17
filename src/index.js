@@ -69,7 +69,7 @@ const scene = new THREE.Scene()
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
 camera.position.set(10, 2, - 10)
 scene.add(camera)
 
@@ -309,8 +309,6 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    // Update controls
-    controls.update()
     // Update points only when the scene is ready
     if(sceneReady)
     {        
@@ -322,70 +320,94 @@ const tick = () =>
 
         // Animate Spaceship trajectory
 
-        const spaceshipSpeed = 3
+        const spaceshipSpeed = 6
         const spaceshipRadius = 6
-        const ellipticDistance = 1.2
+        const ellipticDistance = 1.3
+        const heightDistance = 1.4
+        const heightOscilation = 6
         spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*ellipticDistance
+        spaceshipG.position.y = Math.cos(elapsedTime/heightOscilation)*heightDistance
         spaceshipG.position.z = Math.sin(elapsedTime/spaceshipSpeed)*spaceshipRadius
-        spaceshipG.lookAt(new THREE.Vector3(0,0,0))
-        const quaternion = new THREE.Quaternion()
-        quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 )
-        spaceshipG.quaternion.multiply(quaternion) 
+
+
+        const dummyPoint = new THREE.Vector3()
+        const dummyPointOffset = 0.1
+        dummyPoint.x = Math.cos((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius*ellipticDistance
+        dummyPoint.y = Math.cos(elapsedTime/heightOscilation + dummyPointOffset)*heightDistance
+        dummyPoint.z = Math.sin((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius
+        spaceshipG.lookAt(dummyPoint)
+
+        // Animate Camera position to follow spaceship
+
+
+
+        // const cameraPosition = new THREE.Vector3()
+        // const cameraOffset = 3
+        // cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*2
+        // cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance
+        // cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*2
+        // controls.target.set(cameraPosition)
+        // console.log(cameraPosition)
+
+        // camera.lookAt(spaceshipG)   
+
         // Animate bgStars
 
         
         bgStarsG.rotation.x = 0.01 * angle
         bgStarsG.rotation.y = 0.01 * angle
 
-        // Propulsion Particles
+        // Animate Propulsion Particles
 
         propulsionParticles.Step();
 
-        // Go through each html point
-        for(const point of points)
-        {
-            // Get 2D screen position
-            const screenPosition = point.position.clone()
-            screenPosition.project(camera)
+        // // Go through each html point
+        // for(const point of points)
+        // {
+        //     // Get 2D screen position
+        //     const screenPosition = point.position.clone()
+        //     screenPosition.project(camera)
     
-            // Set the raycaster
-            raycaster.setFromCamera(screenPosition, camera)
-            const intersects = raycaster.intersectObjects(scene.children, true)
+        //     // Set the raycaster
+        //     raycaster.setFromCamera(screenPosition, camera)
+        //     const intersects = raycaster.intersectObjects(scene.children, true)
     
-            // No intersect found
-            if(intersects.length === 0)
-            {
-                // Show
-                point.element.classList.add('visible')
-            }
+        //     // No intersect found
+        //     if(intersects.length === 0)
+        //     {
+        //         // Show
+        //         point.element.classList.add('visible')
+        //     }
 
-            // Intersect found
-            else
-            {
-                // Get the distance of the intersection and the distance of the point
-                const intersectionDistance = intersects[0].distance
-                const pointDistance = point.position.distanceTo(camera.position)
+        //     // Intersect found
+        //     else
+        //     {
+        //         // Get the distance of the intersection and the distance of the point
+        //         const intersectionDistance = intersects[0].distance
+        //         const pointDistance = point.position.distanceTo(camera.position)
     
-                // Intersection is close than the point
-                if(intersectionDistance < pointDistance)
-                {
-                    // Hide
-                    point.element.classList.remove('visible')
-                }
-                // Intersection is further than the point
-                else
-                {
-                    // Show
-                    point.element.classList.add('visible')
-                }
-            }
+        //         // Intersection is close than the point
+        //         if(intersectionDistance < pointDistance)
+        //         {
+        //             // Hide
+        //             point.element.classList.remove('visible')
+        //         }
+        //         // Intersection is further than the point
+        //         else
+        //         {
+        //             // Show
+        //             point.element.classList.add('visible')
+        //         }
+        //     }
     
-            const translateX = screenPosition.x * sizes.width * 0.5
-            const translateY = - screenPosition.y * sizes.height * 0.5
-            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
-        }
+        //     const translateX = screenPosition.x * sizes.width * 0.5
+        //     const translateY = - screenPosition.y * sizes.height * 0.5
+        //     point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
+        // }
     }
 
+    // Update orbit controls
+    controls.update()
 
     // Render
     renderer.render(scene, camera)
