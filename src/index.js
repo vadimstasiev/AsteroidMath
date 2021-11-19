@@ -7,10 +7,15 @@ import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
 import generatePropulsionParticles from './Components/PropulsionParticles'
 import { Vector2, Vector3 } from 'three'
+
+const devMode = true
+
+
 /**
  * Loaders
  */
 const loadingBarElement = document.querySelector('.loading-bar')
+
 
 let sceneReady = false
 const loadingManager = new THREE.LoadingManager(
@@ -70,7 +75,9 @@ const scene = new THREE.Scene()
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
-// camera.position.set(10, 2, - 10)
+if(devMode){
+    camera.position.set(10, 2, - 10)
+}
 scene.add(camera)
 
 
@@ -340,15 +347,15 @@ const tick = () =>
         // Animate Camera position to follow spaceship
 
 
-
-        const cameraPosition = new THREE.Vector3()  
-        const cameraOffset = 0.3
-        cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*0.7
-        cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance*1.2
-        cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*0.7
-        camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
-        controls.target = spaceshipG.position
-
+        if (!devMode){
+            const cameraPosition = new THREE.Vector3()  
+            const cameraOffset = 0.3
+            cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*0.7
+            cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance*1.2
+            cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*0.7
+            camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
+            controls.target = spaceshipG.position
+        }
         // Animate bgStars
 
         
