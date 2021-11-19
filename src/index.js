@@ -259,7 +259,7 @@ const points2 = generateGalaxy(parametersPoints2)
 
 const galaxiesG = new THREE.Group()
 galaxiesG.add(points1)
-galaxiesG.add(points2)
+// galaxiesG.add(points2)
 scene.add(galaxiesG)
 
 const bgStarsParameters = {}
