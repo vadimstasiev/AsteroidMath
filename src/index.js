@@ -6,9 +6,9 @@ import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
 import generatePropulsionParticles from './Components/PropulsionParticles'
-import { Vector2, Vector3 } from 'three'
+import { Vector3 } from 'three'
 
-const devMode = true
+const devMode = false
 
 
 /**
@@ -227,53 +227,85 @@ scene.add(directionalLight)
 /**
  * Galaxies
  */
+const galaxy1 = new THREE.Group()
+scene.add(galaxy1)
+galaxy1.add(generateGalaxy({
+    count : 100000,
+    size : 0.003,
+    radius : 10,
+    branches : 5,
+    spin : -1,
+    randomness : 1.3,
+    randomnessPower : 4,
+    concentration : 0.5,
+    insideColor : '#ff0018',
+    outsideColor : '#1b3984',
+}))
 
-const parametersPoints1 = {}
-parametersPoints1.count = 100000
-parametersPoints1.size = 0.003
-parametersPoints1.radius = 10
-parametersPoints1.branches = 5
-parametersPoints1.spin = -1
-parametersPoints1.randomness = 1.3
-parametersPoints1.randomnessPower = 4
-parametersPoints1.concentration = 0.5
-parametersPoints1.insideColor = '#e8cc00'
-parametersPoints1.outsideColor = '#1b3984'
+const galaxy2 = new THREE.Group()
+scene.add(galaxy2)
+galaxy2.add(generateGalaxy({
+    count: 10000,
+    size: 0.001,
+    radius: 7,
+    branches: 2,
+    spin: 1.2,
+    randomness: 0.957,
+    randomnessPower: 2.6,
+    concentration: 0.23,
+    insideColor: '#00e828',
+    outsideColor: '#1b3984',
+}))
+galaxy2.position.set(-30, 10, -20)
+galaxy2.rotation.x = Math.PI * 0.99
 
 
+const galaxy3 = new THREE.Group()
+scene.add(galaxy3)
+galaxy3.add(generateGalaxy({
+    count: 10000,
+    size: 0.003,
+    radius: 6.3,
+    branches: 3,
+    spin: -1,
+    randomness: 1.3,
+    randomnessPower: 4,
+    concentration: 0.5,
+    insideColor: '#e800a3',
+    outsideColor: '#40841b',
+}))
+galaxy3.position.set(0, 10, 20)
+galaxy3.rotation.x = Math.PI * 0.9
 
-const points1 = generateGalaxy(parametersPoints1)
+const galaxy4 = new THREE.Group()
+scene.add(galaxy4)
+galaxy4.add(generateGalaxy({
+    count : 10000,
+    size : 0.003,
+    radius : 20,
+    branches : 6,
+    spin : 0.6,
+    randomness : 0.8,
+    randomnessPower : 4.4,
+    concentration : 0.15,
+    insideColor : '#e80000',
+    outsideColor : '#b9926d',
+}))
 
-const parametersPoints2 = {}
-parametersPoints2.count = 51000
-parametersPoints2.size = 0.006
-parametersPoints2.radius = 0.97
-parametersPoints2.branches = 5
-parametersPoints2.spin = -17
-parametersPoints2.randomness = 0.3
-parametersPoints2.randomnessPower = 10
-parametersPoints2.concentration = 0.7
-parametersPoints2.insideColor = '#ff0000'
-parametersPoints2.outsideColor = '#841b65'
-const points2 = generateGalaxy(parametersPoints2)
+galaxy4.position.set(6, -2, 3)
+galaxy4.rotation.x = Math.PI * 1.05
 
-const galaxiesG = new THREE.Group()
-galaxiesG.add(points1)
-// galaxiesG.add(points2)
-scene.add(galaxiesG)
-
-const bgStarsParameters = {}
-bgStarsParameters.count = 7000
-bgStarsParameters.size = 0.01
-bgStarsParameters.width = 100
-parametersPoints2.color1 = '#ff0000'
-parametersPoints2.color2 = '#841b65'
-
-const bgStars = generateBgStars(bgStarsParameters)
-
+// parametersPoints2.color1 = '#ff0000'
+// parametersPoints2.color2 = '#841b65'
 
 const bgStarsG = new THREE.Group()
-bgStarsG.add(bgStars)
+
+bgStarsG.add(generateBgStars({
+    count : 7000,
+    size : 0.01,
+    width : 100,
+}))
+
 scene.add(bgStarsG)
 
 
@@ -323,7 +355,7 @@ const tick = () =>
         // Animate Galaxy 
 
         const angle = elapsedTime * 0.5
-        galaxiesG.rotation.y = -0.01 * angle
+        galaxy1.rotation.y = -0.01 * angle
 
         // Animate Spaceship trajectory
 
@@ -409,14 +441,12 @@ const tick = () =>
             const translateY = - screenPosition.y * sizes.height * 0.5
             point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
         }
-    }
-
     // Update orbit controls
     controls.update()
 
     // Render
     renderer.render(scene, camera)
-
+    }
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }

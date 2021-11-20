@@ -1,5 +1,6 @@
 // This galaxy generator was based off of this source: https://github.com/the-halfbloodprince/GalaxyM1199
 import * as THREE from 'three'
+import { Vector3 } from 'three'
 
 const materialDefault = new THREE.PointsMaterial({
     sizeAttenuation: false,
@@ -17,7 +18,7 @@ const generateGalaxy = (parameters, geometry = new THREE.BufferGeometry(), mater
 
     const colorInside = new THREE.Color(parameters.insideColor)
     const colorOutside = new THREE.Color(parameters.outsideColor)
-
+    
     for(let i = 0; i < parameters.count; i++)
     {
         // Position
@@ -39,13 +40,9 @@ const generateGalaxy = (parameters, geometry = new THREE.BufferGeometry(), mater
         // Mixed Color
         const mixedColor = colorInside.clone()
         mixedColor.lerp(colorOutside, radius / parameters.radius)
-        
         colors[i3    ] = mixedColor.r
         colors[i3 + 1] = mixedColor.g
         colors[i3 + 2] = mixedColor.b
-        // if(radius>1){
-        //     console.log('radius', radius)
-        // }
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
