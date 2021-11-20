@@ -133,6 +133,7 @@ class generatePropulsionParticles {
     this._sizeSpline.AddPoint(1.0, 1.0);
   
     this._UpdateGeometry();
+    this._RAF();
   }
 
 
@@ -143,6 +144,8 @@ class generatePropulsionParticles {
     this.gdfsghk += animationSpeed;
     const n = Math.floor(this.gdfsghk * 75.0);
     this.gdfsghk -= n / 75.0;
+
+    console.log(this.gdfsghk)
 
     for (let i = 0; i < n; i++) {
       const life = (Math.random() * 0.75 + 0.25) * this.params.length;
@@ -233,11 +236,22 @@ class generatePropulsionParticles {
     this._geometry.attributes.angle.needsUpdate = true;
   }
 
-  Step(timeElapsed = 1) {
-    const animationSpeed = this.params.speed*(timeElapsed)
+  _RAF() {
+    requestAnimationFrame((t) => {
+      if (this._previousRAF === null) {
+        this._previousRAF = t;
+      }
+      this._RAF();
+      this.Step(t - this._previousRAF);
+      this._previousRAF = t;
+    });
+  }
 
-    this._AddParticles(animationSpeed);
-    this._UpdateParticles(animationSpeed);
+  Step(timeElapsed) {
+    const timeElapsedS = timeElapsed * 0.001;
+    console.log(timeElapsedS)
+    this._AddParticles(timeElapsedS);
+    this._UpdateParticles(timeElapsedS);
     this._UpdateGeometry();
   }
 }

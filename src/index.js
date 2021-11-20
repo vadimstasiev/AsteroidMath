@@ -153,12 +153,13 @@ scene.add(spaceshipG)
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
-directionalLight.shadow.camera.far = 15
-directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.normalBias = 0.05
-directionalLight.position.set(0.25, 3, - 2.25)
-scene.add(directionalLight)
+const directionalLight1 = new THREE.DirectionalLight('#ffffff', 0.5)
+directionalLight1.position.set(0, 1, 0)
+scene.add(directionalLight1)
+
+const directionalLight2 = new THREE.DirectionalLight('#ffffff', 0.5)
+directionalLight2.position.set(0, -1, 0)
+scene.add(directionalLight2)
 
 /**
  * Galaxies
@@ -185,10 +186,11 @@ window.addEventListener('resize', () => {
  * Animate
  */
 const clock = new THREE.Clock()
+let oldElapsedTime = 0
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-
+    const deltaTime = elapsedTime - oldElapsedTime
     // Update points only when the scene is ready
     if(isSceneReady)
     {        
@@ -231,7 +233,7 @@ const tick = () =>
 
         // Animate Propulsion Particles
 
-        propulsionParticles.Step()
+        // propulsionParticles.Step(deltaTime)
 
         // Go through each html point
         for(const point of points)
