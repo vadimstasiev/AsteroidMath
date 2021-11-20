@@ -234,8 +234,7 @@ class generatePropulsionParticles {
   }
 
   Step(timeElapsed = 1) {
-    const animationSpeed = this.params.speed
-    // const animationSpeed = this.params.speed*timeElapsed
+    const animationSpeed = this.params.speed*(timeElapsed)
 
     this._AddParticles(animationSpeed);
     this._UpdateParticles(animationSpeed);

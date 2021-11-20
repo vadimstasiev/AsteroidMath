@@ -1,12 +1,11 @@
 import './style.css'
 import * as THREE from 'three'
+import createRenderer from './Components/Renderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
 import generateGalaxy from './Components/Galaxy'
 import generateBgStars from './Components/BackgroundStars'
-import generatePropulsionParticles from './Components/PropulsionParticles'
-import { Vector3 } from 'three'
+import importSpaceshipModel from './Components/Spaceship'
 
 const devMode = false
 
@@ -15,9 +14,7 @@ const devMode = false
  * Loaders
  */
 const loadingBarElement = document.querySelector('.loading-bar')
-
-
-let sceneReady = false
+let isSceneReady = false
 const loadingManager = new THREE.LoadingManager(
     // Loaded
     () =>
@@ -35,7 +32,7 @@ const loadingManager = new THREE.LoadingManager(
 
         window.setTimeout(() =>
         {
-            sceneReady = true
+            isSceneReady = true
         }, 2000)
     },
 
@@ -47,7 +44,6 @@ const loadingManager = new THREE.LoadingManager(
         loadingBarElement.style.transform = `scaleX(${progressRatio})`
     }
 )
-const gltfLoader = new GLTFLoader(loadingManager)
 const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
 
 /**
@@ -65,7 +61,7 @@ const scene = new THREE.Scene()
 /**
  * Sizes
  */
- const sizes = {
+const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
@@ -73,20 +69,17 @@ const scene = new THREE.Scene()
 /**
  * Camera
  */
-// Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
-if(devMode){
+if(devMode) {
     camera.position.set(10, 2, - 10)
 }
 scene.add(camera)
-
-
-// Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
+
 /**
- * Overlay
+ * Overlay (html overlay)
  */
 const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
 const overlayMaterial = new THREE.ShaderMaterial({
@@ -114,23 +107,7 @@ const overlayMaterial = new THREE.ShaderMaterial({
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
 scene.add(overlay)
 
-/**
- * Update all materials
- */
-const updateAllMaterials = () =>
-{
-    scene.traverse((child) =>
-    {
-        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial)
-        {
-            // child.material.envMap = environmentMap
-            child.material.envMapIntensity = debugObject.envMapIntensity
-            child.material.needsUpdate = true
-            child.castShadow = true
-            child.receiveShadow = true
-        }
-    })
-}
+
 
 /**
  * Environment map
@@ -143,56 +120,16 @@ const environmentMap = cubeTextureLoader.load([
     '/textures/environmentMaps/stars/pz.jpg',
     '/textures/environmentMaps/stars/nz.jpg'
 ])
-
 environmentMap.encoding = THREE.sRGBEncoding
-
 scene.environment = environmentMap
-
 debugObject.envMapIntensity = 5
 
 /**
  * Models
  */
-gltfLoader.load(
-    '/models/Spaceship/glTF/Spaceship.gltf',
-    (gltf) =>
-    {
-        const model = gltf.scene.children[0]
-        model.scale.set(0.015, 0.015, 0.015)
-        model.position.set(0,0,0)
-        spaceshipG.add(model)
-        updateAllMaterials()
-    }
-)
 
-
-/**
- * Spaceship propulsion particle system
- */
-const propulsionParticlesG = new THREE.Group()
-
-
-const propulsionParticles = new generatePropulsionParticles({
-    parent: propulsionParticlesG,
-    camera: camera,
-    size: 69,
-    length: 0.3,
-    spread: 1/100,
-    width: 3,
-    speed: 0.005
-});
-
-propulsionParticlesG.rotation.z = Math.PI/2
-propulsionParticlesG.rotation.y = Math.PI/2
-propulsionParticlesG.position.set(0.0,0.02,-0.5)
-
-const spaceshipG = new THREE.Group()
-
-spaceshipG.add(propulsionParticlesG)
-
-spaceshipG.position.set(8,0,0)
+const {spaceshipG, propulsionParticles} = importSpaceshipModel(loadingManager, camera)
 scene.add(spaceshipG)
-
 
 /**
  * Points of interest
@@ -217,7 +154,6 @@ const points = [
  * Lights
  */
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
-// directionalLight.castShadow = true
 directionalLight.shadow.camera.far = 15
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
@@ -295,22 +231,19 @@ galaxy4.add(generateGalaxy({
 galaxy4.position.set(6, -2, 3)
 galaxy4.rotation.x = Math.PI * 1.05
 
-// parametersPoints2.color1 = '#ff0000'
-// parametersPoints2.color2 = '#841b65'
 
 const bgStarsG = new THREE.Group()
-
 bgStarsG.add(generateBgStars({
     count : 7000,
     size : 0.01,
     width : 100,
 }))
-
 scene.add(bgStarsG)
 
 
-window.addEventListener('resize', () =>
-{
+const renderer = createRenderer(canvas, sizes)
+// Add event listener to update renderer if window is resized
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -325,22 +258,6 @@ window.addEventListener('resize', () =>
 })
 
 /**
- * Renderer
- */
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true
-})
-renderer.physicallyCorrectLights = true
-renderer.outputEncoding = THREE.sRGBEncoding
-renderer.toneMapping = THREE.ReinhardToneMapping
-renderer.toneMappingExposure = 3
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/**
  * Animate
  */
 const clock = new THREE.Clock()
@@ -349,7 +266,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update points only when the scene is ready
-    if(sceneReady)
+    if(isSceneReady)
     {        
         
         // Animate Galaxy 
@@ -396,7 +313,7 @@ const tick = () =>
 
         // Animate Propulsion Particles
 
-        propulsionParticles.Step();
+        propulsionParticles.Step()
 
         // Go through each html point
         for(const point of points)
