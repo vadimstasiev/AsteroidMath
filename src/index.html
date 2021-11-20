@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>32 - Mixing HTML and WebGL</title>
+    <title>Asteroid Math</title>
     <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
 </head>
 <body>
@@ -14,6 +14,16 @@
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link d-none d-lg-block d-xl-block" href="#">Play <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-none d-lg-block d-xl-block" href="#">Leaderboard</a>
+          </li>
+          <li class="nav-item">
+          </li>
+        </ul>
         <div class="mr-auto"></div>
         <div class="div-inline my-2 my-lg-0" style="margin-right: 15px;">
           <a class="form-control mr-sm-2">Sign Up</a>
@@ -29,8 +39,8 @@
     <div class="loading-bar"></div>
 
     <div class="play-button">
-      <!-- <button type="button" class="btn btn-primary btn-lg btn-block">Play</button>
-      <button type="button" class="btn btn-secondary btn-lg btn-block">Leaderboard</button> -->
+      <button type="button" class="btn btn-primary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none">Play</button>
+      <button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none">Leaderboard</button>
     </div>
 
     <!-- <div class="point point-0">

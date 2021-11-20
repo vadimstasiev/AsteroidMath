@@ -381,15 +381,15 @@ const tick = () =>
 
         if (!devMode){
             const cameraPosition = new THREE.Vector3()  
+            // const cameraOffset = Math.abs(Math.sin(elapsedTime/10))
             const cameraOffset = 0.3
             cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*0.7
-            cameraPosition.y = Math.cos(elapsedTime/heightOscilation + cameraOffset)*heightDistance*1.2
+            cameraPosition.y = Math.cos(elapsedTime/heightOscilation+cameraOffset)*heightDistance*1.2
             cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*0.7
             camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
             controls.target = spaceshipG.position
         }
         // Animate bgStars
-
         
         bgStarsG.rotation.x = 0.01 * angle
         bgStarsG.rotation.y = 0.01 * angle
