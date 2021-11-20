@@ -3,9 +3,8 @@ import * as THREE from 'three'
 import createRenderer from './Components/Renderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
-import generateGalaxy from './Components/Galaxy'
-import generateBgStars from './Components/BackgroundStars'
 import importSpaceshipModel from './Components/Spaceship'
+import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 
 const devMode = false
 
@@ -44,7 +43,7 @@ const loadingManager = new THREE.LoadingManager(
         loadingBarElement.style.transform = `scaleX(${progressRatio})`
     }
 )
-const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
+
 
 /**
  * Base
@@ -104,6 +103,23 @@ const overlayMaterial = new THREE.ShaderMaterial({
         }
     `
 })
+
+ const raycaster = new THREE.Raycaster()
+ const points = [
+     // {
+     //     position: new THREE.Vector3(1.55, 0.3, - 0.6),
+     //     element: document.querySelector('.point-0')
+     // },
+     // {
+     //     position: new THREE.Vector3(0.5, 0.8, - 1.6),
+     //     element: document.querySelector('.point-1')
+     // },
+     // {
+     //     position: new THREE.Vector3(1.6, - 1.3, - 0.7),
+     //     element: document.querySelector('.point-2')
+     // }
+ ]
+
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
 scene.add(overlay)
 
@@ -112,6 +128,7 @@ scene.add(overlay)
 /**
  * Environment map
  */
+const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
 const environmentMap = cubeTextureLoader.load([
     '/textures/environmentMaps/stars/px.jpg',
     '/textures/environmentMaps/stars/nx.jpg',
@@ -131,24 +148,7 @@ debugObject.envMapIntensity = 5
 const {spaceshipG, propulsionParticles} = importSpaceshipModel(loadingManager, camera)
 scene.add(spaceshipG)
 
-/**
- * Points of interest
- */
-const raycaster = new THREE.Raycaster()
-const points = [
-    // {
-    //     position: new THREE.Vector3(1.55, 0.3, - 0.6),
-    //     element: document.querySelector('.point-0')
-    // },
-    // {
-    //     position: new THREE.Vector3(0.5, 0.8, - 1.6),
-    //     element: document.querySelector('.point-1')
-    // },
-    // {
-    //     position: new THREE.Vector3(1.6, - 1.3, - 0.7),
-    //     element: document.querySelector('.point-2')
-    // }
-]
+
 
 /**
  * Lights
@@ -163,83 +163,7 @@ scene.add(directionalLight)
 /**
  * Galaxies
  */
-const galaxy1 = new THREE.Group()
-scene.add(galaxy1)
-galaxy1.add(generateGalaxy({
-    count : 100000,
-    size : 0.003,
-    radius : 10,
-    branches : 5,
-    spin : -1,
-    randomness : 1.3,
-    randomnessPower : 4,
-    concentration : 0.5,
-    insideColor : '#ff0018',
-    outsideColor : '#1b3984',
-}))
-
-const galaxy2 = new THREE.Group()
-scene.add(galaxy2)
-galaxy2.add(generateGalaxy({
-    count: 10000,
-    size: 0.001,
-    radius: 7,
-    branches: 2,
-    spin: 1.2,
-    randomness: 0.957,
-    randomnessPower: 2.6,
-    concentration: 0.23,
-    insideColor: '#00e828',
-    outsideColor: '#1b3984',
-}))
-galaxy2.position.set(-30, 10, -20)
-galaxy2.rotation.x = Math.PI * 0.99
-
-
-const galaxy3 = new THREE.Group()
-scene.add(galaxy3)
-galaxy3.add(generateGalaxy({
-    count: 10000,
-    size: 0.003,
-    radius: 6.3,
-    branches: 3,
-    spin: -1,
-    randomness: 1.3,
-    randomnessPower: 4,
-    concentration: 0.5,
-    insideColor: '#e800a3',
-    outsideColor: '#40841b',
-}))
-galaxy3.position.set(0, 10, 20)
-galaxy3.rotation.x = Math.PI * 0.9
-
-const galaxy4 = new THREE.Group()
-scene.add(galaxy4)
-galaxy4.add(generateGalaxy({
-    count : 10000,
-    size : 0.003,
-    radius : 20,
-    branches : 6,
-    spin : 0.6,
-    randomness : 0.8,
-    randomnessPower : 4.4,
-    concentration : 0.15,
-    insideColor : '#e80000',
-    outsideColor : '#b9926d',
-}))
-
-galaxy4.position.set(6, -2, 3)
-galaxy4.rotation.x = Math.PI * 1.05
-
-
-const bgStarsG = new THREE.Group()
-bgStarsG.add(generateBgStars({
-    count : 7000,
-    size : 0.01,
-    width : 100,
-}))
-scene.add(bgStarsG)
-
+setupGalaxyScene(scene)
 
 const renderer = createRenderer(canvas, sizes)
 // Add event listener to update renderer if window is resized
@@ -268,11 +192,9 @@ const tick = () =>
     // Update points only when the scene is ready
     if(isSceneReady)
     {        
-        
-        // Animate Galaxy 
+        // Animate Galaxies
 
-        const angle = elapsedTime * 0.5
-        galaxy1.rotation.y = -0.01 * angle
+        galaxiesTick(elapsedTime)
 
         // Animate Spaceship trajectory
 
@@ -306,10 +228,6 @@ const tick = () =>
             camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
             controls.target = spaceshipG.position
         }
-        // Animate bgStars
-        
-        bgStarsG.rotation.x = 0.01 * angle
-        bgStarsG.rotation.y = 0.01 * angle
 
         // Animate Propulsion Particles
 
