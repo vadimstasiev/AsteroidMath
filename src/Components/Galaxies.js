@@ -28,7 +28,7 @@ const setupGalaxyScene = (scene) => {
     scene.add(galaxy2)
     galaxy2.add(generateGalaxy({
         count: 10000,
-        size: 0.001,
+        size: 0.005,
         radius: 7,
         branches: 2,
         spin: 1.2,
@@ -37,7 +37,12 @@ const setupGalaxyScene = (scene) => {
         concentration: 0.23,
         insideColor: '#00e828',
         outsideColor: '#1b3984',
-    }))
+    }, new THREE.PointsMaterial({
+        sizeAttenuation: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true
+    })))
     galaxy2.position.set(-30, 10, -20)
     galaxy2.rotation.x = Math.PI * 0.99
 
@@ -55,7 +60,13 @@ const setupGalaxyScene = (scene) => {
         concentration: 0.5,
         insideColor: '#e800a3',
         outsideColor: '#40841b',
-    }))
+    },
+    new THREE.PointsMaterial({
+        sizeAttenuation: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true
+    })))
     galaxy3.position.set(0, 10, 20)
     galaxy3.rotation.x = Math.PI * 0.9
 
@@ -63,7 +74,7 @@ const setupGalaxyScene = (scene) => {
     scene.add(galaxy4)
     galaxy4.add(generateGalaxy({
         count : 10000,
-        size : 0.003,
+        size : 0.010,
         radius : 20,
         branches : 6,
         spin : -0.6,

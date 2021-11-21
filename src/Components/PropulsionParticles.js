@@ -91,7 +91,7 @@ class generatePropulsionParticles {
         fragmentShader: _FS,
         blending: THREE.AdditiveBlending,
         depthTest: true,
-        // transparent: true,
+        transparent: true,
         // depthWrite: true,
         depthWrite: false,
         vertexColors: true

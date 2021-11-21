@@ -7,7 +7,7 @@ import importSpaceshipModel from './Components/Spaceship'
 import setupGalaxyScene from './Components/Galaxies'
 import playClicked from './Components/Game'
 
-const devMode = false
+const freeView = true
 
 /**
  * Loaders
@@ -69,7 +69,7 @@ const sizes = {
  * Camera
  */
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
-if(devMode) {
+if(freeView) {
     camera.position.set(10, 2, - 10)
 }
 scene.add(camera)
@@ -161,6 +161,9 @@ const directionalLight2 = new THREE.DirectionalLight('#ffffff', 0.5)
 directionalLight2.position.set(0, -1, 0)
 scene.add(directionalLight2)
 
+const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
+scene.add(ambientLight)
+
 /**
  * Galaxies
  */
@@ -223,7 +226,7 @@ const tick = () =>
         // Animate Camera position to follow spaceship
 
 
-        if (!devMode){
+        if (!freeView){
             const cameraPosition = new THREE.Vector3()  
             // const cameraOffset = Math.abs(Math.sin(elapsedTime/10))
             const cameraOffset = 0.3

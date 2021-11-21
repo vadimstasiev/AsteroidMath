@@ -10,7 +10,7 @@ const materialDefault = new THREE.PointsMaterial({
 })
 
 
-const generateGalaxy = (parameters, geometry = new THREE.BufferGeometry(), material = materialDefault) => {
+const generateGalaxy = (parameters, material = materialDefault, geometry = new THREE.BufferGeometry()) => {
     material.size = parameters.size
 
     const positions = new Float32Array(parameters.count * 3)
