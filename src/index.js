@@ -189,7 +189,7 @@ window.addEventListener('resize', () => {
  * Define HTML callable functions
  */
 
-window.playClicked = () => playClicked(scene)
+window.playClicked = () => playClicked(scene, camera)
 
 
 /**
