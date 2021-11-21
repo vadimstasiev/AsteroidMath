@@ -68,7 +68,9 @@ const sizes = {
 /**
  * Camera
  */
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 200000)
+const vFOV = 75
+const camera = new THREE.PerspectiveCamera(vFOV, sizes.width / sizes.height, 0.1, 200000)
+
 if(freeView) {
     camera.position.set(10, 2, - 10)
 }

@@ -24,10 +24,11 @@ const playClicked = (scene, camera) => {
         const amplitudeY = 4
         let x,y,z, theta
         // const cameraDirection = camera.getWorldDirection()
+        const cameraAngle = Math.atan2(cameraDirection.x, cameraDirection.z)
         
         
 
-        // do {
+        do {
             const random = Math.random() *max 
             x = Math.sin(random) *max - ((Math.random()-0.5)*min)
             y = (Math.random()-0.5)* amplitudeY
@@ -35,7 +36,7 @@ const playClicked = (scene, camera) => {
             const vec3 = new Vector3(x,y,z)
             const diff = vec3.sub(cameraDirection)
             // theta is the angle between where the camera is looking vs where the object is in relation to the camera.
-            theta = Math.atan2(diff.x, diff.z) - Math.atan2(cameraDirection.x, cameraDirection.z)
+            theta = Math.atan2(diff.x, diff.z) - cameraAngle
 
             // if(abs(theta) < 3){
             //     if(theta < 0){
@@ -45,7 +46,7 @@ const playClicked = (scene, camera) => {
             //         //its to the left
             //     }
             // }
-        // } while(Math.abs(theta) > Math.PI)
+        } while(!((cameraAngle + Math.PI) < Math.abs(theta) < (cameraAngle - Math.PI)))
         maxRange =  theta>maxRange?theta:maxRange
         minRange =  theta<minRange?theta:minRange
         // console.log(theta)   
@@ -57,6 +58,7 @@ const playClicked = (scene, camera) => {
     console.log("maxRange: ", maxRange)   
     console.log("minRange: ", minRange)   
     console.log("camera: ",Math.atan2(cameraDirection.x, cameraDirection.z))   
+    // THE ANSWER IS PI
 
 }
 
