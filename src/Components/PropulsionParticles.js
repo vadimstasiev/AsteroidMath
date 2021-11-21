@@ -145,8 +145,6 @@ class generatePropulsionParticles {
     const n = Math.floor(this.gdfsghk * 75.0);
     this.gdfsghk -= n / 75.0;
 
-    console.log(this.gdfsghk)
-
     for (let i = 0; i < n; i++) {
       const life = (Math.random() * 0.75 + 0.25) * this.params.length;
       this._particles.push({
@@ -249,7 +247,6 @@ class generatePropulsionParticles {
 
   Step(timeElapsed) {
     const timeElapsedS = timeElapsed * 0.001;
-    console.log(timeElapsedS)
     this._AddParticles(timeElapsedS);
     this._UpdateParticles(timeElapsedS);
     this._UpdateGeometry();

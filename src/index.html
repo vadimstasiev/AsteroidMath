@@ -14,21 +14,21 @@
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link d-none d-lg-block d-xl-block" href="#">Play <span class="sr-only">(current)</span></a>
+        <ul class="navbar-nav mr-auto menu-buttons">
+          <li class="nav-item active" onClick="window.playClicked()">
+            <div class="nav-link d-none d-lg-block d-xl-block">Play<span class="sr-only"></span></div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link d-none d-lg-block d-xl-block" href="#">Leaderboard</a>
+          <li class="nav-item" onClick="window.playClicked()">
+            <div class="nav-link d-none d-lg-block d-xl-block">Leaderboard</div>
           </li>
           <li class="nav-item">
           </li>
         </ul>
         <div class="mr-auto"></div>
-        <div class="div-inline my-2 my-lg-0" style="margin-right: 15px;">
+        <div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer;">
           <a class="form-control mr-sm-2">Sign Up</a>
         </div>
-        <div class="div-inline my-2 my-lg-0" style="margin-right: 15px;">
+        <div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer;">
           <a class="form-control mr-sm-2">Log In</a>
         </div>
       </div>
@@ -38,9 +38,9 @@
 
     <div class="loading-bar"></div>
 
-    <div class="play-button">
-      <button type="button" class="btn btn-primary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none">Play</button>
-      <button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none">Leaderboard</button>
+    <div class="mobile-buttons menu-buttons">
+      <button type="button" class="btn btn-primary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none" onClick="window.playClicked()">Play</button>
+      <button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none" onClick="window.playClicked()">Leaderboard</button>
     </div>
 
     <div class="point point-0">

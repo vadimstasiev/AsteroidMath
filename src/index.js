@@ -4,10 +4,10 @@ import createRenderer from './Components/Renderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
 import importSpaceshipModel from './Components/Spaceship'
-import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
+import setupGalaxyScene from './Components/Galaxies'
+import playClicked from './Components/Game'
 
 const devMode = false
-
 
 /**
  * Loaders
@@ -183,6 +183,13 @@ window.addEventListener('resize', () => {
 })
 
 /**
+ * Define HTML callable functions
+ */
+
+window.playClicked = () => playClicked(scene)
+
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
@@ -194,10 +201,6 @@ const tick = () =>
     // Update points only when the scene is ready
     if(isSceneReady)
     {        
-        // Animate Galaxies
-
-        galaxiesTick(elapsedTime)
-
         // Animate Spaceship trajectory
 
         const spaceshipSpeed = 9
@@ -230,10 +233,6 @@ const tick = () =>
             camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
             controls.target = spaceshipG.position
         }
-
-        // Animate Propulsion Particles
-
-        // propulsionParticles.Step(deltaTime)
 
         // Go through each html point
         for(const point of points)

@@ -88,7 +88,7 @@ body {
   transform: scale(1, 1);
 }
 
-.play-button {
+.mobile-buttons {
   position: absolute;
   top: 25%;
   width: 80%;
@@ -98,4 +98,8 @@ body {
   left: 0;
   right: 0;
   text-align: center;
+}
+
+.menu-buttons div {
+  cursor: pointer;
 }
