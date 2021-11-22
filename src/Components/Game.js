@@ -11,7 +11,7 @@ const playClicked = (scene, camera) => {
     const cameraDirection = camera.getWorldDirection()
 
 
-    for (let i = 0; i < 1000; i++) {
+    // for (let i = 0; i < 1000; i++) {
         const asteroid1 = new THREE.Mesh(asteroidGeometry, asteroidMaterial)
         asteroid1.castShadow = true
         asteroid1.scale.set(1, 1, 1)
@@ -28,7 +28,7 @@ const playClicked = (scene, camera) => {
         
         
 
-        do {
+        // do {
             const random = Math.random() *max 
             x = Math.sin(random) *max - ((Math.random()-0.5)*min)
             y = (Math.random()-0.5)* amplitudeY
@@ -46,7 +46,7 @@ const playClicked = (scene, camera) => {
             //         //its to the left
             //     }
             // }
-        } while(!((cameraAngle + Math.PI) < Math.abs(theta) < (cameraAngle - Math.PI)))
+        // } while((Math.abs(theta) < (- cameraAngle - Math.PI)))
         maxRange =  theta>maxRange?theta:maxRange
         minRange =  theta<minRange?theta:minRange
         // console.log(theta)   
@@ -54,10 +54,12 @@ const playClicked = (scene, camera) => {
         // https://stackoverflow.com/questions/42215829/calculate-target-range-on-circle-three-js
         asteroid1.position.set(x, y, z)
         scene.add(asteroid1)
-    }
-    console.log("maxRange: ", maxRange)   
-    console.log("minRange: ", minRange)   
+    // }
+    // console.log("maxRange: ", maxRange)   
+    // console.log("minRange: ", minRange)   
+    console.log("theta: ", theta)
     console.log("camera: ",Math.atan2(cameraDirection.x, cameraDirection.z))   
+    console.log(Math.abs(theta), (cameraAngle - Math.PI), (Math.abs(theta) < ( Math.abs(cameraAngle) + Math.PI)))
     // THE ANSWER IS PI
 
 }
