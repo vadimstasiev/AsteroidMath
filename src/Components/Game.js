@@ -57,10 +57,10 @@ const playClicked = (scene, camera) => {
     // }
     // console.log("maxRange: ", maxRange)   
     // console.log("minRange: ", minRange)   
+    // TODO: add pi to camera to get maxRange/minRange value to compare to theta
     console.log("theta: ", theta)
     console.log("camera: ",Math.atan2(cameraDirection.x, cameraDirection.z))   
     console.log(Math.abs(theta), (cameraAngle - Math.PI), (Math.abs(theta) < ( Math.abs(cameraAngle) + Math.PI)))
-    // THE ANSWER IS PI
 
 }
 
