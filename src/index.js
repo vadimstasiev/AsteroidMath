@@ -7,7 +7,7 @@ import importSpaceshipModel from './Components/Spaceship'
 import setupGalaxyScene from './Components/Galaxies'
 import playClicked from './Components/Game'
 
-const freeView = false
+const freeView = true
 
 /**
  * Loaders
