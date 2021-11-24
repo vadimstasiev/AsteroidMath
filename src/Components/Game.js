@@ -38,7 +38,8 @@ const playClicked = (scene, camera) => {
         // const cameraDirection = camera.getWorldDirection()
         
         let count = 0
-        let countMax = 100
+        // max tries to find a random position that fits the requirements bellow
+        let countMax = 200 
 
         do {
             const random = Math.random() *max 

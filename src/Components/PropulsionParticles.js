@@ -94,7 +94,7 @@ class generatePropulsionParticles {
         transparent: true,
         // depthWrite: true,
         depthWrite: false,
-        vertexColors: true
+        vertexColors: true,
     });
 
     this._camera = params.camera;
@@ -122,8 +122,8 @@ class generatePropulsionParticles {
       const c = a.clone();
       return c.lerp(b, t);
     });
-    this._colourSpline.AddPoint(0.0, new THREE.Color(0xff80ff));
-    this._colourSpline.AddPoint(1.0, new THREE.Color(0xFF8080));
+    this._colourSpline.AddPoint(0.0, new THREE.Color(this.params.innerColor));
+    this._colourSpline.AddPoint(1.0, new THREE.Color(this.params.outterColor));
 
     this._sizeSpline = new LinearSpline((t, a, b) => {
       return a + t * (b - a);

@@ -27,7 +27,9 @@ const importSpaceshipModel = (loadingManager, camera) => {
         length: 0.3,
         spread: 1/100,
         width: 3,
-        speed: 0.005
+        speed: 0.005,
+        innerColor: 0xff80ff,
+        outterColor: 0x007bff
     })
 
     propulsionParticlesG.rotation.z = Math.PI/2
