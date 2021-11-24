@@ -7,7 +7,7 @@ import importSpaceshipModel from './Components/Spaceship'
 import setupGalaxyScene from './Components/Galaxies'
 import playClicked from './Components/Game'
 
-const freeView = false
+const freeView = true
 
 /**
  * Loaders
@@ -108,18 +108,18 @@ const overlayMaterial = new THREE.ShaderMaterial({
 
  const raycaster = new THREE.Raycaster()
  const points = [
-    //  {
-    //      position: new THREE.Vector3(1.55, 0.3, - 0.6),
-    //      element: document.querySelector('.point-0')
-    //  },
-    //  {
-    //      position: new THREE.Vector3(0.5, 0.8, - 1.6),
-    //      element: document.querySelector('.point-1')
-    //  },
-    //  {
-    //      position: new THREE.Vector3(1.6, - 1.3, - 0.7),
-    //      element: document.querySelector('.point-2')
-    //  }
+     {
+         position: new THREE.Vector3(10, 10, 2),
+         element: document.querySelector('.point-0')
+     },
+     {
+         position: new THREE.Vector3(0.5, 0.8, - 1.6),
+         element: document.querySelector('.point-1')
+     },
+     {
+         position: new THREE.Vector3(1.6, - 1.3, - 0.7),
+         element: document.querySelector('.point-2')
+     }
  ]
 
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
@@ -187,11 +187,11 @@ const clock = new THREE.Clock()
 let previousRAF
 const tick = (t) =>
 {
+    const elapsedTime = clock.getElapsedTime()
     if (previousRAF === null) {
         previousRAF = t;
     }
     propulsionParticles.Step(t-previousRAF)
-    const elapsedTime = clock.getElapsedTime()
     if(isSceneReady)
     {        
         // Animate Spaceship trajectory
@@ -235,39 +235,7 @@ const tick = (t) =>
             // Get 2D screen position
             const screenPosition = point.position.clone()
             screenPosition.project(camera)
-    
-            // Set the raycaster
-            raycaster.setFromCamera(screenPosition, camera)
-            const intersects = raycaster.intersectObjects(scene.children, true)
-    
-            // No intersect found
-            if(intersects.length === 0)
-            {
-                // Show
-                point.element.classList.add('visible')
-            }
-
-            // Intersect found
-            else
-            {
-                // Get the distance of the intersection and the distance of the point
-                const intersectionDistance = intersects[0].distance
-                const pointDistance = point.position.distanceTo(camera.position)
-    
-                // Intersection is close than the point
-                if(intersectionDistance < pointDistance)
-                {
-                    // Hide
-                    point.element.classList.remove('visible')
-                }
-                // Intersection is further than the point
-                else
-                {
-                    // Show
-                    point.element.classList.add('visible')
-                }
-            }
-    
+            point.element.classList.add('visible')
             const translateX = screenPosition.x * sizes.width * 0.5
             const translateY = - screenPosition.y * sizes.height * 0.5
             point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
