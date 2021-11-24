@@ -210,18 +210,18 @@ const tick = () =>
 
         const spaceshipSpeed = 9
         const spaceshipRadius = 6
-        const ellipticDistance = 1.3
-        const heightDistance = 1.3
-        const heightOscilation = 6
-        spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*ellipticDistance
-        spaceshipG.position.y = Math.cos(elapsedTime/heightOscilation)*heightDistance
+        const spaceshipEllipticOffset = 1.3
+        const spaceshipAmplitudeY = 1.3
+        const spaceshipOscilationY = 6
+        spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*spaceshipEllipticOffset
+        spaceshipG.position.y = Math.cos(elapsedTime/spaceshipOscilationY)*spaceshipAmplitudeY
         spaceshipG.position.z = Math.sin(elapsedTime/spaceshipSpeed)*spaceshipRadius
 
 
         const dummyPoint = new THREE.Vector3()
         const dummyPointOffset = 0.1
-        dummyPoint.x = Math.cos((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius*ellipticDistance
-        dummyPoint.y = Math.cos(elapsedTime/heightOscilation + dummyPointOffset)*heightDistance
+        dummyPoint.x = Math.cos((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius*spaceshipEllipticOffset
+        dummyPoint.y = Math.cos(elapsedTime/spaceshipOscilationY + dummyPointOffset)*spaceshipAmplitudeY
         dummyPoint.z = Math.sin((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius
         spaceshipG.lookAt(dummyPoint)
 
@@ -230,11 +230,13 @@ const tick = () =>
 
         if (!freeView){
             const cameraPosition = new THREE.Vector3()  
-            // const cameraOffset = Math.abs(Math.sin(elapsedTime/10))
-            const cameraOffset = 0.3
-            cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*ellipticDistance*0.7
-            cameraPosition.y = Math.cos(elapsedTime/heightOscilation+cameraOffset)*heightDistance*1.2
-            cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraOffset)*spaceshipRadius*0.7
+            // const cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
+            const cameraToSpaceshipOffset = 0.3
+            const cameraRadiusOffset = 0.7
+            const cameraAmplitudeOffset = 1.2
+            cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraToSpaceshipOffset)*spaceshipRadius*spaceshipEllipticOffset*cameraRadiusOffset
+            cameraPosition.y = Math.cos(elapsedTime/spaceshipOscilationY+cameraToSpaceshipOffset)*spaceshipAmplitudeY*cameraAmplitudeOffset
+            cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraToSpaceshipOffset)*spaceshipRadius*cameraRadiusOffset
             camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
             controls.target = spaceshipG.position
         }
