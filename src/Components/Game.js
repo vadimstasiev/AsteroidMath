@@ -43,14 +43,13 @@ const playClicked = (scene, camera) => {
             const diff = vec3.sub(cameraDirection)
             // theta is the angle between where the camera is looking vs where the object is in relation to the camera.
             theta = Math.atan2(diff.x, diff.z) - cameraAngle
-            // Check if position is outside camera view, TODO: it only accounts for the position of the object, mesh may still be inside
-            // if theta smaller than 0 then the object is to the right of the camera, which is what we want
             count++
+            // Check if position is inside the spawnAngle
         } while(!( -spawnAngle < theta && theta < spawnAngle) && count < countMax)
-        // https://stackoverflow.com/questions/42215829/calculate-target-range-on-circle-three-js
         if(count!==countMax){
             asteroidObj.position.set(x, y, z)
             const axisOfRotation = new Vector3(0, 1, 0)
+            // rotate the existing around the center of the world position to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/2)
             scene.add(asteroidObj)
         }
