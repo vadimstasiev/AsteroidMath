@@ -7,24 +7,23 @@ const playClicked = (scene, camera) => {
     const asteroidMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
 
 
+    const frustum = new THREE.Frustum()
+    frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse))
 
     const center = new Vector3(0, 0, 0)
 
 
-    const cameraDirection = camera.getWorldDirection()
-
-
-
     const spawnAngle = 0.3
-
     const max = 10
     const min = 6
     const amplitudeY = 4
     let x,y,z, theta
+    const vec3 = new Vector3()
+    const cameraDirection = camera.getWorldDirection()
     const cameraAngle = Math.atan2(cameraDirection.x, cameraDirection.z)
 
     // Find coordinates for a random point within the radius of 10 and outside the radius of 6
-    for (let i = 0; i < 1000; i++) {
+    // for (let i = 0; i < 1000; i++) {
         const asteroidObj = new THREE.Mesh(asteroidGeometry, asteroidMaterial)
         asteroidObj.castShadow = true
         asteroidObj.scale.set(1, 1, 1)
@@ -39,21 +38,22 @@ const playClicked = (scene, camera) => {
             x = Math.sin(random) *max - ((Math.random()-0.5)*min)
             y = (Math.random()-0.5)* amplitudeY
             z = Math.cos(random) *max - ((Math.random()-0.5)*min)
-            const vec3 = new Vector3(x,y,z)
-            const diff = vec3.sub(cameraDirection)
+            vec3.set(x,y,z)
+            const diff = vec3.clone().sub(cameraDirection)
             // theta is the angle between where the camera is looking vs where the object is in relation to the camera.
             theta = Math.atan2(diff.x, diff.z) - cameraAngle
+
             count++
-            // Check if position is inside the spawnAngle
-        } while(!( -spawnAngle < theta && theta < spawnAngle) && count < countMax)
+            // Check if position is inside the spawnAngle and if the position is outside of the view of the camera
+        } while(!( -spawnAngle < theta && theta < spawnAngle && frustum.containsPoint(vec3)) && count < countMax )
         if(count!==countMax){
             asteroidObj.position.set(x, y, z)
             const axisOfRotation = new Vector3(0, 1, 0)
             // rotate the existing around the center of the world position to the right of the camera
-            rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/2)
+            rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/3)
             scene.add(asteroidObj)
         }
-    }
+    // }
     console.log(theta)
     console.log(cameraAngle)
 }
