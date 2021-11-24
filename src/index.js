@@ -7,7 +7,7 @@ import importSpaceshipModel from './Components/Spaceship'
 import setupGalaxyScene from './Components/Galaxies'
 import playClicked from './Components/Game'
 
-const freeView = true
+const freeView = false
 
 /**
  * Loaders
@@ -108,18 +108,18 @@ const overlayMaterial = new THREE.ShaderMaterial({
 
  const raycaster = new THREE.Raycaster()
  const points = [
-     // {
-     //     position: new THREE.Vector3(1.55, 0.3, - 0.6),
-     //     element: document.querySelector('.point-0')
-     // },
-     // {
-     //     position: new THREE.Vector3(0.5, 0.8, - 1.6),
-     //     element: document.querySelector('.point-1')
-     // },
-     // {
-     //     position: new THREE.Vector3(1.6, - 1.3, - 0.7),
-     //     element: document.querySelector('.point-2')
-     // }
+    //  {
+    //      position: new THREE.Vector3(1.55, 0.3, - 0.6),
+    //      element: document.querySelector('.point-0')
+    //  },
+    //  {
+    //      position: new THREE.Vector3(0.5, 0.8, - 1.6),
+    //      element: document.querySelector('.point-1')
+    //  },
+    //  {
+    //      position: new THREE.Vector3(1.6, - 1.3, - 0.7),
+    //      element: document.querySelector('.point-2')
+    //  }
  ]
 
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
@@ -171,39 +171,27 @@ scene.add(ambientLight)
  */
 setupGalaxyScene(scene)
 
-const renderer = createRenderer(canvas, sizes)
-// Add event listener to update renderer if window is resized
-window.addEventListener('resize', () => {
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
-
 /**
- * Define HTML callable functions
+ * Define callable functions
  */
 
 window.playClicked = () => playClicked(scene, camera)
 
 
+
 /**
  * Animate
  */
+const renderer = createRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
-let oldElapsedTime = 0
-const tick = () =>
+let previousRAF
+const tick = (t) =>
 {
+    if (previousRAF === null) {
+        previousRAF = t;
+    }
+    propulsionParticles.Step(t-previousRAF)
     const elapsedTime = clock.getElapsedTime()
-    const deltaTime = elapsedTime - oldElapsedTime
-    // Update points only when the scene is ready
     if(isSceneReady)
     {        
         // Animate Spaceship trajectory
@@ -289,9 +277,10 @@ const tick = () =>
 
     // Render
     renderer.render(scene, camera)
+    previousRAF = t
     }
     // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
+    window.requestAnimationFrame(t => tick(t))
 }
 
 tick()

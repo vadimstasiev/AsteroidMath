@@ -133,7 +133,7 @@ class generatePropulsionParticles {
     this._sizeSpline.AddPoint(1.0, 1.0);
   
     this._UpdateGeometry();
-    this._RAF();
+    // this._RAF();
   }
 
 
