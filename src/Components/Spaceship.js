@@ -13,6 +13,14 @@ const spaceShipParams = {
     dummyPointOffset: 0.1,
 }
 
+const cameraTrajectoryParams = {
+    // Default Camera Orbit Parameters:
+    cameraToSpaceshipOffset: 0.3,
+    cameraRadiusOffset: 0.7,
+    cameraAmplitudeOffset: 1.2,
+}
+
+
 
 const setupSpaceship = (loadingManager, camera) => {
     const gltfLoader = new GLTFLoader(loadingManager)
@@ -53,41 +61,34 @@ const setupSpaceship = (loadingManager, camera) => {
     return {spaceshipG, propulsionParticles}
 }
 
-const calculateSpaceshipPosition = (elapsedTime) => {
-    const x = Math.cos(elapsedTime/spaceShipParams.spaceshipSpeed)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset
-    const y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY)*spaceShipParams.spaceshipAmplitudeY
-    const z = Math.sin(elapsedTime/spaceShipParams.spaceshipSpeed)*spaceShipParams.spaceshipRadius
-    return {x,y,z}
+const calculateSpaceshipPosition = (elapsedTime, offset = 0) => {
+    const x = Math.cos(elapsedTime/spaceShipParams.spaceshipSpeed+offset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset
+    const y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY+offset)*spaceShipParams.spaceshipAmplitudeY
+    const z = Math.sin(elapsedTime/spaceShipParams.spaceshipSpeed+offset)*spaceShipParams.spaceshipRadius
+    return [x,y,z]
+}
+
+// Animate Camera position to follow a similar trajectory as the spaceship
+const calculateCameraPosition = (elapsedTime) => {
+    // cameraTrajectoryParams.cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
+    const x = Math.cos((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset*cameraTrajectoryParams.cameraRadiusOffset
+    const y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipAmplitudeY*cameraTrajectoryParams.cameraAmplitudeOffset
+    const z = Math.sin((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*cameraTrajectoryParams.cameraRadiusOffset
+    return [x,y,z]
 }
 
 const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
-    
-
-    const {x,y,z} = calculateSpaceshipPosition(elapsedTime)
-    spaceshipG.position.x = x
-    spaceshipG.position.y = y
-    spaceshipG.position.z = z
-
-
-    const dummyPoint = new THREE.Vector3()
-    dummyPoint.x = Math.cos((elapsedTime/spaceShipParams.spaceshipSpeed)+spaceShipParams.dummyPointOffset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset
-    dummyPoint.y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY + spaceShipParams.dummyPointOffset)*spaceShipParams.spaceshipAmplitudeY
-    dummyPoint.z = Math.sin((elapsedTime/spaceShipParams.spaceshipSpeed)+spaceShipParams.dummyPointOffset)*spaceShipParams.spaceshipRadius
+    // Set Spaceship Position
+    spaceshipG.position.set(...calculateSpaceshipPosition(elapsedTime))
+    // Set Spaceship Rotation by making it look at a point that is "+ dummyPointOffset" ahead
+    const dummyPoint = new THREE.Vector3(...calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset))
     spaceshipG.lookAt(dummyPoint)
 
-    // Animate Camera position to follow spaceship
+    // check if the freeView is enabled before forcing updates to the camera position, useful for dev
     if (!freeView){
-        const cameraPosition = new THREE.Vector3()  
-        // const cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
-        const cameraToSpaceshipOffset = 0.3
-        const cameraRadiusOffset = 0.7
-        const cameraAmplitudeOffset = 1.2
-        cameraPosition.x = Math.cos((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset*cameraRadiusOffset
-        cameraPosition.y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY+cameraToSpaceshipOffset)*spaceShipParams.spaceshipAmplitudeY*cameraAmplitudeOffset
-        cameraPosition.z = Math.sin((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*cameraRadiusOffset
-        camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
+        camera.position.set(...calculateCameraPosition(elapsedTime))
         controls.target = spaceshipG.position
     }
 }
 
-export {setupSpaceship, spaceshipTick, spaceShipParams}
+export {setupSpaceship, spaceshipTick, spaceShipParams, cameraTrajectoryParams}
