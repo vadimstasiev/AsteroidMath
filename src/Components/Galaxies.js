@@ -113,4 +113,4 @@ const galaxiesTick = (elapsedTime) => {
     // bgStarsG.rotation.y = 0.01 * angle
 }
 
-export default setupGalaxyScene
+export {setupGalaxyScene, galaxiesTick}

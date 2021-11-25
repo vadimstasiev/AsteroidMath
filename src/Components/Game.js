@@ -1,8 +1,9 @@
 import * as THREE from 'three'
+import gsap from 'gsap'
 import { Vector2, Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
 
-const playClicked = (scene, camera) => {
+const playClicked = (scene, camera, spaceshipG) => {
     const asteroidGeometry = new THREE.SphereBufferGeometry(1, 16, 16)
     const asteroidMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
 
@@ -12,7 +13,8 @@ const playClicked = (scene, camera) => {
 
     const center = new Vector3(0, 0, 0)
 
-
+    const maxAsteroidSize = 0.3
+    const minAsteroidSize = 0.05
     const spawnAngle = 0.3
     const max = 10
     const min = 6
@@ -26,7 +28,8 @@ const playClicked = (scene, camera) => {
     // for (let i = 0; i < 1000; i++) {
         const asteroidObj = new THREE.Mesh(asteroidGeometry, asteroidMaterial)
         asteroidObj.castShadow = true
-        asteroidObj.scale.set(1, 1, 1)
+        const randomSize = Math.random() * (maxAsteroidSize - minAsteroidSize) + minAsteroidSize
+        asteroidObj.scale.set(randomSize, randomSize, randomSize)
 
 
         let count = 0
@@ -52,10 +55,12 @@ const playClicked = (scene, camera) => {
             // rotate the existing around the center of the world position to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/3)
             scene.add(asteroidObj)
+            
+            gsap.to(asteroidObj.position, { duration: 1, x: 5, y: 3, z: 5 })
         }
     // }
-    console.log(theta)
-    console.log(cameraAngle)
+    // console.log(theta)
+    // console.log(cameraAngle)
 }
 
 export default playClicked

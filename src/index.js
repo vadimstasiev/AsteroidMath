@@ -1,13 +1,15 @@
 import './style.css'
 import * as THREE from 'three'
-import createRenderer from './Components/Renderer'
+import setupRenderer from './Components/Renderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
-import importSpaceshipModel from './Components/Spaceship'
-import setupGalaxyScene from './Components/Galaxies'
+import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
+import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import playClicked from './Components/Game'
 
-const freeView = true
+
+// If freeView is enabled then the camera can be panned around manually
+const freeView = false
 
 /**
  * Loaders
@@ -147,7 +149,7 @@ debugObject.envMapIntensity = 5
  * Models
  */
 
-const {spaceshipG, propulsionParticles} = importSpaceshipModel(loadingManager, camera)
+const {spaceshipG, propulsionParticles} = setupSpaceship(loadingManager, camera)
 scene.add(spaceshipG)
 
 
@@ -175,14 +177,14 @@ setupGalaxyScene(scene)
  * Define callable functions
  */
 
-window.playClicked = () => playClicked(scene, camera)
+window.playClicked = () => playClicked(scene, camera, spaceshipG)
 
 
 
 /**
  * Animate
  */
-const renderer = createRenderer(canvas, sizes, camera)
+const renderer = setupRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
 let previousRAF
 const tick = (t) =>
@@ -194,40 +196,14 @@ const tick = (t) =>
     propulsionParticles.Step(t-previousRAF)
     if(isSceneReady)
     {        
+        // Animate Galaxies
+        galaxiesTick(elapsedTime)
+
         // Animate Spaceship trajectory
 
-        const spaceshipSpeed = 9
-        const spaceshipRadius = 6
-        const spaceshipEllipticOffset = 1.3
-        const spaceshipAmplitudeY = 1.3
-        const spaceshipOscilationY = 6
-        spaceshipG.position.x = Math.cos(elapsedTime/spaceshipSpeed)*spaceshipRadius*spaceshipEllipticOffset
-        spaceshipG.position.y = Math.cos(elapsedTime/spaceshipOscilationY)*spaceshipAmplitudeY
-        spaceshipG.position.z = Math.sin(elapsedTime/spaceshipSpeed)*spaceshipRadius
+        spaceshipTick(elapsedTime, camera, controls, freeView)
 
-
-        const dummyPoint = new THREE.Vector3()
-        const dummyPointOffset = 0.1
-        dummyPoint.x = Math.cos((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius*spaceshipEllipticOffset
-        dummyPoint.y = Math.cos(elapsedTime/spaceshipOscilationY + dummyPointOffset)*spaceshipAmplitudeY
-        dummyPoint.z = Math.sin((elapsedTime/spaceshipSpeed)+dummyPointOffset)*spaceshipRadius
-        spaceshipG.lookAt(dummyPoint)
-
-        // Animate Camera position to follow spaceship
-
-
-        if (!freeView){
-            const cameraPosition = new THREE.Vector3()  
-            // const cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
-            const cameraToSpaceshipOffset = 0.3
-            const cameraRadiusOffset = 0.7
-            const cameraAmplitudeOffset = 1.2
-            cameraPosition.x = Math.cos((elapsedTime/spaceshipSpeed)+cameraToSpaceshipOffset)*spaceshipRadius*spaceshipEllipticOffset*cameraRadiusOffset
-            cameraPosition.y = Math.cos(elapsedTime/spaceshipOscilationY+cameraToSpaceshipOffset)*spaceshipAmplitudeY*cameraAmplitudeOffset
-            cameraPosition.z = Math.sin((elapsedTime/spaceshipSpeed)+cameraToSpaceshipOffset)*spaceshipRadius*cameraRadiusOffset
-            camera.position.set(cameraPosition.x,cameraPosition.y, cameraPosition.z)
-            controls.target = spaceshipG.position
-        }
+        
 
         // Go through each html point
         for(const point of points)
@@ -240,12 +216,12 @@ const tick = (t) =>
             const translateY = - screenPosition.y * sizes.height * 0.5
             point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
         }
-    // Update orbit controls
-    controls.update()
+        // Update orbit controls
+        controls.update()
 
-    // Render
-    renderer.render(scene, camera)
-    previousRAF = t
+        // Render
+        renderer.render(scene, camera)
+        previousRAF = t
     }
     // Call tick again on the next frame
     window.requestAnimationFrame(t => tick(t))

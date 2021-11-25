@@ -1,7 +1,7 @@
 // This galaxy generator was based off of this source: https://github.com/the-halfbloodprince/GalaxyM1199
 import * as THREE from 'three'
 
-const createRenderer = (canvas, sizes, camera) =>{
+const setupRenderer = (canvas, sizes, camera) =>{
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas,
         antialias: true
@@ -35,4 +35,4 @@ const createRenderer = (canvas, sizes, camera) =>{
 
 
 
-export default createRenderer
+export default setupRenderer
