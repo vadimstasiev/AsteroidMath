@@ -15,9 +15,10 @@ const spawnAsteroid = (elapsedTime, scene, camera) => {
 
     const center = new Vector3(0, 0, 0)
 
-    const maxAsteroidSize = 0.3
-    const minAsteroidSize = 0.05
-    const spawnAngle = 0.3
+    const maxAsteroidSize = 0.1
+    const minAsteroidSize = 0.04
+    const spawnAngle = Math.PI/3
+    const spawnAngleRange = 0.3
     const max = 10
     const min = 6
     const amplitudeY = 4
@@ -49,19 +50,21 @@ const spawnAsteroid = (elapsedTime, scene, camera) => {
             theta = Math.atan2(diff.x, diff.z) - cameraAngle
 
             count++
-            // Check if position is inside the spawnAngle and if the position is outside of the view of the camera
-        } while(!( -spawnAngle < theta && theta < spawnAngle && frustum.containsPoint(vec3)) && count < countMax )
+            // Check if position is inside the spawnAngleRange and if the position is outside of the view of the camera
+        } while(!( -spawnAngleRange < theta && theta < spawnAngleRange && frustum.containsPoint(vec3)) && count < countMax )
         if(count!==countMax){
             asteroidObj.position.set(x, y, z)
             const axisOfRotation = new Vector3(0, 1, 0)
-            // rotate the existing around the center of the world position to the right of the camera
-            rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/3)
+            // rotate the calculated asteroid position around the center of the world position to the right of the camera
+            rotateAboutPoint(asteroidObj, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidObj)
             const [xP, yP, zP] = calculateSpaceshipPosition(elapsedTime, 9)
             gsap.to(asteroidObj.position, { duration: 10, x: xP, y: yP, z: zP })
         }
     // }
 }
+
+
 
 const playClicked = (elapsedTime, scene, camera, spaceshipG) => {
     
