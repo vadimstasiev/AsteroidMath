@@ -5,11 +5,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
-import playClicked from './Components/Game'
+import {playClicked, asteroidTick} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
-const freeView = false
+const freeView = true
 
 /**
  * Loaders
@@ -190,6 +190,7 @@ const renderer = setupRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
 let previousRAF
 let elapsedTime = 0
+let oldElapsedTime = 0
 
 /**
  * Define callable functions
@@ -203,6 +204,8 @@ window.playClicked = () => playClicked(elapsedTime, scene, camera, spaceshipG)
 const tick = (t) =>
 {
     elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - oldElapsedTime
+    oldElapsedTime = elapsedTime
     if (previousRAF === null) {
         previousRAF = t;
     }
@@ -216,7 +219,8 @@ const tick = (t) =>
 
         spaceshipTick(elapsedTime, camera, controls, freeView)
 
-        
+        // Animate Asteroids
+        asteroidTick(deltaTime, elapsedTime)
 
         // Go through each html point
         for(const point of points)
