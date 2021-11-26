@@ -220,7 +220,7 @@ const tick = (t) =>
         spaceshipTick(elapsedTime, camera, controls, freeView)
 
         // Animate Asteroids
-        asteroidTick(deltaTime, elapsedTime)
+        asteroidTick(deltaTime, elapsedTime, scene)
 
         // Go through each html point
         for(const point of points)
