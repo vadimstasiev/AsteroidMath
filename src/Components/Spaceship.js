@@ -62,9 +62,9 @@ const setupSpaceship = (loadingManager, camera) => {
 }
 
 const calculateSpaceshipPosition = (elapsedTime, offset = 0) => {
-    const x = Math.cos(elapsedTime/spaceShipParams.spaceshipSpeed+offset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset
-    const y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY+offset)*spaceShipParams.spaceshipAmplitudeY
-    const z = Math.sin(elapsedTime/spaceShipParams.spaceshipSpeed+offset)*spaceShipParams.spaceshipRadius
+    const x = Math.cos((elapsedTime+offset)/spaceShipParams.spaceshipSpeed)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset
+    const y = Math.cos((elapsedTime+offset)/spaceShipParams.spaceshipOscilationY)*spaceShipParams.spaceshipAmplitudeY
+    const z = Math.sin((elapsedTime+offset)/spaceShipParams.spaceshipSpeed)*spaceShipParams.spaceshipRadius
     return [x,y,z]
 }
 

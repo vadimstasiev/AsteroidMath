@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import gsap from 'gsap'
-import { Vector2, Vector3 } from 'three'
+import { Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
 import { calculateSpaceshipPosition } from './Spaceship'
 
@@ -57,7 +57,7 @@ const spawnAsteroid = (elapsedTime, scene, camera) => {
             // rotate the existing around the center of the world position to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/3)
             scene.add(asteroidObj)
-            const [xP, yP, zP] = calculateSpaceshipPosition(elapsedTime)
+            const [xP, yP, zP] = calculateSpaceshipPosition(elapsedTime, 9)
             gsap.to(asteroidObj.position, { duration: 10, x: xP, y: yP, z: zP })
         }
     // }
