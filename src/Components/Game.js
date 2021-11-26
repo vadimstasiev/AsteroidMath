@@ -2,8 +2,10 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { Vector2, Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
+import { calculateSpaceshipPosition } from './Spaceship'
 
-const playClicked = (scene, camera, spaceshipG) => {
+
+const spawnAsteroid = (elapsedTime, scene, camera) => {
     const asteroidGeometry = new THREE.SphereBufferGeometry(1, 16, 16)
     const asteroidMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
 
@@ -55,12 +57,15 @@ const playClicked = (scene, camera, spaceshipG) => {
             // rotate the existing around the center of the world position to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -Math.PI/3)
             scene.add(asteroidObj)
-            
-            gsap.to(asteroidObj.position, { duration: 1, x: 5, y: 3, z: 5 })
+            const [xP, yP, zP] = calculateSpaceshipPosition(elapsedTime)
+            gsap.to(asteroidObj.position, { duration: 10, x: xP, y: yP, z: zP })
         }
     // }
-    // console.log(theta)
-    // console.log(cameraAngle)
+}
+
+const playClicked = (elapsedTime, scene, camera, spaceshipG) => {
+    
+    spawnAsteroid(elapsedTime, scene, camera)
 }
 
 export default playClicked

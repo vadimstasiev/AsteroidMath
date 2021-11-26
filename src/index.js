@@ -73,12 +73,18 @@ const sizes = {
 const vFOV = 75
 const camera = new THREE.PerspectiveCamera(vFOV, sizes.width / sizes.height, 0.1, 200000)
 
-if(freeView) {
-    camera.position.set(10, 2, - 10)
-}
-scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+
+if(freeView) {
+    camera.position.set(10, 2, - 10)
+    controls.enableZoom = true
+} else {
+    controls.enableZoom = false
+}
+
+scene.add(camera)
+
 
 
 /**
@@ -173,23 +179,30 @@ scene.add(ambientLight)
  */
 setupGalaxyScene(scene)
 
-/**
- * Define callable functions
- */
 
-window.playClicked = () => playClicked(scene, camera, spaceshipG)
 
 
 
 /**
- * Animate
+ * Vars
  */
 const renderer = setupRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
 let previousRAF
+let elapsedTime = 0
+
+/**
+ * Define callable functions
+ */
+
+window.playClicked = () => playClicked(elapsedTime, scene, camera, spaceshipG)
+
+/**
+ * Animate
+ */
 const tick = (t) =>
 {
-    const elapsedTime = clock.getElapsedTime()
+    elapsedTime = clock.getElapsedTime()
     if (previousRAF === null) {
         previousRAF = t;
     }

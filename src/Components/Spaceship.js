@@ -91,4 +91,4 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     }
 }
 
-export {setupSpaceship, spaceshipTick, spaceShipParams, cameraTrajectoryParams}
+export {setupSpaceship, spaceshipTick, spaceShipParams, cameraTrajectoryParams, calculateSpaceshipPosition}
