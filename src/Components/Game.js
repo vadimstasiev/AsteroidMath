@@ -7,7 +7,7 @@ import { spaceShipParams } from './Spaceship'
 
 const asteroidArray = []
 
-const showTrajectories = true
+const showTrajectories = false
 
 const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
     const durationUntilCollision = 10
@@ -25,7 +25,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
     const minAsteroidSize = 0.04
     // const maxAsteroidSize = 1
     // const minAsteroidSize = 0.2
-    const spawnAngle = Math.PI/3
+    const spawnAngle = Math.PI/2
     const spawnAngleRange = 0.3
     const max = 8
     const min = 6
@@ -77,7 +77,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
             scene.add(curveObject)
             let intersectionScalarOffsetMultiplier = 1
             if(!willHit){    
-                const maxScalarOffsetMultiplier = 3.5
+                const maxScalarOffsetMultiplier = 2
                 const minScalarOffsetMultiplier = 1.7
                 intersectionScalarOffsetMultiplier = (Math.random()<0.5?1:-1)*(Math.random()*(maxScalarOffsetMultiplier-minScalarOffsetMultiplier)+minScalarOffsetMultiplier)
                 console.log(intersectionScalarOffsetMultiplier)
@@ -123,7 +123,7 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
                 new THREE.QuadraticBezierCurve3(
                 // new THREE.LineCurve3(
                     spawnPointVec3,
-                    intersectionScalarOffsetMultiplier===1?targetPointVec3:parallelVec3,
+                    intersectionScalarOffsetMultiplier===1?intersectionPointVec3:parallelVec3,
                     targetPointVec3,
                 )
             )
@@ -147,6 +147,8 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
 const playClicked = (elapsedTime, scene, camera) => {
     const willHit = true
     spawnAsteroid(elapsedTime, scene, camera, willHit)
+    spawnAsteroid(elapsedTime, scene, camera)
+    spawnAsteroid(elapsedTime, scene, camera)
     spawnAsteroid(elapsedTime, scene, camera)
     spawnAsteroid(elapsedTime, scene, camera)
 }

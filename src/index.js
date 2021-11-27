@@ -9,7 +9,7 @@ import {playClicked, asteroidTick} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
-const freeView = true
+const freeView = false
 
 /**
  * Loaders

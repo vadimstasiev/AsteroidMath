@@ -17,7 +17,7 @@ const spaceShipParams = {
 
 const cameraTrajectoryParams = {
     // Default Camera Orbit Parameters:
-    cameraToSpaceshipOffset: 0.1,
+    cameraToSpaceshipOffset: 0.4,
     cameraRadiusMultiplier: 0.7,
     cameraAmplitudeOffset: 1.2,
 }
