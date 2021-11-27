@@ -5,9 +5,11 @@ import { rotateAboutPoint } from './Helpers'
 import { spaceShipParams } from './Spaceship'
 
 
-const asteroidObjArray = []
+const asteroidArray = []
 
-const spawnAsteroid = (elapsedTime, scene, camera, offsetFromTarget = 0) => {
+const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
+    const durationUntilCollision = 10
+
     const asteroidGeometry = new THREE.SphereBufferGeometry(1, 16, 16)
     const asteroidMaterial = new THREE.MeshStandardMaterial({ color: '#89c854' })
 
@@ -23,7 +25,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, offsetFromTarget = 0) => {
     // const minAsteroidSize = 0.2
     const spawnAngle = Math.PI/3
     const spawnAngleRange = 0.3
-    const max = 10
+    const max = 8
     const min = 6
     const amplitudeY = 4
     let x,y,z, theta
@@ -66,37 +68,60 @@ const spawnAsteroid = (elapsedTime, scene, camera, offsetFromTarget = 0) => {
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidObj)
 
-            const duration = 20
-
+            const duration = durationUntilCollision/2
             const geometry = new THREE.BufferGeometry()
             const material = new THREE.LineBasicMaterial( { color : 0xff0000 } )
             const curveObject = new THREE.Line( geometry, material )
             scene.add(curveObject)
-
-            asteroidObjArray.push({asteroid: asteroidObj, spawnPointVec3: asteroidObj.position.clone(), curveObject ,offsetFromTarget, deathTime: elapsedTime+duration, duration})
+            let intersectionScalarOffsetMultiplier = 1
+            if(!willHit){    
+                const maxScalarOffsetMultiplier = 3.5
+                const minScalarOffsetMultiplier = 1.7
+                intersectionScalarOffsetMultiplier = (Math.random()<0.5?1:-1)*(Math.random()*(maxScalarOffsetMultiplier-minScalarOffsetMultiplier)+minScalarOffsetMultiplier)
+                console.log(intersectionScalarOffsetMultiplier)
+            } 
+            const spawnPointVec3 = asteroidObj.position.clone()
+            asteroidArray.push({
+                asteroid: asteroidObj, 
+                spawnPointVec3,
+                curveObject ,
+                deathTime: elapsedTime+duration,
+                duration, 
+                intersectionScalarOffsetMultiplier
+            })
         }
     // }
 }
 
 const asteroidTick = (deltaTime, elapsedTime, scene) => {
-    for (let i in asteroidObjArray ) {
+    for (let i in asteroidArray ) {
         const {
             asteroid, 
             spawnPointVec3, 
             curveObject, 
-            offsetFromTarget, 
             deathTime, 
-            duration
-        } = asteroidObjArray[i]
+            duration,
+            intersectionScalarOffsetMultiplier
+        } = asteroidArray[i]
         if(elapsedTime<deathTime){
             const intersectionPointVec3 = new Vector3(...spaceShipParams.latestSpaceshipPosition)
-            const targetPointVec3 = intersectionPointVec3.clone().sub(spawnPointVec3).multiplyScalar(2).add(spawnPointVec3)
-
+            // calculate vector of the position twice the distance away from intersectionPointVec3 to spawnPointVec3 
+            const targetPointVec3 = intersectionPointVec3.clone()
+                .sub(spawnPointVec3)
+                .multiplyScalar(2)
+                .add(spawnPointVec3)
+            
+            // intersectionPointVec3
+            const up = new Vector3(0, 10, 0)
+            // up must be bigger
+            const parallelVec3 = new Vector3(intersectionPointVec3.y, intersectionPointVec3.x).add(up).normalize().multiplyScalar(intersectionScalarOffsetMultiplier).add(intersectionPointVec3)
             var curve = new THREE.CurvePath()
+            console.log(intersectionPointVec3.y)
             curve.add(
                 new THREE.QuadraticBezierCurve3(
+                // new THREE.LineCurve3(
                     spawnPointVec3,
-                    intersectionPointVec3,
+                    intersectionScalarOffsetMultiplier===1?targetPointVec3:parallelVec3,
                     targetPointVec3,
                 )
             )
@@ -104,21 +129,22 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
             const points = curve.getPoints( 50 );
             curveObject.geometry.setFromPoints(points)
             
-            console.log((duration - deathTime + elapsedTime)/duration)
-
             let trajectoryProgress = (duration - deathTime + elapsedTime)/duration
-            const newPosition = curve.getPoint(trajectoryProgress) // 0 to 1 check notebook
+            const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
         } else {
             scene.remove(asteroid)
-            scene.remove(curveObject)
-            asteroidObjArray.splice(i, 1)
+            // scene.remove(curveObject)
+            asteroidArray.splice(i, 1)
         }
     }
 }
 
 
 const playClicked = (elapsedTime, scene, camera) => {
+    const willHit = true
+    spawnAsteroid(elapsedTime, scene, camera, willHit)
+    spawnAsteroid(elapsedTime, scene, camera)
     spawnAsteroid(elapsedTime, scene, camera)
 }
 

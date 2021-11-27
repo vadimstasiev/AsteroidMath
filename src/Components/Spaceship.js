@@ -11,12 +11,13 @@ const spaceShipParams = {
     spaceshipAmplitudeY: 1.3,
     spaceshipOscilationY: 6,
     dummyPointOffset: 0.1,
-    latestSpaceshipPosition: [0,0,0]
+    latestSpaceshipPosition: [0,0,0],
+    latestSpaceshipDummyPosition: [0,0,0]
 }
 
 const cameraTrajectoryParams = {
     // Default Camera Orbit Parameters:
-    cameraToSpaceshipOffset: 0.3,
+    cameraToSpaceshipOffset: 0.1,
     cameraRadiusMultiplier: 0.7,
     cameraAmplitudeOffset: 1.2,
 }
@@ -83,7 +84,8 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
     spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
     // Set Spaceship Rotation by making it look at a point that is "+ dummyPointOffset" ahead
-    const dummyPoint = new THREE.Vector3(...calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset))
+    spaceShipParams.latestSpaceshipDummyPosition = calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset)
+    const dummyPoint = new THREE.Vector3(...spaceShipParams.latestSpaceshipDummyPosition)
     spaceshipG.lookAt(dummyPoint)
 
     // check if the freeView is enabled before forcing updates to the camera position, useful for dev
