@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
-import { calculateSpaceshipPosition } from './Spaceship'
+import { spaceShipParams } from './Spaceship'
 
 
 const asteroidObjArray = []
@@ -17,10 +17,10 @@ const spawnAsteroid = (elapsedTime, scene, camera, offsetFromTarget = 0) => {
 
     const center = new Vector3(0, 0, 0)
 
-    // const maxAsteroidSize = 0.1
-    // const minAsteroidSize = 0.04
-    const maxAsteroidSize = 1
-    const minAsteroidSize = 0.2
+    const maxAsteroidSize = 0.1
+    const minAsteroidSize = 0.04
+    // const maxAsteroidSize = 1
+    // const minAsteroidSize = 0.2
     const spawnAngle = Math.PI/3
     const spawnAngleRange = 0.3
     const max = 10
@@ -111,12 +111,13 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
             duration
         } = asteroidObjArray[i]
         if(elapsedTime<deathTime){
-            const intersectionPointVec3 = new Vector3(...calculateSpaceshipPosition(elapsedTime))
-            const targetPointVec3 = intersectionPointVec3.clone().sub(spawnPointVec3).multiplyScalar(1.3)
+            const intersectionPointVec3 = new Vector3(...spaceShipParams.latestSpaceshipPosition)
+            const targetPointVec3 = intersectionPointVec3.clone().sub(spawnPointVec3).multiplyScalar(2).add(spawnPointVec3)
 
             var curve = new THREE.CurvePath()
             curve.add(
                 new THREE.QuadraticBezierCurve3(
+                // new THREE.LineCurve3(
                     spawnPointVec3,
                     intersectionPointVec3,
                     targetPointVec3,
@@ -135,6 +136,7 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
         } else {
             scene.remove(asteroid)
             scene.remove(curveObject)
+            asteroidObjArray.splice(i, 1)
         }
 
 

@@ -11,6 +11,7 @@ const spaceShipParams = {
     spaceshipAmplitudeY: 1.3,
     spaceshipOscilationY: 6,
     dummyPointOffset: 0.1,
+    latestSpaceshipPosition: [0,0,0]
 }
 
 const cameraTrajectoryParams = {
@@ -79,7 +80,8 @@ const calculateCameraPosition = (elapsedTime) => {
 
 const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     // Set Spaceship Position
-    spaceshipG.position.set(...calculateSpaceshipPosition(elapsedTime))
+    spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
+    spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
     // Set Spaceship Rotation by making it look at a point that is "+ dummyPointOffset" ahead
     const dummyPoint = new THREE.Vector3(...calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset))
     spaceshipG.lookAt(dummyPoint)
