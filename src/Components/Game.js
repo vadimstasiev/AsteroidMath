@@ -7,6 +7,8 @@ import { spaceShipParams } from './Spaceship'
 
 const asteroidArray = []
 
+const showTrajectories = true
+
 const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
     const durationUntilCollision = 10
 
@@ -125,16 +127,17 @@ const asteroidTick = (deltaTime, elapsedTime, scene) => {
                     targetPointVec3,
                 )
             )
-                    
-            const points = curve.getPoints( 50 );
-            curveObject.geometry.setFromPoints(points)
+            if(showTrajectories){
+                const points = curve.getPoints( 50 );
+                curveObject.geometry.setFromPoints(points)
+            }
             
             let trajectoryProgress = (duration - deathTime + elapsedTime)/duration
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
         } else {
             scene.remove(asteroid)
-            // scene.remove(curveObject)
+            scene.remove(curveObject)
             asteroidArray.splice(i, 1)
         }
     }
