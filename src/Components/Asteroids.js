@@ -121,7 +121,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
             })
             // Add Overlay
             if(hasOverlay){
-                
+                spawnOverlay(scene, asteroidObj)
             }
         }
     }

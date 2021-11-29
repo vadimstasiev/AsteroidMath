@@ -24,7 +24,7 @@ const spawnOverlay = (scene, asteroidObj) => {
 
     const pointHTML =
         `<div class="point ${pointClassName}">\n` +
-            '<div class="label">1</div>\n' +
+            `<div class="label">${points.length}</div>\n` +
         '</div>\n'
 
     document.getElementById('points-container').insertAdjacentHTML("beforeend", pointHTML)
