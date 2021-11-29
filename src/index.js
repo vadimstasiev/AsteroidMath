@@ -6,15 +6,54 @@ import { gsap } from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import { setupAsteroids, asteroidTick } from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
+import {setupPointsOverlay, overlayTick} from './Components/Overlay'
 import {playClicked} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
-const freeView = false
+const freeView = true
+
+
+/**
+ * Base
+ */
+// Debug
+const debugObject = {}
+
+// Canvas
+const canvas = document.querySelector('canvas.webgl')
+
+// Scene
+const scene = new THREE.Scene()
+
 
 /**
  * Loaders
  */
+const fadeGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
+const fadeMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms:
+    {
+        uAlpha: { value: 1 }
+    },
+    vertexShader: `
+        void main()
+        {
+            gl_Position = vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        uniform float uAlpha;
+
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+        }
+    `
+})
+const fade = new THREE.Mesh(fadeGeometry, fadeMaterial)
+scene.add(fade)
 const loadingBarElement = document.querySelector('.loading-bar')
 let isSceneReady = false
 const loadingManager = new THREE.LoadingManager(
@@ -24,8 +63,8 @@ const loadingManager = new THREE.LoadingManager(
         // Wait a little
         window.setTimeout(() =>
         {
-            // Animate overlay
-            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
+            // smooth fade 
+            gsap.to(fadeMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
 
             // Update loadingBarElement
             loadingBarElement.classList.add('ended')
@@ -48,17 +87,6 @@ const loadingManager = new THREE.LoadingManager(
 )
 
 
-/**
- * Base
- */
-// Debug
-const debugObject = {}
-
-// Canvas
-const canvas = document.querySelector('canvas.webgl')
-
-// Scene
-const scene = new THREE.Scene()
 
 /**
  * Sizes
@@ -89,54 +117,6 @@ scene.add(camera)
 
 
 /**
- * Overlay (html overlay)
- */
-const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
-const overlayMaterial = new THREE.ShaderMaterial({
-    // wireframe: true,
-    transparent: true,
-    uniforms:
-    {
-        uAlpha: { value: 1 }
-    },
-    vertexShader: `
-        void main()
-        {
-            gl_Position = vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        uniform float uAlpha;
-
-        void main()
-        {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
-        }
-    `
-})
-
- const raycaster = new THREE.Raycaster()
- const points = [
-     {
-         position: new THREE.Vector3(10, 10, 2),
-         element: document.querySelector('.point-0')
-     },
-     {
-         position: new THREE.Vector3(0.5, 0.8, - 1.6),
-         element: document.querySelector('.point-1')
-     },
-     {
-         position: new THREE.Vector3(1.6, - 1.3, - 0.7),
-         element: document.querySelector('.point-2')
-     }
- ]
-
-const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
-scene.add(overlay)
-
-
-
-/**
  * Environment map
  */
 const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
@@ -153,13 +133,13 @@ scene.environment = environmentMap
 debugObject.envMapIntensity = 5
 
 /**
- * Models
+ * Setup
  */
 
-const {spaceshipG, propulsionParticles} = setupSpaceship(loadingManager, camera)
-scene.add(spaceshipG)
-
+const {propulsionParticles} = setupSpaceship(loadingManager, camera, scene)
 setupAsteroids(loadingManager)
+setupGalaxyScene(scene)
+setupPointsOverlay(scene)
 
 /**
  * Lights
@@ -174,11 +154,6 @@ scene.add(directionalLight2)
 
 const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
 scene.add(ambientLight)
-
-/**
- * Galaxies
- */
-setupGalaxyScene(scene)
 
 
 
@@ -222,17 +197,9 @@ const tick = (t) =>
         // Animate Asteroids
         asteroidTick(elapsedTime, scene)
 
-        // Go through each html point
-        for(const point of points)
-        {
-            // Get 2D screen position
-            const screenPosition = point.position.clone()
-            screenPosition.project(camera)
-            point.element.classList.add('visible')
-            const translateX = screenPosition.x * sizes.width * 0.5
-            const translateY = - screenPosition.y * sizes.height * 0.5
-            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
-        }
+        // Update Overlay
+        overlayTick(camera, sizes)
+
         // Update orbit controls
         controls.update()
 

@@ -1,10 +1,11 @@
 # Three.js Journey
 
 ## Setup
-Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
 
-``` bash
+Download [Node.js](https://nodejs.org/en/download/).
+Run the following commands:
+
+```bash
 # Install dependencies (only the first time)
 npm i
 

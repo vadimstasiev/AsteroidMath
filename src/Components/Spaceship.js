@@ -24,7 +24,7 @@ const cameraTrajectoryParams = {
 
 
 
-const setupSpaceship = (loadingManager, camera) => {
+const setupSpaceship = (loadingManager, camera, scene) => {
     const gltfLoader = new GLTFLoader(loadingManager)
     gltfLoader.load(
         '/models/Spaceship/Spaceship.gltf',
@@ -59,8 +59,8 @@ const setupSpaceship = (loadingManager, camera) => {
 
 
     spaceshipG.position.set(8,0,0)
-
-    return {spaceshipG, propulsionParticles}
+    scene.add(spaceshipG)
+    return {propulsionParticles}
 }
 
 const calculateSpaceshipPosition = (elapsedTime, offset = 0) => {
@@ -72,7 +72,7 @@ const calculateSpaceshipPosition = (elapsedTime, offset = 0) => {
 
 // Animate Camera position to follow a similar trajectory as the spaceship
 const calculateCameraPosition = (elapsedTime) => {
-    // cameraTrajectoryParams.cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
+    cameraTrajectoryParams.cameraToSpaceshipOffset = Math.abs(Math.sin(elapsedTime/10))
     const x = Math.cos((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*spaceShipParams.spaceshipEllipticOffset*cameraTrajectoryParams.cameraRadiusMultiplier
     const y = Math.cos(elapsedTime/spaceShipParams.spaceshipOscilationY+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipAmplitudeY*cameraTrajectoryParams.cameraAmplitudeOffset
     const z = Math.sin((elapsedTime/spaceShipParams.spaceshipSpeed)+cameraTrajectoryParams.cameraToSpaceshipOffset)*spaceShipParams.spaceshipRadius*cameraTrajectoryParams.cameraRadiusMultiplier

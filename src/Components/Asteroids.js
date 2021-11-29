@@ -4,10 +4,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
 import { spaceShipParams } from './Spaceship'
+import { spawnOverlay } from './Overlay'
 
 const showTrajectories = false
 
-const asteroidArray = []
+let asteroidArray = []
 let asteroidsScene = null
 
 const setupAsteroids = (loadingManager) => {
@@ -21,20 +22,24 @@ const setupAsteroids = (loadingManager) => {
     )
 }
 
-const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
+const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
+    const {
+        willHit,
+        hasOverlay,
+        timeBeforeIntersection,
+    } = params
     if(asteroidsScene){
-        const durationUntilCollision = 2
         const frustum = new THREE.Frustum()
         frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse))
-
+        
         const center = new Vector3(0, 0, 0)
-
+        
         const maxAsteroidSize = 0.2
         const minAsteroidSize = 0.05
         const spawnAngle = Math.PI/2
         const spawnAngleRange = 0.5
-        const max = 8
-        const min = 6
+        const maxRadius = 8
+        const minRadius = 6
         const amplitudeY = 4
         let x,y,z, theta
         const vec3 = new Vector3()
@@ -48,15 +53,15 @@ const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
         
 
         let count = 0
-        // max tries to find a random position that fits the requirements bellow
-        let countMax = 200 
+        // maxTries = maxRadius tries to find a random position that fits the requirements bellow
+        let maxTries = 200 
         const cameraDirection = new Vector3()
 
         do {
-            const random = Math.random() *max 
-            x = Math.sin(random) *max - ((Math.random()-0.5)*min)
+            const random = Math.random() *maxRadius 
+            x = Math.sin(random) *maxRadius - ((Math.random()-0.5)*minRadius)
             y = (Math.random()-0.5)* amplitudeY
-            z = Math.cos(random) *max - ((Math.random()-0.5)*min)
+            z = Math.cos(random) *maxRadius - ((Math.random()-0.5)*minRadius)
             vec3.set(x,y,z)
 
             camera.getWorldDirection(cameraDirection)
@@ -66,19 +71,19 @@ const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
             theta = Math.atan2(diff.x, diff.z) - cameraAngle
 
             count++
-            // Check if position is inside the spawnAngleRange and if the position is outside of the view of the camera
-        } while(!( -spawnAngleRange < theta && theta < spawnAngleRange && frustum.containsPoint(vec3)) && count < countMax )
-        if(count!==countMax){
+            // Requirements: Check if position is inside the spawnAngleRange and if the position is outside of the view of the camera
+        } while(!( -spawnAngleRange < theta && theta < spawnAngleRange && frustum.containsPoint(vec3)) && count < maxTries )
+        if(count!==maxTries){
             asteroidObj.position.set(x, y, z)
             const axisOfRotation = new Vector3(0, 1, 0)
-            // rotate the calculated asteroid position around the center of the world position to the right of the camera
+            // rotate the calculated asteroid position around the Y axis from the center of the world position and to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidObj)
 
             // how many times longer the asteroid target destination is set to be
             const targetScallarMultiplier = 6
             // total duration of the asteroid course
-            const duration = durationUntilCollision*targetScallarMultiplier
+            const duration = timeBeforeIntersection*targetScallarMultiplier
             const trajectoryGeometry = new THREE.BufferGeometry()
             const trajectoryMaterial = new THREE.LineBasicMaterial( { color : 0xff0000 } )
             const trajectoryObj = new THREE.Line( trajectoryGeometry, trajectoryMaterial )
@@ -114,6 +119,10 @@ const spawnAsteroid = (elapsedTime, scene, camera, willHit = false) => {
                 y: "random(-20.0,20.0)",
                 z: "random(-20.0,20.0)",
             })
+            // Add Overlay
+            if(hasOverlay){
+                
+            }
         }
     }
 }
