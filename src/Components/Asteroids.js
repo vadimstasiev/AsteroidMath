@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
 import { spaceShipParams } from './Spaceship'
-import { spawnOverlay } from './Overlay'
+import { spawnOverlay, removeOverlay } from './Overlay'
 
 const showTrajectories = false
 
@@ -111,7 +111,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
                 deathTime: elapsedTime+duration,
                 duration, 
                 targetScallarMultiplier,
-                intersectionScalarOffsetMultiplier
+                intersectionScalarOffsetMultiplier,
+                hasOverlay
             })
             gsap.to(asteroidObj.rotation,  {
                 duration: duration,
@@ -121,7 +122,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
             })
             // Add Overlay
             if(hasOverlay){
-                spawnOverlay(scene, asteroidObj)
+                spawnOverlay(asteroidObj)
             }
         }
     }
@@ -137,7 +138,8 @@ const asteroidTick = (elapsedTime, scene) => {
             deathTime, 
             duration,
             targetScallarMultiplier,
-            intersectionScalarOffsetMultiplier
+            intersectionScalarOffsetMultiplier,
+            hasOverlay
         } = asteroidArray[i]
         if(elapsedTime<deathTime){
             const trajectoryProgress = (duration - deathTime + elapsedTime)/duration
@@ -174,6 +176,9 @@ const asteroidTick = (elapsedTime, scene) => {
             asteroid.position.copy(newPosition)
         } else {
             scene.remove(asteroid)
+            if(hasOverlay){
+                removeOverlay(asteroid)
+            }
             scene.remove(trajectoryObj)
             asteroidArray.splice(i, 1)
         }

@@ -74,6 +74,11 @@ const loadingManager = new THREE.LoadingManager(
         window.setTimeout(() =>
         {
             isSceneReady = true
+            /**
+             * Define callable functions once scene is ready
+             */
+
+            window.playClicked = () => playClicked(elapsedTime, scene, camera)
         }, 2000)
     },
 
@@ -166,12 +171,6 @@ const clock = new THREE.Clock()
 let previousRAF
 let elapsedTime = 0
 let oldElapsedTime = 0
-
-/**
- * Define callable functions
- */
-
-window.playClicked = () => playClicked(elapsedTime, scene, camera)
 
 /**
  * Animate

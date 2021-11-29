@@ -18,7 +18,7 @@ const setupPointsOverlay = (scene) => {
 }
 
 
-const spawnOverlay = (scene, asteroidObj) => {
+const spawnOverlay = (asteroidObj) => {
     const pointClassName = "point-" + points.length 
 
 
@@ -30,18 +30,28 @@ const spawnOverlay = (scene, asteroidObj) => {
     document.getElementById('points-container').insertAdjacentHTML("beforeend", pointHTML)
 
     points.push({
-        position: asteroidObj.position,
+        asteroid: asteroidObj,
         element: document.querySelector(`.${pointClassName}`)
     })
 
 }
 
+const removeOverlay = (asteroidObj) => {
+    for(const i in points) {
+        const {asteroid, element} = points[i]
+        if(asteroid===asteroidObj){
+            points.splice(i, 1)
+            element.remove()
+        }
+    }
+    console.log(points)
+}
+
 const overlayTick = (camera, sizes) => {
     // Go through each html point
-    for(const point of points)
-    {
+    for(const point of points) {
         // Get 2D screen position
-        const screenPosition = point.position.clone()
+        const screenPosition = point.asteroid.position.clone()
         screenPosition.project(camera)
         point.element.classList.add('visible')
         const translateX = screenPosition.x * sizes.width * 0.5
@@ -50,4 +60,4 @@ const overlayTick = (camera, sizes) => {
     }
 }
 
-export {setupPointsOverlay, spawnOverlay, overlayTick}
+export {setupPointsOverlay, spawnOverlay, removeOverlay, overlayTick}
