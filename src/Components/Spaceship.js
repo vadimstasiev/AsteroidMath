@@ -27,7 +27,7 @@ const cameraTrajectoryParams = {
 const setupSpaceship = (loadingManager, camera) => {
     const gltfLoader = new GLTFLoader(loadingManager)
     gltfLoader.load(
-        '/models/Spaceship/glTF/Spaceship.gltf',
+        '/models/Spaceship/Spaceship.gltf',
         (gltf) =>
         {
             const model = gltf.scene.children[0]

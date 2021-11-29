@@ -4,8 +4,9 @@ import setupRenderer from './Components/Renderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
+import { setupAsteroids, asteroidTick } from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
-import {playClicked, asteroidTick} from './Components/Game'
+import {playClicked} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
@@ -158,7 +159,7 @@ debugObject.envMapIntensity = 5
 const {spaceshipG, propulsionParticles} = setupSpaceship(loadingManager, camera)
 scene.add(spaceshipG)
 
-
+setupAsteroids(loadingManager)
 
 /**
  * Lights
@@ -182,7 +183,6 @@ setupGalaxyScene(scene)
 
 
 
-
 /**
  * Vars
  */
@@ -196,7 +196,7 @@ let oldElapsedTime = 0
  * Define callable functions
  */
 
-window.playClicked = () => playClicked(elapsedTime, scene, camera, spaceshipG)
+window.playClicked = () => playClicked(elapsedTime, scene, camera)
 
 /**
  * Animate
