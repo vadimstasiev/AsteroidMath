@@ -8,6 +8,17 @@ body {
   overflow: hidden;
 }
 
+.navbar-custom {
+  background-color: #313335;
+}
+
+.button-login {
+  background-color: #1d1f20;
+  padding-left: 20px;
+  text-decoration: none !important;
+  color: #ffffff
+}
+
 .webgl {
   /* position: fixed; */
   top: 0;

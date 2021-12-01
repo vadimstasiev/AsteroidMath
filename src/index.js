@@ -1,10 +1,10 @@
 import './style.css'
 import * as THREE from 'three'
 import setupRenderer from './Components/Renderer'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { gsap } from 'gsap'
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
+import {gsap} from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
-import { setupAsteroids, asteroidTick } from './Components/Asteroids'
+import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, overlayTick} from './Components/Overlay'
 import {playClicked} from './Components/Game'
@@ -32,18 +32,18 @@ const scene = new THREE.Scene()
  */
 const fadeGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
 const fadeMaterial = new THREE.ShaderMaterial({
-    transparent: true,
-    uniforms:
-    {
-        uAlpha: { value: 1 }
-    },
-    vertexShader: `
+	transparent: true,
+	uniforms:
+		{
+			uAlpha: {value: 1}
+		},
+	vertexShader: `
         void main()
         {
             gl_Position = vec4(position, 1.0);
         }
     `,
-    fragmentShader: `
+	fragmentShader: `
         uniform float uAlpha;
 
         void main()
@@ -57,48 +57,43 @@ scene.add(fade)
 const loadingBarElement = document.querySelector('.loading-bar')
 let isSceneReady = false
 const loadingManager = new THREE.LoadingManager(
-    // Loaded
-    () =>
-    {
-        // Wait a little
-        window.setTimeout(() =>
-        {
-            // smooth fade 
-            gsap.to(fadeMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
+	// Loaded
+	() => {
+		// Wait a little
+		window.setTimeout(() => {
+			// smooth fade
+			gsap.to(fadeMaterial.uniforms.uAlpha, {duration: 3, value: 0, delay: 1})
 
-            // Update loadingBarElement
-            loadingBarElement.classList.add('ended')
-            loadingBarElement.style.transform = ''
-        }, 500)
+			// Update loadingBarElement
+			loadingBarElement.classList.add('ended')
+			loadingBarElement.style.transform = ''
+		}, 500)
 
-        window.setTimeout(() =>
-        {
-            isSceneReady = true
-            /**
-             * Define callable functions once scene is ready
-             */
+		window.setTimeout(() => {
+			isSceneReady = true
+			/**
+			 * Define callable functions once scene is ready
+			 */
 
-            window.playClicked = () => playClicked(elapsedTime, scene, camera)
-        }, 2000)
-    },
+			window.playClicked = () => playClicked(elapsedTime, scene, camera)
+		}, 2000)
+	},
 
-    // Progress
-    (itemUrl, itemsLoaded, itemsTotal) =>
-    {
-        // Calculate the progress and update the loadingBarElement
-        const progressRatio = itemsLoaded / itemsTotal
-        loadingBarElement.style.transform = `scaleX(${progressRatio})`
-    }
+	// Progress
+	(itemUrl, itemsLoaded, itemsTotal) => {
+		// Calculate the progress and update the loadingBarElement
+		const progressRatio = itemsLoaded / itemsTotal
+		loadingBarElement.style.transform = `scaleX(${progressRatio})`
+	}
 )
-
 
 
 /**
  * Sizes
  */
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+	width: window.innerWidth,
+	height: window.innerHeight
 }
 
 /**
@@ -110,15 +105,14 @@ const camera = new THREE.PerspectiveCamera(vFOV, sizes.width / sizes.height, 0.1
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
-if(freeView) {
-    camera.position.set(10, 2, - 10)
-    controls.enableZoom = true
+if (freeView) {
+	camera.position.set(10, 2, -10)
+	controls.enableZoom = true
 } else {
-    controls.enableZoom = false
+	controls.enableZoom = false
 }
 
 scene.add(camera)
-
 
 
 /**
@@ -126,12 +120,12 @@ scene.add(camera)
  */
 const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
 const environmentMap = cubeTextureLoader.load([
-    '/textures/environmentMaps/stars/px.jpg',
-    '/textures/environmentMaps/stars/nx.jpg',
-    '/textures/environmentMaps/stars/py.jpg',
-    '/textures/environmentMaps/stars/ny.jpg',
-    '/textures/environmentMaps/stars/pz.jpg',
-    '/textures/environmentMaps/stars/nz.jpg'
+	'/textures/environmentMaps/stars/px.jpg',
+	'/textures/environmentMaps/stars/nx.jpg',
+	'/textures/environmentMaps/stars/py.jpg',
+	'/textures/environmentMaps/stars/ny.jpg',
+	'/textures/environmentMaps/stars/pz.jpg',
+	'/textures/environmentMaps/stars/nz.jpg'
 ])
 environmentMap.encoding = THREE.sRGBEncoding
 scene.environment = environmentMap
@@ -161,8 +155,6 @@ const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.3)
 scene.add(ambientLight)
 
 
-
-
 /**
  * Vars
  */
@@ -175,39 +167,37 @@ let oldElapsedTime = 0
 /**
  * Animate
  */
-const tick = (t) =>
-{
-    elapsedTime = clock.getElapsedTime()
-    const deltaTime = elapsedTime - oldElapsedTime
-    oldElapsedTime = elapsedTime
-    if (previousRAF === null) {
-        previousRAF = t;
-    }
-    propulsionParticles.Step(t-previousRAF)
-    if(isSceneReady)
-    {        
-        // Animate Galaxies
-        galaxiesTick(elapsedTime)
+const tick = (t) => {
+	elapsedTime = clock.getElapsedTime()
+	const deltaTime = elapsedTime - oldElapsedTime
+	oldElapsedTime = elapsedTime
+	if (previousRAF === null) {
+		previousRAF = t;
+	}
+	propulsionParticles.Step(t - previousRAF)
+	if (isSceneReady) {
+		// Animate Galaxies
+		galaxiesTick(elapsedTime)
 
-        // Animate Spaceship trajectory
+		// Animate Spaceship trajectory
 
-        spaceshipTick(elapsedTime, camera, controls, freeView)
+		spaceshipTick(elapsedTime, camera, controls, freeView)
 
-        // Animate Asteroids
-        asteroidTick(elapsedTime, scene)
+		// Animate Asteroids
+		asteroidTick(elapsedTime, scene)
 
-        // Update Overlay
-        overlayTick(camera, sizes)
+		// Update Overlay
+		overlayTick(camera, sizes)
 
-        // Update orbit controls
-        controls.update()
+		// Update orbit controls
+		controls.update()
 
-        // Render
-        renderer.render(scene, camera)
-        previousRAF = t
-    }
-    // Call tick again on the next frame
-    window.requestAnimationFrame(t => tick(t))
+		// Render
+		renderer.render(scene, camera)
+		previousRAF = t
+	}
+	// Call tick again on the next frame
+	window.requestAnimationFrame(t => tick(t))
 }
 
 tick()
