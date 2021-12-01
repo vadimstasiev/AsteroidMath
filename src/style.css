@@ -72,7 +72,7 @@ body {
   transition: transform 0.3s;
 }
 
-.point .text {
+.overlay-text {
   position: absolute;
   top: 30px;
   left: -120px;
@@ -86,13 +86,8 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 100;
   font-size: 14px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  /* transition: opacity 0.3s; */
   pointer-events: none;
-}
-
-.point:hover .text {
-  opacity: 1;
 }
 
 .point.visible .label {

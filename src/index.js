@@ -8,6 +8,7 @@ import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
 import {setupGame, playClicked, playTick} from './Components/Game'
+import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
 
 
 // If freeView is enabled then the camera can be panned around manually
@@ -74,7 +75,7 @@ const loadingManager = new THREE.LoadingManager(
 			/**
 			 * Define callable functions once scene is ready
 			 */
-
+			initializeDynamicSceneElements()
 			window.playClicked = () => playClicked(getElapsedTime, scene, camera)
 		}, 2000)
 	},
@@ -132,13 +133,14 @@ scene.environment = environmentMap
 debugObject.envMapIntensity = 5
 
 /**
- * Setup
+ * Setup Multiple Components
  */
 
-const {propulsionParticles} = setupSpaceship(loadingManager, camera, scene)
+setupSpaceship(loadingManager, camera, scene)
 setupAsteroids(loadingManager)
 setupGalaxyScene(scene)
 setupPointsOverlay(scene)
+setupSpaceshipOverlay(scene)
 
 /**
  * Lights
@@ -156,44 +158,40 @@ scene.add(ambientLight)
 
 
 /**
- * Vars
+ * Tick Vars
  */
 const renderer = setupRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
-let previousRAF
 let elapsedTime = 0
-let oldElapsedTime = 0
 
 const getElapsedTime = () => {
 	return elapsedTime
 }
 
-setupGame(getElapsedTime, scene, camera)
+const initializeDynamicSceneElements = () => {
+	setupGame(getElapsedTime, scene, camera)
+}
 
 /**
  * Animate
  */
-const tick = (t) => {
-	elapsedTime = clock.getElapsedTime()
-	const deltaTime = elapsedTime - oldElapsedTime
-	oldElapsedTime = elapsedTime
-	if (previousRAF === null) {
-		previousRAF = t;
-	}
-	propulsionParticles.Step(t - previousRAF)
+const tick = (t=0) => {
+	elapsedTime = clock.getElapsedTime()		
 	if (isSceneReady) {
 		// Animate Galaxies
 		galaxiesTick(elapsedTime)
 
 		// Animate Spaceship trajectory
-
-		spaceshipTick(elapsedTime, camera, controls, freeView)
+		spaceshipTick(t, elapsedTime, camera, controls, freeView)
 
 		// Animate Asteroids
 		asteroidTick(elapsedTime, scene)
 
-		// Update Overlay
+		// Update Points Overlay
 		pointOverlayTick(camera, sizes)
+
+		// Update Points Overlay
+		spaceshipOverlayTick(elapsedTime, camera, sizes)
 
 		// Update Game
 		playTick(elapsedTime, scene, camera)
@@ -203,10 +201,10 @@ const tick = (t) => {
 
 		// Render
 		renderer.render(scene, camera)
-		previousRAF = t
+		
 	}
 	// Call tick again on the next frame
 	window.requestAnimationFrame(t => tick(t))
 }
-
 tick()
+

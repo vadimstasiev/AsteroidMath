@@ -108,7 +108,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
                 spawnPointVec3,
                 intersectionPointVec3: new Vector3(),
                 trajectoryObj,
-                deathTime: elapsedTime+duration,
+                timeout: elapsedTime+duration,
                 duration, 
                 targetScallarMultiplier,
                 intersectionScalarOffsetMultiplier,
@@ -135,14 +135,14 @@ const asteroidTick = (elapsedTime, scene) => {
             spawnPointVec3, 
             trajectoryObj, 
             intersectionPointVec3,
-            deathTime, 
+            timeout, 
             duration,
             targetScallarMultiplier,
             intersectionScalarOffsetMultiplier,
             hasOverlay
         } = asteroidArray[i]
-        if(elapsedTime<deathTime){
-            const trajectoryProgress = (duration - deathTime + elapsedTime)/duration
+        if(elapsedTime<timeout){
+            const trajectoryProgress = (duration - timeout + elapsedTime)/duration
             // only update intersectionPointVec3 until it has reached spaceship position
             if(trajectoryProgress < (1/targetScallarMultiplier)){
                 intersectionPointVec3.set(...spaceShipParams.latestSpaceshipPosition)

@@ -22,7 +22,7 @@ const cameraTrajectoryParams = {
     cameraAmplitudeOffset: 1.2,
 }
 
-
+let propulsionParticles;
 
 const setupSpaceship = (loadingManager, camera, scene) => {
     const gltfLoader = new GLTFLoader(loadingManager)
@@ -41,7 +41,7 @@ const setupSpaceship = (loadingManager, camera, scene) => {
      */
     const propulsionParticlesG = new THREE.Group()
     spaceshipG.add(propulsionParticlesG)
-    const propulsionParticles = new generatePropulsionParticles({
+    propulsionParticles = new generatePropulsionParticles({
         parent: propulsionParticlesG,
         camera: camera,
         size: 69,
@@ -60,7 +60,6 @@ const setupSpaceship = (loadingManager, camera, scene) => {
 
     spaceshipG.position.set(8,0,0)
     scene.add(spaceshipG)
-    return {propulsionParticles}
 }
 
 const calculateSpaceshipPosition = (elapsedTime, offset = 0) => {
@@ -79,7 +78,15 @@ const calculateCameraPosition = (elapsedTime) => {
     return [x,y,z]
 }
 
-const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
+let previousRAF
+
+const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
+    if(propulsionParticles){
+        propulsionParticles.Step(t - previousRAF)
+    }
+    if (previousRAF === null) {
+		previousRAF = t;
+	}
     // Set Spaceship Position
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
     spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
@@ -93,6 +100,7 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
         camera.position.set(...calculateCameraPosition(elapsedTime))
         controls.target = spaceshipG.position
     }
+    previousRAF = t
 }
 
 export {setupSpaceship, spaceshipTick, spaceShipParams, cameraTrajectoryParams, calculateSpaceshipPosition}

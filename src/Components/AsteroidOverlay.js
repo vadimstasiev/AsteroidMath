@@ -40,7 +40,6 @@ const removePointOverlay = (asteroidObj) => {
     for(const i in points) {
         const {asteroid, element} = points[i]
         if(asteroid===asteroidObj){
-            // points.splice(i, 1)
             element.remove()
         }
     }
@@ -49,7 +48,7 @@ const removePointOverlay = (asteroidObj) => {
 
 var frustum = new THREE.Frustum();
 const pointOverlayTick = (camera, sizes) => {
-    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
     // Go through each html point
     for(const point of points) {
         // Ensure that a point is not rendered if it is behind the camera 
