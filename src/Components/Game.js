@@ -30,14 +30,13 @@ const setupGame = (getElapsedTime, scene, camera) => {
 }
 
 const playClicked = (getElapsedTime, scene, camera) => {
-
+    for(const element of document.getElementsByClassName('menu-buttons')){
+        element.style.display = 'none'
+    }
+        
     if(!isPlaying){
         isPlaying = true
-        // Move camera further away for better visibility
-        gsap.to(cameraTrajectoryParams,  {
-            duration: 2,
-            cameraRadiusMultiplier: 0.5,
-        })
+        
         let messages = [
             {
                 message: "Oh, Hi !",
@@ -111,13 +110,13 @@ const playClicked = (getElapsedTime, scene, camera) => {
         ]
         
         // Spawn dense asteroid zone
-        const spawnDenseZoneAsteroids = (wait) => {
+        const spawnDenseZoneAsteroids = () => {
             setTimeout(() => { 
                 // for (let i = 0; i < 3; i++) {
                     spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 2})
                 // }
                 spawnDenseZoneAsteroids()
-            }, getRandomInt(10, 200)+wait*1000)
+            }, getRandomInt(50, 200))
         }
 
         const betweenMsgInterval = 1000
@@ -129,7 +128,14 @@ const playClicked = (getElapsedTime, scene, camera) => {
                     showMessages(duration, wait)
                     messages.shift()
                 } else {
-                    spawnDenseZoneAsteroids(wait)
+                    // Move camera further away for better visibility
+                    gsap.to(cameraTrajectoryParams,  {
+                        duration: 2,
+                        cameraToSpaceshipOffset: 0.8,
+                        cameraRadiusMultiplier: 0.5,
+
+                    })
+                    setTimeout(spawnDenseZoneAsteroids, (duration+wait)*1000)
                 }
             }, ((msgDuration+wait)*1000))
         }

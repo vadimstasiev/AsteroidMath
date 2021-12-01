@@ -106,6 +106,10 @@ body {
   text-align: center;
 }
 
+.menu-buttons {
+  /* display:flex */
+}
+
 .menu-buttons div {
   cursor: pointer;
 }
