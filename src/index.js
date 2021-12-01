@@ -7,7 +7,7 @@ import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, overlayTick} from './Components/Overlay'
-import {playClicked} from './Components/Game'
+import {playClicked, playTick} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
@@ -75,7 +75,7 @@ const loadingManager = new THREE.LoadingManager(
 			 * Define callable functions once scene is ready
 			 */
 
-			window.playClicked = () => playClicked(elapsedTime, scene, camera)
+			window.playClicked = () => playClicked(getElapsedTime, scene, camera)
 		}, 2000)
 	},
 
@@ -164,6 +164,10 @@ let previousRAF
 let elapsedTime = 0
 let oldElapsedTime = 0
 
+const getElapsedTime = () => {
+	return elapsedTime
+}
+
 /**
  * Animate
  */
@@ -188,6 +192,9 @@ const tick = (t) => {
 
 		// Update Overlay
 		overlayTick(camera, sizes)
+
+		// Update Game
+		playTick(elapsedTime, scene, camera)
 
 		// Update orbit controls
 		controls.update()
