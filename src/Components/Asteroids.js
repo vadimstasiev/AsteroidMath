@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
 import { spaceShipParams } from './Spaceship'
-import { spawnOverlay, removeOverlay } from './Overlay'
+import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 
 const showTrajectories = false
 
@@ -38,8 +38,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         const minAsteroidSize = 0.05
         const spawnAngle = Math.PI/2
         const spawnAngleRange = 0.2
-        const maxRadius = 8
-        const minRadius = 6
+        const maxRadius = 12
+        const minRadius = 11.8
         const amplitudeY = 4
         let x,y,z, theta
         const vec3 = new Vector3()
@@ -122,7 +122,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
             })
             // Add Overlay
             if(hasOverlay){
-                spawnOverlay(asteroidObj)
+                spawnPointOverlay(asteroidObj)
             }
         }
     }
@@ -177,7 +177,7 @@ const asteroidTick = (elapsedTime, scene) => {
         } else {
             scene.remove(asteroid)
             if(hasOverlay){
-                removeOverlay(asteroid)
+                removePointOverlay(asteroid)
             }
             scene.remove(trajectoryObj)
             asteroidArray.splice(i, 1)

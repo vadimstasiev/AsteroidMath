@@ -8,7 +8,7 @@ import { asteroidTick, spawnAsteroid } from './Asteroids'
 
 let points = []
 
-const setupPointsOverlay = (scene) => {
+const setupSpaceshipOverlay = (scene) => {
     const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
     const overlayMaterial = new THREE.ShaderMaterial({
         transparent: true,
@@ -18,7 +18,7 @@ const setupPointsOverlay = (scene) => {
 }
 
 
-const spawnOverlay = (asteroidObj) => {
+const spawnDialogueOverlay = (asteroidObj) => {
     const pointClassName = "point-" + points.length 
 
 
@@ -60,4 +60,4 @@ const overlayTick = (camera, sizes) => {
     }
 }
 
-export {setupPointsOverlay, spawnOverlay, removeOverlay, overlayTick}
+export {setupSpaceshipOverlay, spawnDialogueOverlay, removeOverlay, overlayTick}

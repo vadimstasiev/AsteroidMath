@@ -6,8 +6,8 @@ import {gsap} from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
-import {setupPointsOverlay, overlayTick} from './Components/Overlay'
-import {playClicked, playTick} from './Components/Game'
+import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
+import {setupGame, playClicked, playTick} from './Components/Game'
 
 
 // If freeView is enabled then the camera can be panned around manually
@@ -168,6 +168,8 @@ const getElapsedTime = () => {
 	return elapsedTime
 }
 
+setupGame(getElapsedTime, scene, camera)
+
 /**
  * Animate
  */
@@ -191,7 +193,7 @@ const tick = (t) => {
 		asteroidTick(elapsedTime, scene)
 
 		// Update Overlay
-		overlayTick(camera, sizes)
+		pointOverlayTick(camera, sizes)
 
 		// Update Game
 		playTick(elapsedTime, scene, camera)

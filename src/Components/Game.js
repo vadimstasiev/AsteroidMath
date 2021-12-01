@@ -5,6 +5,7 @@ import { Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
 import { spaceShipParams, cameraTrajectoryParams } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
+import { getRandomInt } from './Helpers'
 
 let points = []
 let isPlaying = false
@@ -17,29 +18,38 @@ const overlayMaterial = new THREE.ShaderMaterial({
     transparent: true,
 })
 
+const setupGame = (getElapsedTime, scene, camera) => {
+    const spawnBackroundAsteroids = () => {
+        setTimeout(() => { 
+                spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 0.5})
+                spawnBackroundAsteroids()
+        }, getRandomInt(10, 2000));
+    }
+    spawnBackroundAsteroids()
+}
+
 const playClicked = (getElapsedTime, scene, camera) => {
-    // spawnAsteroid(elapsedTime, scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
     // for (let i = 0; i < 10  ; i++) {
     //     spawnAsteroid(elapsedTime, scene, camera, {timeBeforeIntersection: 2})
     // }
     if(!isPlaying){
         isPlaying = true
-        const spawnBackroundAsteroids = () => {
+        const spawnDenseZoneAsteroids = () => {
             setTimeout(() => { 
                 if(isPlaying){
-                    console.log('hello')
                     spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 2})
-                    spawnBackroundAsteroids()
+                    spawnDenseZoneAsteroids()
                 }
-            }, 100);
+            }, getRandomInt(10, 200));
         }
-        spawnBackroundAsteroids()
+        spawnDenseZoneAsteroids()
         gsap.to(cameraTrajectoryParams,  {
             duration: 2,
             cameraRadiusMultiplier: 0.5,
             // cameraAmplitudeOffset: 2
         })
     }
+    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
 const playTick = (elapsedTime, scene, camera) => {
@@ -52,4 +62,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {playClicked, playTick}
+export {setupGame, playClicked, playTick}
