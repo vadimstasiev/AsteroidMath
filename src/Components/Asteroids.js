@@ -27,6 +27,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         willHit,
         hasOverlay,
         timeBeforeIntersection,
+        cameraWillFollow
     } = params
     if(asteroidsScene){
         const frustum = new THREE.Frustum()
@@ -98,8 +99,6 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
                 // values that guarantee a spaceship hit
                 maxScalarOffsetMultiplier = 0.4
                 minScalarOffsetMultiplier = 0
-                // const spaceshipPositionVec3 = new Vector3(...spaceShipParams.latestSpaceshipPosition);
-                // cameraParams.cameraLookPosition = () => (asteroidObj.position.clone()-spaceshipPositionVec3).multiplyScalar(0.5)
             }
             // spawning position of the asteroid
             const spawnPointVec3 = asteroidObj.position.clone()
@@ -114,7 +113,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
                 duration, 
                 targetScallarMultiplier,
                 intersectionScalarOffsetMultiplier,
-                hasOverlay
+                hasOverlay,
+                cameraWillFollow
             })
             gsap.to(asteroidObj.rotation,  {
                 duration: duration,
@@ -131,7 +131,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
 }
 
 const asteroidTick = (elapsedTime, scene, controls, freeView) => {
-    for (let i in asteroidArray ) {
+    let cameraAlreadyFollowing = false
+    for (let i = asteroidArray.length - 1; i >= 0; i--) {
         const {
             asteroid, 
             spawnPointVec3, 
@@ -141,34 +142,32 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
             duration,
             targetScallarMultiplier,
             intersectionScalarOffsetMultiplier,
-            hasOverlay
+            hasOverlay,
+            cameraWillFollow
         } = asteroidArray[i]
         if(elapsedTime<timeout){
             const trajectoryProgress = (duration - timeout + elapsedTime)/duration
-            const lerpFactor = trajectoryProgress / (1/targetScallarMultiplier)
-            // only update intersectionPointVec3 until it has reached spaceship position
-            if(trajectoryProgress <= (1/targetScallarMultiplier)){
+            // impact happens at 1/targetScallarMultiplier of the curve (which is targetScallarMultiplier times bigger than 1/targetScallarMultiplier)
+            const progressToImpact = 1/targetScallarMultiplier
+            const lerpFactor = trajectoryProgress / progressToImpact
+            if(!freeView && !cameraAlreadyFollowing && cameraWillFollow){
+                cameraAlreadyFollowing = true
+                // update camera looking direction
+                if(trajectoryProgress <= progressToImpact){
+                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
+                } else {
+                    // progressToImpact < trajectoryProgress < 2*progressToImpact
+                    if(trajectoryProgress>progressToImpact && trajectoryProgress<(2*progressToImpact)){
+                        cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, (trajectoryProgress/(progressToImpact)-1))
+                        
+                    } else {
+                        cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
+                    }
+                }
+            }
+            // only update intersectionPointVec3 until asteroid has reached/passed spaceship position
+            if(trajectoryProgress <= progressToImpact){
                 intersectionPointVec3.set(...spaceShipParams.latestSpaceshipPosition)
-                // update camera looking direction
-                if(hasOverlay && !freeView){
-                    const cameraTargetPositionVec3 = asteroid.position.clone().add(intersectionPointVec3).multiplyScalar(0.5)
-                    // const lerpedTargetPosition = spaceshipG.position.clone()
-                    const lerpedTargetPosition = cameraParams.cameraDummyPoint.clone()
-                    console.log(lerpFactor)
-                    lerpedTargetPosition.lerp(asteroid.position.clone(), lerpFactor)
-                    cameraParams.cameraLookPosition = lerpedTargetPosition
-                    // if(lerpFactor=1){
-                    //     cameraParams.cameraLookPosition = spaceshipG.position
-                    // }
-                }
-            } else {
-                // update camera looking direction
-                if(hasOverlay && !freeView){
-                    // const lerpedTargetPosition = cameraParams.cameraLookPosition
-                    // lerpedTargetPosition.lerp(spaceshipG.position, lerpFactor)
-                    // cameraParams.cameraLookPosition = lerpedTargetPosition
-                    cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
-                }
             }
             // calculate vector of the position twice the distance away from intersectionPointVec3 to spawnPointVec3 
             const targetPointVec3 = intersectionPointVec3.clone()
