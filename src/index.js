@@ -181,7 +181,7 @@ const tick = (t=0) => {
 		spaceshipTick(t, elapsedTime, camera, controls, freeView)
 
 		// Animate Asteroids
-		asteroidTick(elapsedTime, scene)
+		asteroidTick(elapsedTime, scene, controls, freeView)
 
 		// Update Points Overlay
 		pointOverlayTick(camera, sizes)

@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
-import { spaceShipParams, cameraTrajectoryParams } from './Spaceship'
+import { spaceShipParams, cameraParams } from './Spaceship'
 import { asteroidTick, spawnAsteroid } from './Asteroids'
 
 let points = []

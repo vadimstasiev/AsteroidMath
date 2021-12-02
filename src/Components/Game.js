@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint } from './Helpers'
-import { spaceShipParams, cameraTrajectoryParams } from './Spaceship'
+import { spaceShipParams, cameraParams } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './SpaceshipOverlay'
@@ -91,7 +91,7 @@ const introMessages = [
         wait: 1
     },
     {
-        message: "And the only thing that can help me get through that is if you help me do some Maths really quickly.",
+        message: "And the only way to get through it is if you help me do some Maths really quickly.",
         offsetX: 100,
         offsetY: -170,
         duration: 6,
@@ -130,14 +130,14 @@ const tutorialMessages = [
     },
     {
         message: "But sometimes it fails and needs manual takeover.",
-        offsetX: 0,
+        offsetX: 50,
         offsetY: 80,
         duration: 3,
         wait: 1
     },
     {
-        message: "You need to click the right answer on time to prevent us crashing the ship.",
-        offsetX: 20,
+        message: "You need to click the right answer in time to prevent us crashing the ship.",
+        offsetX: 50,
         offsetY: 100,
         duration: 4,
         wait: 1
@@ -153,7 +153,7 @@ const tutorialMessages = [
 
 const quitClicked = () => {
     isPlaying = false
-    gsap.to(cameraTrajectoryParams,  {
+    gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
         cameraToSpaceshipOffset: 0.4,
@@ -169,7 +169,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             messagesShownOnce = true
         }
         if(currentShowMessages){
-            await showMessages(introMessages, getElapsedTime)
+            // await showMessages(introMessages, getElapsedTime)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -183,14 +183,26 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowMessages){
-            await showMessages(tutorialMessages, getElapsedTime)
+            // await showMessages(tutorialMessages, getElapsedTime)
         }
         // Move camera further away for better visibility
-        gsap.to(cameraTrajectoryParams,  {
-            duration: 2,
-            cameraToSpaceshipOffset: 2,
-            cameraRadiusMultiplier: 0.3,
-        })
+        if(isPlaying){
+            gsap.to(cameraParams,  {
+                duration: 2,
+                cameraToSpaceshipOffset: 2,
+                cameraRadiusMultiplier: 0.3,
+            })
+        }
+        const whatever = (interval=0) => {
+            setTimeout(() => { 
+                // check if is playing to disrupt the loop when the game is over
+                if(isPlaying){
+                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
+                    whatever(5000)
+                }
+            }, interval)
+        }
+        whatever()
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
