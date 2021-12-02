@@ -154,7 +154,8 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
                 cameraAlreadyFollowing = true
                 // update camera looking direction
                 if(trajectoryProgress <= progressToImpact){
-                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
+                    // cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
+                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone().add(intersectionPointVec3).multiplyScalar(0.5), lerpFactor)
                 } else {
                     // progressToImpact < trajectoryProgress < 2*progressToImpact
                     if(trajectoryProgress>progressToImpact && trajectoryProgress<(2*progressToImpact)){
