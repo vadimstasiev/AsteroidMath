@@ -85,8 +85,8 @@ const introMessages = [
     },
     {
         message: "There is a dense asteroid zone coming up ahead.",
-        offsetX: 20,
-        offsetY: 100,
+        offsetX: 70,
+        offsetY: 80,
         duration: 3,
         wait: 1
     },
@@ -120,6 +120,37 @@ const introMessages = [
     },
 ]
 
+const tutorialMessages = [
+    {
+        message: "The spaceship navigation system works for the most part...",
+        offsetX: 100,
+        offsetY: -120,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: "But sometimes it fails and needs manual takeover.",
+        offsetX: 0,
+        offsetY: 80,
+        duration: 3,
+        wait: 1
+    },
+    {
+        message: "You need to click the right answer on time to prevent us crashing the ship.",
+        offsetX: 20,
+        offsetY: 100,
+        duration: 4,
+        wait: 1
+    },
+    {
+        message: "Good Luck!",
+        offsetX: 90,
+        offsetY: -100,
+        duration: 1,
+        wait: 3
+    },
+]
+
 const quitClicked = () => {
     isPlaying = false
     gsap.to(cameraTrajectoryParams,  {
@@ -140,12 +171,6 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         if(currentShowMessages){
             await showMessages(introMessages, getElapsedTime)
         }
-        // Move camera further away for better visibility
-        gsap.to(cameraTrajectoryParams,  {
-            duration: 2,
-            cameraToSpaceshipOffset: 2,
-            cameraRadiusMultiplier: 0.3,
-        })
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
             setTimeout(() => { 
@@ -157,6 +182,15 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             }, interval)
         }
         spawnDenseZoneAsteroids()
+        if(currentShowMessages){
+            await showMessages(tutorialMessages, getElapsedTime)
+        }
+        // Move camera further away for better visibility
+        gsap.to(cameraTrajectoryParams,  {
+            duration: 2,
+            cameraToSpaceshipOffset: 2,
+            cameraRadiusMultiplier: 0.3,
+        })
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
