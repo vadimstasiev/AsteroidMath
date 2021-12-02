@@ -20,7 +20,7 @@ const cameraParams = {
     // Default Camera Orbit Parameters:
     cameraLookPosition: new Vector3(),
     cameraDummyPoint: new Vector3(),
-    cameraDummyPointOffset: 3, 
+    cameraDummyPointOffset: 1, 
     latestCameraPosition: [0,0,0],
     cameraToSpaceshipOffset: 0.4,
     cameraRadiusMultiplier: 0.7,

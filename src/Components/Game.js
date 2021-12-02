@@ -66,7 +66,7 @@ const introMessages = [
         message: "You don't !?",
         offsetX: 90,
         offsetY: -100,
-        duration: 2,
+        duration: 2.5,
         wait: 1
     },
     {
@@ -74,7 +74,7 @@ const introMessages = [
         offsetX: 90,
         offsetY: -100,
         duration: 1,
-        wait: 3
+        wait: 2
     },
     {
         message: "Well, you may not know this, but I'm in a bit of trouble...",
@@ -91,14 +91,14 @@ const introMessages = [
         wait: 1
     },
     {
-        message: "And the only way to get through it is if you help me do some Maths really quickly.",
+        message: "And the only way to get us through it is if you help us do some Maths really quickly.",
         offsetX: 100,
         offsetY: -170,
         duration: 6,
         wait: 2
     },
     {
-        message: "Here is your chance to leave and survive if you think you can't do it ! (......)",
+        message: "Here is your chance to leave and survive if you think you can't handle it ! (......)",
         offsetX: 20,
         offsetY: 70,
         duration: 6,
@@ -136,7 +136,7 @@ const tutorialMessages = [
         wait: 1
     },
     {
-        message: "You need to click the right answer in time to prevent us crashing the ship.",
+        message: "I need you to click on the right answer in time to prevent us crashing the ship.",
         offsetX: 50,
         offsetY: 100,
         duration: 4,
@@ -169,7 +169,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             messagesShownOnce = true
         }
         if(currentShowMessages){
-            // await showMessages(introMessages, getElapsedTime)
+            await showMessages(introMessages, getElapsedTime)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -183,7 +183,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowMessages){
-            // await showMessages(tutorialMessages, getElapsedTime)
+            await showMessages(tutorialMessages, getElapsedTime)
         }
         // Move camera further away for better visibility
         if(isPlaying){
