@@ -8,8 +8,30 @@ body {
   overflow: hidden;
 }
 
+@font-face {
+  font-family: "Pixelated";
+  src: url(./fonts/fff-forward/font.ttf) format('truetype');
+}
+
+.pixelated {
+  font-family: Pixelated
+}
+
+@font-face {
+  font-family: "PixelatedLogo";
+  src: url(./fonts/subway-ticker/font.ttf) format('truetype');
+}
+
+.logo {
+  font-family: PixelatedLogo;
+  font-size: 2.2em;
+  padding: 0;
+}
+
 .navbar-custom {
   background-color: #313335;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .button-login {
@@ -106,10 +128,11 @@ body {
   text-align: center;
 }
 
-.menu-buttons {
-  /* display:flex */
-}
 
 .menu-buttons div {
   cursor: pointer;
+}
+
+.play-menu {
+  display: none;
 }

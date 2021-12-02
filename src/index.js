@@ -7,7 +7,7 @@ import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
-import {setupGame, playClicked, playTick} from './Components/Game'
+import {setupGame, playClicked, quitClicked, playTick} from './Components/Game'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
 
 
@@ -77,6 +77,7 @@ const loadingManager = new THREE.LoadingManager(
 			 */
 			initializeDynamicSceneElements()
 			window.playClicked = () => playClicked(getElapsedTime, scene, camera)
+			window.quitClicked = () => quitClicked()
 		}, 2000)
 	},
 
@@ -88,18 +89,13 @@ const loadingManager = new THREE.LoadingManager(
 	}
 )
 
-
 /**
- * Sizes
+ * Camera
  */
 const sizes = {
 	width: window.innerWidth,
 	height: window.innerHeight
 }
-
-/**
- * Camera
- */
 const vFOV = 75
 const camera = new THREE.PerspectiveCamera(vFOV, sizes.width / sizes.height, 0.1, 200000)
 

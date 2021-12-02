@@ -8,7 +8,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-	<div class="navbar-brand">Asteroid Math</div>
+	<div class="navbar-brand logo">Asteroid Math</div>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 	        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
@@ -17,19 +17,26 @@
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto menu-buttons">
 			<li class="nav-item active" onClick="window.playClicked()">
-				<div class="nav-link d-none d-lg-block d-xl-block">Play<span class="sr-only"></span></div>
+				<div class="nav-link d-none d-lg-block d-xl-block pixelated">Play<span class="sr-only"></span></div>
 			</li>
 			<li class="nav-item">
-				<div class="nav-link d-none d-lg-block d-xl-block">Leaderboard</div>
-			</li>
-			<li class="nav-item">
+				<div class="nav-link d-none d-lg-block d-xl-block pixelated">Leaderboard</div>
 			</li>
 		</ul>
-		<div class="mr-auto"></div>
-		<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer;">
+		<ul class="navbar-nav mr-auto play-menu">
+			<li class="nav-item active"	>
+				<div class="nav-link d-none d-lg-block d-xl-block pixelated">
+					<div>Score: 0</div>
+				</div>
+			</li>
+			<li class="nav-item" onClick="window.quitClicked()">
+				<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Quit</div>
+			</li>
+		</ul>
+		<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
 			<a href="register.html" class="form-control mr-sm-2 button-login">Sign Up</a>
 		</div>
-		<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer;">
+		<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
 			<a href='login.html' class="form-control mr-sm-2 button-login">Log In</a>
 		</div>
 	</div>
@@ -40,10 +47,10 @@
 <div class="loading-bar"></div>
 
 <div class="mobile-buttons menu-buttons">
-	<button type="button" class="btn btn-primary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none"
+	<button type="button" class="btn btn-primary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated"
 	        onClick="window.playClicked()">Play
 	</button>
-	<button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none">
+	<button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated">
 		Leaderboard
 	</button>
 </div>

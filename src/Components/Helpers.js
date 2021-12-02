@@ -26,13 +26,17 @@ const rotateAboutPoint = (obj, point, axis, theta, pointIsWorld) => {
 }
 
 const getRandomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 const getRandomArbitrary = (min, max) => {
-    return Math.random() * (max - min) + min;
+    return Math.random() * (max - min) + min
 }
 
-export {rotateAboutPoint, getRandomInt, getRandomArbitrary}
+const sleep = (s) => {
+    return new Promise(resolve => setTimeout(resolve, s*1000))
+}
+
+export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep}
