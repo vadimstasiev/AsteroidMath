@@ -131,7 +131,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
 }
 
 const asteroidTick = (elapsedTime, scene, controls, freeView) => {
-    let cameraAlreadyFollowing = false
+    let cameraAlreadyFollowingSomething = false
+    // reverse iteration
     for (let i = asteroidArray.length - 1; i >= 0; i--) {
         const {
             asteroid, 
@@ -147,19 +148,21 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
         } = asteroidArray[i]
         if(elapsedTime<timeout){
             const trajectoryProgress = (duration - timeout + elapsedTime)/duration
-            // impact happens at 1/targetScallarMultiplier of the curve (which is targetScallarMultiplier times bigger than 1/targetScallarMultiplier)
-            const progressToImpact = 1/targetScallarMultiplier
-            const lerpFactor = trajectoryProgress / progressToImpact
-            if(!freeView && !cameraAlreadyFollowing && cameraWillFollow){
-                cameraAlreadyFollowing = true
+            // the intersection timing is the same regardless of hit or miss 
+            // intersection with spaceship happens at 1/targetScallarMultiplier of the curve (which is targetScallarMultiplier times bigger than 1/targetScallarMultiplier)
+            const progressToIntersection = 1/targetScallarMultiplier
+            // lerpFactor [ 0 ; 1 ]
+            const lerpFactor = trajectoryProgress / progressToIntersection
+            if(!freeView && !cameraAlreadyFollowingSomething && cameraWillFollow){
+                cameraAlreadyFollowingSomething = true
                 // update camera looking direction
-                if(trajectoryProgress <= progressToImpact){
+                if(trajectoryProgress <= progressToIntersection){
                     // cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
                     cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone().add(intersectionPointVec3).multiplyScalar(0.5), lerpFactor)
                 } else {
-                    // progressToImpact < trajectoryProgress < 2*progressToImpact
-                    if(trajectoryProgress>progressToImpact && trajectoryProgress<(2*progressToImpact)){
-                        cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, (trajectoryProgress/(progressToImpact)-1))
+                    // progressToIntersection < trajectoryProgress < 2*progressToIntersection
+                    if(trajectoryProgress>progressToIntersection && trajectoryProgress<(2*progressToIntersection)){
+                        cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, (trajectoryProgress/(progressToIntersection)-1))
                         
                     } else {
                         cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
@@ -167,16 +170,17 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
                 }
             }
             // only update intersectionPointVec3 until asteroid has reached/passed spaceship position
-            if(trajectoryProgress <= progressToImpact){
+            if(trajectoryProgress <= progressToIntersection){
                 intersectionPointVec3.set(...spaceShipParams.latestSpaceshipPosition)
             }
-            // calculate vector of the position twice the distance away from intersectionPointVec3 to spawnPointVec3 
+            // calculate vector of the position that is targetScallarMultiplier times away in a straight line from intersectionPointVec3 to spawnPointVec3
             const targetPointVec3 = intersectionPointVec3.clone()
                 .sub(spawnPointVec3)
                 .multiplyScalar(targetScallarMultiplier)
                 .add(spawnPointVec3)
             // up must be a vector greater than intersectionPointVec3 (up > intersectionPointVec3)
             const up = new Vector3(0, 10, 0)
+            // up is added because as the ship goes above and bellow y=0 , it changes the direction of the vector, so we add a vector "up" to offset it 
             const parallelVec3 = new Vector3(intersectionPointVec3.y, intersectionPointVec3.x)
                 .add(up)
                 .normalize()
@@ -185,7 +189,6 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
             var curve = new THREE.CurvePath()
             curve.add(
                 new THREE.QuadraticBezierCurve3(
-                // new THREE.LineCurve3(
                     spawnPointVec3,
                     parallelVec3,
                     targetPointVec3,

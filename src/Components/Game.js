@@ -216,16 +216,16 @@ const playClicked = async (getElapsedTime, scene, camera) => {
                 cameraRadiusMultiplier: 0.3,
             })
         }
-        // const whatever = (interval=0) => {
-        //     setTimeout(() => { 
-        //         // check if is playing to disrupt the loop when the game is over
-        //         if(isPlaying){
-        //             spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, cameraWillFollow:true,  timeBeforeIntersection: 2})
-        //             whatever(5000)
-        //         }
-        //     }, interval)
-        // }
-        // whatever()
+        const whatever = (interval=0) => {
+            setTimeout(() => { 
+                // check if is playing to disrupt the loop when the game is over
+                if(isPlaying){
+                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, cameraWillFollow:true,  timeBeforeIntersection: 2})
+                    whatever(5000)
+                }
+            }, interval)
+        }
+        whatever()
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
