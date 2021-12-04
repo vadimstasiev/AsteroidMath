@@ -19,8 +19,6 @@ const setupSpaceshipOverlay = (scene) => {
 
 const spawnSpaceshipOverlay = (timeout, message, offset) => {
     const pointClassName = "point-" + points.length 
-    const duration = 5
-
     const pointHTML =
         `<div class="point ${pointClassName}">\n` +
             `<div class="overlay-text">${message}</div>\n` +

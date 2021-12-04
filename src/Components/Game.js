@@ -223,7 +223,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
-const showMessages = async (messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => {}) => {
+const showMessages = async (messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => false) => {
     setMessageIsPlaying(true)
     for (const msg of messages){
         if(isPlaying && !playMessageContinue()){
