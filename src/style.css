@@ -9,16 +9,16 @@ body {
 }
 
 @font-face {
-  font-family: "Pixelated";
+  font-family: 'Pixelated';
   src: url(./fonts/fff-forward/font.ttf) format('truetype');
 }
 
 .pixelated {
-  font-family: Pixelated
+  font-family: Pixelated;
 }
 
 @font-face {
-  font-family: "PixelatedLogo";
+  font-family: 'PixelatedLogo';
   src: url(./fonts/subway-ticker/font.ttf) format('truetype');
 }
 
@@ -38,7 +38,7 @@ body {
   background-color: #1d1f20;
   padding-left: 20px;
   text-decoration: none !important;
-  color: #ffffff
+  color: #ffffff;
 }
 
 .webgl {
@@ -127,7 +127,6 @@ body {
   right: 0;
   text-align: center;
 }
-
 
 .menu-buttons div {
   cursor: pointer;

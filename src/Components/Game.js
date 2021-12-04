@@ -11,14 +11,12 @@ import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from
 let points = []
 let isPlaying = false
 let messagesShownOnce = false
-
-/**
- * Overlay
- */
-const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
-const overlayMaterial = new THREE.ShaderMaterial({
-    transparent: true,
-})
+let introIsPlaying = false
+let tutIsPlaying = false
+let skipIntroductionB = false
+let skipTutorialB = false
+const skipIntroduction = () => {skipIntroductionB=true}
+const skipTutorial = () => {skipTutorialB = true}
 
 const setupGame = (getElapsedTime, scene, camera) => {
     
@@ -35,6 +33,24 @@ const setupGame = (getElapsedTime, scene, camera) => {
             }
             for(const element of document.getElementsByClassName('play-menu')){
                 element.style.display = 'flex'
+            }
+            if(introIsPlaying){
+                for(const element of document.getElementsByClassName('skip-intro')){
+                    element.style.display = ''
+                }
+            } else {
+                for(const element of document.getElementsByClassName('skip-intro')){
+                    element.style.display = 'none'
+                }
+            }    
+            if(tutIsPlaying){
+                for(const element of document.getElementsByClassName('skip-tut')){
+                    element.style.display = ''
+                }
+            } else {
+                for(const element of document.getElementsByClassName('skip-tut')){
+                    element.style.display = 'none'
+                }
             }
         } else {
             for(const element of document.getElementsByClassName('menu-buttons')){
@@ -169,7 +185,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             messagesShownOnce = true
         }
         if(currentShowMessages){
-            await showMessages(introMessages, getElapsedTime)
+            await showMessages(introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -183,7 +199,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowMessages){
-            await showMessages(tutorialMessages, getElapsedTime)
+            await showMessages(tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
         }
         // Move camera further away for better visibility
         if(isPlaying){
@@ -207,14 +223,16 @@ const playClicked = async (getElapsedTime, scene, camera) => {
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
-const showMessages = async (messages, getElapsedTime) => {
+const showMessages = async (messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => {}) => {
+    setMessageIsPlaying(true)
     for (const msg of messages){
-        if(isPlaying){
+        if(isPlaying && !playMessageContinue()){
             const {message, offsetX, offsetY, duration, wait} = msg
             spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY})
             await sleep(duration+wait)
         }
     } 
+    setMessageIsPlaying(false)
 }
 
 const playTick = (elapsedTime, scene, camera) => {
@@ -224,4 +242,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {setupGame, playClicked, quitClicked, playTick}
+export {setupGame, playClicked, skipIntroduction, skipTutorial, quitClicked, playTick}
