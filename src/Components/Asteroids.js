@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
-import { spaceshipG, spaceShipParams, cameraParams, calculateCameraPosition, calculateSpaceshipPosition } from './Spaceship'
+import { spaceshipG, spaceShipParams, cameraParams, calculateCameraPosition, calculateSpaceshipPosition, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 
 const showTrajectories = false
@@ -25,6 +25,7 @@ const setupAsteroids = (loadingManager) => {
 const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
     const {
         willHit,
+        maxRandomOffsetMiss,
         hasOverlay,
         timeBeforeIntersection,
         cameraWillFollow
@@ -46,7 +47,6 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         const vec3 = new Vector3()
 
 
-        // Find coordinates for a random point within the radius of 10 and outside the radius of 6
         const asteroidObj = asteroidsScene.children[getRandomInt(0, 8)].clone()
         asteroidObj.castShadow = true
         const randomSize = getRandomArbitrary(minAsteroidSize, maxAsteroidSize)
@@ -54,10 +54,11 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         
 
         let count = 0
-        // maxTries = maxRadius tries to find a random position that fits the requirements bellow
+        // maxTries: tries to find a random position that fits the requirements bellow
         let maxTries = 200 
         const cameraDirection = new Vector3()
 
+        // Find coordinates for a random point within the radius of 10 and outside the radius of 6
         do {
             const random = Math.random() *maxRadius 
             x = Math.sin(random) *maxRadius - ((Math.random()-0.5)*minRadius)
@@ -77,23 +78,29 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         if(count!==maxTries){
             asteroidObj.position.set(x, y, z)
             const axisOfRotation = new Vector3(0, 1, 0)
-            // rotate the calculated asteroid position around the Y axis from the center of the world position and to the right of the camera
+            // rotate the calculated asteroid position on the Y axis around the center of the world and to the right of the camera
             rotateAboutPoint(asteroidObj, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidObj)
 
-            // how many times longer the asteroid target destination is set to be
+            // how many times the distance from the asteroid spawn point to the intersection point
             const targetScallarMultiplier = 6
-            // total duration of the asteroid course
+            // total duration of the asteroid trajectory course
             const duration = timeBeforeIntersection*targetScallarMultiplier
-            const trajectoryGeometry = new THREE.BufferGeometry()
-            const trajectoryMaterial = new THREE.LineBasicMaterial( { color : 0xff0000 } )
-            const trajectoryObj = new THREE.Line( trajectoryGeometry, trajectoryMaterial )
-            scene.add(trajectoryObj)
+            
+            let trajectoryObj
+            // show trajectories of asteroids (for dev and troubleshooting)
+            if(showTrajectories) {
+                const trajectoryGeometry = new THREE.BufferGeometry()
+                const trajectoryMaterial = new THREE.LineBasicMaterial( { color : 0xff0000 } )
+                trajectoryObj = new THREE.Line( trajectoryGeometry, trajectoryMaterial )
+                scene.add(trajectoryObj)
+            }
+
             let maxScalarOffsetMultiplier
             let minScalarOffsetMultiplier
             if(!willHit){    
                 // values that guarantee a spaceship miss
-                maxScalarOffsetMultiplier = 20
+                maxScalarOffsetMultiplier = maxRandomOffsetMiss || 20
                 minScalarOffsetMultiplier = 1.7
             } else {
                 // values that guarantee a spaceship hit
@@ -114,6 +121,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
                 targetScallarMultiplier,
                 intersectionScalarOffsetMultiplier,
                 hasOverlay,
+                willHit,
                 cameraWillFollow
             })
             gsap.to(asteroidObj.rotation,  {
@@ -130,9 +138,20 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
     }
 }
 
-const asteroidTick = (elapsedTime, scene, controls, freeView) => {
+const removeAsteroid = (scene, asteroid, index, hasOverlay, trajectoryObj) => {
+    scene.remove(asteroid)
+    if(hasOverlay){
+        removePointOverlay(asteroid)
+    }
+    if(showTrajectories){
+        scene.remove(trajectoryObj)
+    }
+    asteroidArray.splice(index, 1)
+}
+
+const asteroidTick = (elapsedTime, scene, freeView) => {
     let cameraAlreadyFollowingSomething = false
-    // reverse iteration
+    // reverse iteration for convinience of cameraAlreadyFollowingSomething, makes it easier to get the lastest (specific) asteroid that needs following 
     for (let i = asteroidArray.length - 1; i >= 0; i--) {
         const {
             asteroid, 
@@ -144,6 +163,7 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
             targetScallarMultiplier,
             intersectionScalarOffsetMultiplier,
             hasOverlay,
+            willHit,
             cameraWillFollow
         } = asteroidArray[i]
         if(elapsedTime<timeout){
@@ -153,17 +173,21 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
             const progressToIntersection = 1/targetScallarMultiplier
             // lerpFactor [ 0 ; 1 ]
             const lerpFactor = trajectoryProgress / progressToIntersection
+            // Camera Rotation to follow a given asteroid
             if(!freeView && !cameraAlreadyFollowingSomething && cameraWillFollow){
                 cameraAlreadyFollowingSomething = true
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
-                    // cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
-                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(asteroid.position.clone().add(intersectionPointVec3).multiplyScalar(0.5), lerpFactor)
+                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone()
+                        .lerp(asteroid.position.clone()
+                            .add(intersectionPointVec3)
+                            .multiplyScalar(0.5),
+                            lerpFactor
+                        )
                 } else {
                     // progressToIntersection < trajectoryProgress < 2*progressToIntersection
                     if(trajectoryProgress>progressToIntersection && trajectoryProgress<(2*progressToIntersection)){
                         cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, (trajectoryProgress/(progressToIntersection)-1))
-                        
                     } else {
                         cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
                     }
@@ -200,13 +224,13 @@ const asteroidTick = (elapsedTime, scene, controls, freeView) => {
             }
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
-        } else {
-            scene.remove(asteroid)
-            if(hasOverlay){
-                removePointOverlay(asteroid)
+            // asteroid hits the ship
+            if((trajectoryProgress > progressToIntersection*0.96) && willHit){
+                removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
+                spaceshipDestroy()
             }
-            scene.remove(trajectoryObj)
-            asteroidArray.splice(i, 1)
+        } else {
+            removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
         }
     }
 }

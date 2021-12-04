@@ -84,8 +84,11 @@ const calculateCameraPosition = (elapsedTime) => {
     return [x,y,z]
 }
 
-let previousRAF
+const spaceshipDestroy = () => {
 
+}
+
+let previousRAF
 const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
     if(propulsionParticles){
         propulsionParticles.Step(t - previousRAF)
@@ -112,4 +115,4 @@ const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
     previousRAF = t
 }
 
-export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition}
+export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition, spaceshipDestroy}

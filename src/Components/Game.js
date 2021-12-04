@@ -220,8 +220,10 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
                 if(isPlaying){
-                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, cameraWillFollow:true,  timeBeforeIntersection: 2})
-                    whatever(5000)
+                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5})
+                    whatever(10000)
                 }
             }, interval)
         }
