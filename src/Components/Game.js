@@ -14,8 +14,14 @@ let introIsPlaying = false
 let tutIsPlaying = false
 let skipIntroductionB = false
 let skipTutorialB = false
-const skipIntroduction = () => {skipIntroductionB=true}
-const skipTutorial = () => {skipTutorialB = true}
+const skipIntroduction = () => {
+    skipIntroductionB=true
+    introIsPlaying = false
+}
+const skipTutorial = () => {
+    skipTutorialB = true
+    tutIsPlaying = false
+}
 
 const setupGame = (getElapsedTime, scene, camera) => {
     
@@ -210,16 +216,16 @@ const playClicked = async (getElapsedTime, scene, camera) => {
                 cameraRadiusMultiplier: 0.3,
             })
         }
-        const whatever = (interval=0) => {
-            setTimeout(() => { 
-                // check if is playing to disrupt the loop when the game is over
-                if(isPlaying){
-                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, cameraWillFollow:true,  timeBeforeIntersection: 2})
-                    whatever(5000)
-                }
-            }, interval)
-        }
-        whatever()
+        // const whatever = (interval=0) => {
+        //     setTimeout(() => { 
+        //         // check if is playing to disrupt the loop when the game is over
+        //         if(isPlaying){
+        //             spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, cameraWillFollow:true,  timeBeforeIntersection: 2})
+        //             whatever(5000)
+        //         }
+        //     }, interval)
+        // }
+        // whatever()
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
