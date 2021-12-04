@@ -1,11 +1,16 @@
 import * as THREE from 'three'
 import { Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import gsap from 'gsap'
 import generatePropulsionParticles from './PropulsionParticles'
 
 const spaceshipG = new THREE.Group()
 const spaceShipParams = {
     // Default Spaceship Orbit Parameters:
+    spaceshipDestroyed: false,
+    timeBeforeRespawn: 2,
+    spaceshipRespawnedTime: 0,
+    spaceshipRespawning: false,
     spaceshipSpeed: 9,
     spaceshipRadius: 6,
     spaceshipEllipticOffset: 1.3,
@@ -84,17 +89,35 @@ const calculateCameraPosition = (elapsedTime) => {
     return [x,y,z]
 }
 
-const spaceshipDestroy = () => {
-
+const spaceshipDestroy = (scene, elapsedTime) => {
+    scene.remove(spaceshipG)
+    spaceShipParams.spaceshipDestroyed = true
+    setTimeout(()=>spaceshipRespawn(scene, elapsedTime), spaceShipParams.timeBeforeRespawn*1000)
 }
 
+const spaceshipRespawn = (scene, elapsedTime) => {
+    scene.add(spaceshipG)
+    spaceShipParams.spaceshipRespawnedTime = elapsedTime
+    spaceShipParams.spaceshipRespawning = true
+    gsap.to(cameraParams.cameraLookPosition, {
+        duration: 2,
+        x: cameraParams.cameraDummyPointOffset.x,
+        y: cameraParams.cameraDummyPointOffset.y,
+        z: cameraParams.cameraDummyPointOffset.z
+    }).then(()=>{
+        spaceShipParams.spaceshipRespawning = false
+        spaceShipParams.spaceshipDestroyed = false
+    })
+}
+let lerpFactor =0
 let previousRAF
-const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
+const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
+    const deltaTime = (elapsedTime*1000 - previousRAF)
     if(propulsionParticles){
-        propulsionParticles.Step(t - previousRAF)
+        propulsionParticles.Step(deltaTime)
     }
     if (previousRAF === null) {
-		previousRAF = t;
+		previousRAF = elapsedTime*1000;
 	}
     // Set Spaceship Position
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
@@ -104,15 +127,42 @@ const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
     const dummyPoint = new THREE.Vector3(...spaceShipParams.latestSpaceshipDummyPosition)
     spaceshipG.lookAt(dummyPoint)
 
-    cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
+    // Camera Rotation
 
-    cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
-    // check if the freeView is enabled before forcing updates to the camera position, useful for dev
     if (!freeView){
+        if(spaceShipParams.spaceshipRespawning){
+            // const lerpStep=0.1
+            // lerpFactor+=lerpStep*deltaTime
+            // controls.target = cameraParams.cameraLookPosition
+            // if(lerpFactor<=1){
+            //     console.log(lerpFactor)
+            //     // const shipPosVec3 = new Vector3(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
+            //     // cameraParams.cameraDummyPoint.lerp(shipPosVec3, lerpFactor)
+            //     // cameraParams.cameraLookPosition.lerp(cameraParams.cameraDummyPointOffset, lerpFactor)
+                
+            // } 
+            // else {
+            //     spaceShipParams.spaceshipRespawning = false
+            //     spaceShipParams.spaceshipDestroyed = false
+            //     lerpFactor = 0
+            //     console.log(1)
+            // }
+        } else if(!spaceShipParams.spaceshipDestroyed) {
+            // controls.target = cameraParams.cameraLookPosition
+
+        } 
+
+        cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
+
+        // spaceShipParams.spaceshipRespawnedTime
+
+        cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
+        // check if the freeView is enabled before forcing updates to the camera position, useful for dev
+    
         camera.position.set(...cameraParams.latestCameraPosition)
         controls.target = cameraParams.cameraLookPosition
     }
-    previousRAF = t
+    previousRAF = elapsedTime*1000
 }
 
 export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition, spaceshipDestroy}

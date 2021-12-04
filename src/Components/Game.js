@@ -8,6 +8,11 @@ import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './SpaceshipOverlay'
 
+
+// dev - hide introductory and tutorial messages for faster troubleshooting
+const hideMessages = true
+
+
 let isPlaying = false
 let messagesShownOnce = false
 let introIsPlaying = false
@@ -190,7 +195,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         if(!messagesShownOnce){
             messagesShownOnce = true
         }
-        if(currentShowMessages){
+        if(currentShowMessages && !hideMessages){
             await showMessages(introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
         }
         // Spawn dense asteroid zone
@@ -204,7 +209,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             }, interval)
         }
         spawnDenseZoneAsteroids()
-        if(currentShowMessages){
+        if(currentShowMessages && !hideMessages){
             await showMessages(tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
         }
         // Move camera further away for better visibility
@@ -220,9 +225,12 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
                 if(isPlaying){
-                    spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5})
+                    if(!spaceShipParams.spaceshipDestroyed){
+                        spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
+                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
+                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5})
+
+                    }
                     whatever(10000)
                 }
             }, interval)

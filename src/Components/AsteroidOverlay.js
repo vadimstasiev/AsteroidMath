@@ -43,7 +43,6 @@ const removePointOverlay = (asteroidObj) => {
             element.remove()
         }
     }
-    console.log(points)
 }
 
 var frustum = new THREE.Frustum();

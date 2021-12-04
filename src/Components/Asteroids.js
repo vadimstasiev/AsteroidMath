@@ -174,7 +174,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             // lerpFactor [ 0 ; 1 ]
             const lerpFactor = trajectoryProgress / progressToIntersection
             // Camera Rotation to follow a given asteroid
-            if(!freeView && !cameraAlreadyFollowingSomething && cameraWillFollow){
+            if(!freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceShipParams.spaceshipDestroyed){
                 cameraAlreadyFollowingSomething = true
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
@@ -227,7 +227,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             // asteroid hits the ship
             if((trajectoryProgress > progressToIntersection*0.96) && willHit){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
-                spaceshipDestroy()
+                spaceshipDestroy(scene, elapsedTime)
             }
         } else {
             removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)

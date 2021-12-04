@@ -119,14 +119,15 @@ scene.add(camera)
  */
 const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager)
 const environmentMap = cubeTextureLoader.load([
-	'/textures/environmentMaps/stars/px.jpg',
-	'/textures/environmentMaps/stars/nx.jpg',
-	'/textures/environmentMaps/stars/py.jpg',
-	'/textures/environmentMaps/stars/ny.jpg',
-	'/textures/environmentMaps/stars/pz.jpg',
-	'/textures/environmentMaps/stars/nz.jpg'
+	'/textures/environmentMaps/stars/px.png',
+	'/textures/environmentMaps/stars/nx.png',
+	'/textures/environmentMaps/stars/py.png',
+	'/textures/environmentMaps/stars/ny.png',
+	'/textures/environmentMaps/stars/pz.png',
+	'/textures/environmentMaps/stars/nz.png'
 ])
 environmentMap.encoding = THREE.sRGBEncoding
+// scene.background = environmentMap
 scene.environment = environmentMap
 debugObject.envMapIntensity = 5
 
@@ -173,22 +174,22 @@ const initializeDynamicSceneElements = () => {
 /**
  * Animate
  */
-const tick = (t=0) => {
+const tick = () => {
 	elapsedTime = clock.getElapsedTime()		
 	if (isSceneReady) {
 		// Animate Galaxies
 		galaxiesTick(elapsedTime)
 
 		// Animate Spaceship trajectory
-		spaceshipTick(t, elapsedTime, camera, controls, freeView)
+		spaceshipTick(elapsedTime, camera, controls, freeView)
 
 		// Animate Asteroids
 		asteroidTick(elapsedTime, scene, freeView)
 
-		// Update Points Overlay
+		// Update Asteroid Points Overlay
 		pointOverlayTick(camera, sizes)
 
-		// Update Points Overlay
+		// Update Spaceship Messages Overlay
 		spaceshipOverlayTick(elapsedTime, camera, sizes)
 
 		// Update Game
@@ -202,7 +203,7 @@ const tick = (t=0) => {
 		
 	}
 	// Call tick again on the next frame
-	window.requestAnimationFrame(t => tick(t))
+	window.requestAnimationFrame(() => tick())
 }
 tick()
 
