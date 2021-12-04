@@ -135,7 +135,7 @@ debugObject.envMapIntensity = 5
  * Setup Multiple Components
  */
 
-setupSpaceship(loadingManager, camera, scene)
+setupSpaceship(loadingManager, camera, scene, controls)
 setupAsteroids(loadingManager)
 setupGalaxyScene(scene)
 setupPointsOverlay(scene)
