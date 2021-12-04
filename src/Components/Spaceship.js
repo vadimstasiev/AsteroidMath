@@ -20,7 +20,7 @@ const cameraParams = {
     // Default Camera Orbit Parameters:
     cameraLookPosition: new Vector3(),
     cameraDummyPoint: new Vector3(),
-    cameraDummyPointOffset: 1, 
+    cameraDummyPointOffset: 0, 
     latestCameraPosition: [0,0,0],
     cameraToSpaceshipOffset: 0.4,
     cameraRadiusMultiplier: 0.7,
@@ -96,7 +96,7 @@ const spaceshipTick = (t, elapsedTime, camera, controls, freeView) => {
     // Set Spaceship Position
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
     spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
-    // Set Spaceship Rotation by making it look at a point that is "+ dummyPointOffset" ahead
+    // Set Spaceship Rotation by making it look at a point that is + dummyPointOffset ahead
     spaceShipParams.latestSpaceshipDummyPosition = calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset)
     const dummyPoint = new THREE.Vector3(...spaceShipParams.latestSpaceshipDummyPosition)
     spaceshipG.lookAt(dummyPoint)

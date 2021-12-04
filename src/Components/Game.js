@@ -8,7 +8,6 @@ import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './SpaceshipOverlay'
 
-let points = []
 let isPlaying = false
 let messagesShownOnce = false
 let introIsPlaying = false
@@ -172,6 +171,7 @@ const quitClicked = () => {
     gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
+        cameraDummyPointOffset: 0,
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
@@ -206,6 +206,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             gsap.to(cameraParams,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 2,
+                cameraDummyPointOffset: 1,
                 cameraRadiusMultiplier: 0.3,
             })
         }
