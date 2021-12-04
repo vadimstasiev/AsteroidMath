@@ -30,8 +30,6 @@ const cameraParams = {
     cameraToSpaceshipOffset: 0.4,
     cameraRadiusMultiplier: 0.7,
     cameraAmplitudeOffset: 1.2,
-    camera: undefined,
-    controls: undefined
 }
 
 let propulsionParticles;
@@ -103,18 +101,9 @@ const spaceshipRespawn = (scene, elapsedTime) => {
     scene.add(spaceshipG)
     spaceShipParams.spaceshipRespawnedTime = elapsedTime
     spaceShipParams.spaceshipRespawning = true
-    // gsap.to(cameraParams.controls.target, {
-    //     duration: 2,
-    //     x: cameraParams.cameraDummyPoint.x,
-    //     y: cameraParams.cameraDummyPoint.y,
-    //     z: cameraParams.cameraDummyPoint.z
-    // }).then(()=>{
-    //     spaceShipParams.spaceshipRespawning = false
-    //     spaceShipParams.spaceshipDestroyed = false
-    //     cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
-    // })
 }
-let lerpFactor =0
+
+let lerpFactor=0
 let previousRAF
 const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     const deltaTime = (elapsedTime*1000 - previousRAF)
@@ -137,14 +126,10 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     if (!freeView){
         // Camera Position
         cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
-        
         camera.position.set(...cameraParams.latestCameraPosition)
-        
-        
-        
+
         // Camera Rotation
-        
-        // camera looks at this point when following the spaceship
+        // camera looks at this point (rotation) when following the spaceship
         cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
         
         if(spaceShipParams.spaceshipRespawning){
@@ -152,32 +137,17 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
             lerpFactor+=lerpStep*deltaTime
             controls.target = cameraParams.cameraLookPosition
             if(lerpFactor<=1){
-                console.log(lerpFactor)
-                // cameraParams.cameraDummyPoint.lerp(shipPosVec3, lerpFactor)
                 cameraParams.controls.target = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, lerpFactor)
-                
             } 
             else {
                 spaceShipParams.spaceshipRespawning = false
                 spaceShipParams.spaceshipDestroyed = false
                 lerpFactor = 0
-                console.log(1)
             }
         }
-
-
-
-        
         if(!spaceShipParams.spaceshipDestroyed) {
-            // cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
             controls.target = cameraParams.cameraLookPosition
-
         } 
-
-
-        // spaceShipParams.spaceshipRespawnedTime
-
-        // controls.target = cameraParams.cameraLookPosition
     }
     previousRAF = elapsedTime*1000
 }
