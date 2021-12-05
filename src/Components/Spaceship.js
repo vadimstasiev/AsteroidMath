@@ -1,9 +1,10 @@
 import * as THREE from 'three'
-import { Vector3 } from 'three'
+import { Group, Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
 import generatePropulsionParticles from './PropulsionParticles'
 import { quitGame, gameOver,  isGamePlaying } from './Game'
+import { sleep } from './Helpers'
 
 const spaceshipG = new THREE.Group()
 const spaceShipParams = {
@@ -18,11 +19,13 @@ const spaceShipParams = {
     spaceshipOscilationY: 6,
     dummyPointOffset: 0.1,
     latestSpaceshipPosition: [0,0,0],
-    latestSpaceshipDummyPosition: [0,0,0]
+    latestSpaceshipDummyPosition: [0,0,0],
+    explosionParticles: undefined
 }
 
 const cameraParams = {
     // Default Camera Orbit Parameters:
+    camera: undefined,
     latestCameraPosition: [0,0,0],
     cameraLookPosition: new Vector3(),
     cameraDummyPoint: new Vector3(),
@@ -34,9 +37,8 @@ const cameraParams = {
 
 let propulsionParticles;
 
-const setupSpaceship = (loadingManager, camera, scene, controls) => {
+const setupSpaceship = (loadingManager, camera, scene) => {
     cameraParams.camera = camera
-    cameraParams.controls = controls
     const gltfLoader = new GLTFLoader(loadingManager)
     gltfLoader.load(
         '/models/Spaceship/Spaceship.gltf',
@@ -91,7 +93,33 @@ const calculateCameraPosition = (elapsedTime) => {
     return [x,y,z]
 }
 
-const spaceshipDestroy = (scene, elapsedTime) => {
+const spawnExplosion = (scene) => {
+    const explosionParticlesG = new THREE.Group()
+    spaceShipParams.explosionParticles = new generatePropulsionParticles({
+        parent: explosionParticlesG,
+        camera: cameraParams.camera,
+        size: 100,
+        length: 0.3,
+        spread: 1/10,
+        width: 4,
+        speed: 0.005,
+        innerColor: 0x007bff,
+        outterColor: 0x007bff
+    })
+    const explosionDuration = 4
+    // explosionParticlesG.position.set(...spaceShipParams.latestSpaceshipDummyPosition)
+    explosionParticlesG.rotation.z = Math.PI/2
+    explosionParticlesG.rotation.y = Math.PI/2
+    spaceshipG.add(explosionParticlesG)
+    setTimeout(()=> {
+        spaceshipG.remove(explosionParticlesG)
+        spaceShipParams.explosionParticles = undefined
+    }, explosionDuration*1000)
+}
+
+const spaceshipDestroy = async (scene, elapsedTime) => {
+    spawnExplosion(scene)
+    await sleep(4)
     scene.remove(spaceshipG)
     spaceShipParams.spaceshipDestroyed = true
     gameOver(scene)
@@ -104,15 +132,13 @@ const spaceshipRespawn = (scene) => {
 }
 
 let lerpFactor=0
-let previousRAF
+let previousRAF=0
 const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     const deltaTime = (elapsedTime*1000 - previousRAF)
+    previousRAF = elapsedTime*1000
     if(propulsionParticles){
         propulsionParticles.Step(deltaTime)
     }
-    if (previousRAF === null) {
-		previousRAF = elapsedTime*1000;
-	}
     // Set Spaceship Position
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
     spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
@@ -127,9 +153,6 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
         // Camera Rotation - camera looks at this point (rotation) when following the spaceship
         cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
         // Camera Position
-
-
-        
         if(spaceShipParams.spaceshipRespawning){
             cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
             const lerpStep=0.001
@@ -154,7 +177,10 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
         } 
         camera.position.set(...cameraParams.latestCameraPosition)
     }
-    previousRAF = elapsedTime*1000
+
+    if(spaceShipParams.explosionParticles){
+        spaceShipParams.explosionParticles.Step(deltaTime)
+    }
 }
 
 export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition, spaceshipDestroy, spaceshipRespawn}

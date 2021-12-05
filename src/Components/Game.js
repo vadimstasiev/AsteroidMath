@@ -10,7 +10,7 @@ import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = false
+const hideMessages = true
 
 
 let gameIsPlayingB = false
