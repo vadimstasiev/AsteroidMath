@@ -35,7 +35,8 @@ const cameraParams = {
     cameraAmplitudeOffset: 1.2,
 }
 
-let propulsionParticles;
+let propulsionParticlesG
+let propulsionParticles
 
 const setupSpaceship = (loadingManager, camera, scene) => {
     cameraParams.camera = camera
@@ -53,7 +54,7 @@ const setupSpaceship = (loadingManager, camera, scene) => {
     /**
      * Spaceship propulsion particle system
      */
-    const propulsionParticlesG = new THREE.Group()
+    propulsionParticlesG = new THREE.Group()
     spaceshipG.add(propulsionParticlesG)
     propulsionParticles = new generatePropulsionParticles({
         parent: propulsionParticlesG,
@@ -110,6 +111,7 @@ const spawnExplosion = (scene) => {
     // explosionParticlesG.position.set(...spaceShipParams.latestSpaceshipDummyPosition)
     explosionParticlesG.rotation.z = Math.PI/2
     explosionParticlesG.rotation.y = Math.PI/2
+    explosionParticlesG.position.z = 1
     spaceshipG.add(explosionParticlesG)
     setTimeout(()=> {
         spaceshipG.remove(explosionParticlesG)
@@ -118,6 +120,7 @@ const spawnExplosion = (scene) => {
 }
 
 const spaceshipDestroy = async (scene, elapsedTime) => {
+    propulsionParticlesG.visible =false
     spawnExplosion(scene)
     await sleep(4)
     scene.remove(spaceshipG)
@@ -128,6 +131,7 @@ const spaceshipDestroy = async (scene, elapsedTime) => {
 
 const spaceshipRespawn = (scene) => {
     scene.add(spaceshipG)
+    propulsionParticlesG.visible = true
     spaceShipParams.spaceshipRespawning = true
 }
 

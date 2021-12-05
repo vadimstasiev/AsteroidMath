@@ -348,6 +348,8 @@ const playClicked = async (scene, camera) => {
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
         gameIsPlayingB = false
+        spaceShipParams.spaceshipDestroyed = false
+        spaceshipRespawn(scene)
         // messagesShownOnceB = true
         // introIsPlaying = false
         // tutIsPlaying = false
