@@ -3,14 +3,14 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getElapsedTime } from './Helpers'
-import { spaceShipParams, cameraParams, spaceshipG } from './Spaceship'
+import { spaceShipParams, cameraParams, spaceshipG, spaceshipRespawn } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = true
+const hideMessages = false
 
 
 let gameIsPlayingB = false
@@ -276,7 +276,7 @@ const quitGame = async (isPlayingDelay=0) => {
     gameIsPlayingB = false
 }
 
-const gameOver = async (isPlayingDelay=0, getElapsedTime) => {
+const gameOver = async (scene) => {
     if(spaceShipParams.spaceshipDestroyed){
         await showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
@@ -287,9 +287,9 @@ const gameOver = async (isPlayingDelay=0, getElapsedTime) => {
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
-    await sleep(isPlayingDelay)
+    // await sleep(3)
     gameIsPlayingB = false
-    
+    spaceshipRespawn(scene)
 }
 
 
@@ -348,6 +348,9 @@ const playClicked = async (scene, camera) => {
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
         gameIsPlayingB = false
+        // messagesShownOnceB = true
+        // introIsPlaying = false
+        // tutIsPlaying = false
     }
 } 
 

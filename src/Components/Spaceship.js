@@ -94,11 +94,11 @@ const calculateCameraPosition = (elapsedTime) => {
 const spaceshipDestroy = (scene, elapsedTime) => {
     scene.remove(spaceshipG)
     spaceShipParams.spaceshipDestroyed = true
-    gameOver(spaceShipParams.timeBeforeRespawn)
-    setTimeout(()=>spaceshipRespawn(scene, elapsedTime), spaceShipParams.timeBeforeRespawn*1000)
+    gameOver(scene)
+    // setTimeout(()=>spaceshipRespawn(scene, elapsedTime), spaceShipParams.timeBeforeRespawn*1000)
 }
 
-const spaceshipRespawn = (scene, elapsedTime) => {
+const spaceshipRespawn = (scene) => {
     scene.add(spaceshipG)
     spaceShipParams.spaceshipRespawning = true
 }
@@ -157,4 +157,4 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     previousRAF = elapsedTime*1000
 }
 
-export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition, spaceshipDestroy}
+export {spaceshipG, setupSpaceship, spaceshipTick, spaceShipParams, cameraParams, calculateSpaceshipPosition, spaceshipDestroy, spaceshipRespawn}
