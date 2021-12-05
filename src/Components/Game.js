@@ -200,63 +200,63 @@ const tutorialMessages = [
 
 const deathMessages = [
     {
-        message: " (✖╭╮✖) We didn’t had to die",
+        message: "We didn’t had to die (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) It’s just a scratch",
+        message: "It’s just a scratch (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) Your end is here",
+        message: "Your end is here (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) What have you done?!",
+        message: "What have you done?! (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) We didn’t even survive, lame.",
+        message: "We didn’t even survive, lame. (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) Death is always true.",
+        message: "Death is always true. (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: " (✖╭╮✖) You think death favors you",
+        message: "You think death favors you (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: ' (✖╭╮✖) You can’t say “Not Today” forever',
+        message: 'You can’t say “Not Today” forever (✖╭╮✖) ',
         offsetX: 0,
         offsetY: 0,
         duration: 5,
         wait: 1
     },
     {
-        message: ' (✖╭╮✖) Our death go brrrr',
+        message: 'Our death go brrrr (✖╭╮✖) ',
         offsetX: 0,
         offsetY: 0,
         duration: 5,
@@ -289,6 +289,7 @@ const gameOver = async (isPlayingDelay=0, getElapsedTime) => {
     })
     await sleep(isPlayingDelay)
     gameIsPlayingB = false
+    
 }
 
 
