@@ -10,7 +10,7 @@ import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = true
+const hideMessages = false
 
 
 let gameIsPlayingB = false
@@ -200,7 +200,7 @@ const tutorialMessages = [
 
 const deathMessages = [
     {
-        message: "We didn’t had to die. (✖╭╮✖) ",
+        message: "We didn’t have to die. (✖╭╮✖) ",
         offsetX: 0,
         offsetY: 0,
         duration: 5,
