@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
-import { rotateAboutPoint } from './Helpers'
+import { rotateAboutPoint, sleep } from './Helpers'
 import { spaceShipParams, cameraParams } from './Spaceship'
 import { asteroidTick, spawnAsteroid } from './Asteroids'
 
@@ -32,7 +32,18 @@ const spawnSpaceshipOverlay = (timeout, message, offset) => {
         timeout,
         offset
     })
+}
 
+const showMessages = async (gameIsPlaying, messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => false) => {
+    setMessageIsPlaying(true)
+    for (const msg of messages){
+        if(gameIsPlaying && !playMessageContinue()){
+            const {message, offsetX, offsetY, duration, wait} = msg
+            spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY})
+            await sleep(duration+wait)
+        }
+    } 
+    setMessageIsPlaying(false)
 }
 
 const spaceshipOverlayTick = (elapsedTime, camera, sizes) => {
@@ -53,4 +64,4 @@ const spaceshipOverlayTick = (elapsedTime, camera, sizes) => {
     }
 }
 
-export {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick}
+export {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick, showMessages}

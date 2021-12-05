@@ -6,14 +6,14 @@ import { rotateAboutPoint } from './Helpers'
 import { spaceShipParams, cameraParams } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
-import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './SpaceshipOverlay'
+import { showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = true
+const hideMessages = false
 
 
-let isPlaying = false
+let gameIsPlaying = false
 let messagesShownOnce = false
 let introIsPlaying = false
 let tutIsPlaying = false
@@ -37,7 +37,7 @@ const setupGame = (getElapsedTime, scene, camera) => {
     
     // show/hide buttons
     setInterval(() => { 
-        if(isPlaying){
+        if(gameIsPlaying){
             for(const element of document.getElementsByClassName('menu-buttons')){
                 element.style.display = 'none'
             }
@@ -186,24 +186,24 @@ const quitGame = async (isPlayingDelay=0) => {
         cameraRadiusMultiplier: 0.7,
     })
     await sleep(isPlayingDelay)
-    isPlaying = false
+    gameIsPlaying = false
 }
 
 const playClicked = async (getElapsedTime, scene, camera) => {        
-    if(!isPlaying){
-        isPlaying = true
+    if(!gameIsPlaying){
+        gameIsPlaying = true
         const currentShowMessages = !messagesShownOnce
         if(!messagesShownOnce){
             messagesShownOnce = true
         }
         if(currentShowMessages && !hideMessages){
-            await showMessages(introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
+            await showMessages(gameIsPlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
-                if(isPlaying){
+                if(gameIsPlaying){
                     spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 2})
                     spawnDenseZoneAsteroids(getRandomInt(50, 200))
                 }
@@ -211,10 +211,10 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowMessages && !hideMessages){
-            await showMessages(tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
+            await showMessages(gameIsPlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
         }
         // Move camera further away for better visibility
-        if(isPlaying){
+        if(gameIsPlaying){
             gsap.to(cameraParams,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 2,
@@ -225,7 +225,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         const whatever = (interval=0) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
-                if(isPlaying){
+                if(gameIsPlaying){
                     if(!spaceShipParams.spaceshipDestroyed){
                         spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
                         spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
@@ -241,20 +241,10 @@ const playClicked = async (getElapsedTime, scene, camera) => {
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
-const showMessages = async (messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => false) => {
-    setMessageIsPlaying(true)
-    for (const msg of messages){
-        if(isPlaying && !playMessageContinue()){
-            const {message, offsetX, offsetY, duration, wait} = msg
-            spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY})
-            await sleep(duration+wait)
-        }
-    } 
-    setMessageIsPlaying(false)
-}
+
 
 const playTick = (elapsedTime, scene, camera) => {
-    if(isPlaying){
+    if(gameIsPlaying){
 
     }
 } 
