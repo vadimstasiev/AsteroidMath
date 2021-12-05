@@ -7,7 +7,7 @@ import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
-import {setupGame, playClicked, quitClicked, skipIntroduction, skipTutorial, playTick} from './Components/Game'
+import {setupGame, playClicked, quitGame, skipIntroduction, skipTutorial, playTick} from './Components/Game'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
 
 
@@ -77,7 +77,7 @@ const loadingManager = new THREE.LoadingManager(
 			 */
 			initializeDynamicSceneElements()
 			window.playClicked = () => playClicked(getElapsedTime, scene, camera)
-			window.quitClicked = () => quitClicked()
+			window.quitGame = () => quitGame()
 			window.skipIntroduction = () => skipIntroduction()
 			window.skipTutorial = () => skipTutorial()
 		}, 2000)

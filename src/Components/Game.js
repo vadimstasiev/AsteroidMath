@@ -177,8 +177,7 @@ const tutorialMessages = [
     },
 ]
 
-const quitClicked = () => {
-    isPlaying = false
+const quitGame = async (isPlayingDelay=0) => {
     gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
@@ -186,6 +185,8 @@ const quitClicked = () => {
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
+    await sleep(isPlayingDelay)
+    isPlaying = false
 }
 
 const playClicked = async (getElapsedTime, scene, camera) => {        
@@ -259,4 +260,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {setupGame, playClicked, skipIntroduction, skipTutorial, quitClicked, playTick}
+export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, playTick}

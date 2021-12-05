@@ -3,13 +3,13 @@ import { Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
 import generatePropulsionParticles from './PropulsionParticles'
+import { quitGame } from './Game'
 
 const spaceshipG = new THREE.Group()
 const spaceShipParams = {
     // Default Spaceship Orbit Parameters:
     spaceshipDestroyed: false,
     timeBeforeRespawn: 10,
-    spaceshipRespawnedTime: 0,
     spaceshipRespawning: false,
     spaceshipSpeed: 9,
     spaceshipRadius: 6,
@@ -94,12 +94,12 @@ const calculateCameraPosition = (elapsedTime) => {
 const spaceshipDestroy = (scene, elapsedTime) => {
     scene.remove(spaceshipG)
     spaceShipParams.spaceshipDestroyed = true
+    quitGame(spaceShipParams.timeBeforeRespawn)
     setTimeout(()=>spaceshipRespawn(scene, elapsedTime), spaceShipParams.timeBeforeRespawn*1000)
 }
 
 const spaceshipRespawn = (scene, elapsedTime) => {
     scene.add(spaceshipG)
-    spaceShipParams.spaceshipRespawnedTime = elapsedTime
     spaceShipParams.spaceshipRespawning = true
 }
 
