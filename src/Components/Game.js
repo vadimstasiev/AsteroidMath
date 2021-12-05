@@ -2,19 +2,19 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
-import { rotateAboutPoint } from './Helpers'
-import { spaceShipParams, cameraParams } from './Spaceship'
+import { rotateAboutPoint, getElapsedTime } from './Helpers'
+import { spaceShipParams, cameraParams, spaceshipG } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep } from './Helpers'
-import { showMessages} from './SpaceshipOverlay'
+import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
 const hideMessages = true
 
 
-let gameIsPlaying = false
-let messagesShownOnce = false
+let gameIsPlayingB = false
+let messagesShownOnceB = false
 let introIsPlaying = false
 let tutIsPlaying = false
 let skipIntroductionB = false
@@ -29,7 +29,7 @@ const skipTutorial = () => {
     tutIsPlaying = false
 }
 const isGamePlaying = () => {
-    return gameIsPlaying
+    return gameIsPlayingB
 }
 
 const windowHasFocus = () => {
@@ -42,8 +42,7 @@ const windowHasFocus = () => {
     return windowIsFocused
 }
 
-const setupGame = (getElapsedTime, scene, camera) => {
-    
+const setupGame = (scene, camera) => {
     // spawn some asteroids by default
     setInterval(() => { 
         spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 0.5})
@@ -51,7 +50,7 @@ const setupGame = (getElapsedTime, scene, camera) => {
     
     // show/hide buttons
     setInterval(() => { 
-        if(gameIsPlaying){
+        if(gameIsPlayingB){
             for(const element of document.getElementsByClassName('menu-buttons')){
                 element.style.display = 'none'
             }
@@ -76,12 +75,20 @@ const setupGame = (getElapsedTime, scene, camera) => {
                     element.style.display = 'none'
                 }
             }
+            if(spaceShipParams.spaceshipDestroyed){
+                for(const element of document.getElementsByClassName('quit')){
+                    element.style.display = 'none'
+                }
+            }
         } else {
             for(const element of document.getElementsByClassName('menu-buttons')){
                 element.style.display = ''
             }
             for(const element of document.getElementsByClassName('play-menu')){
                 element.style.display = 'none'
+            }
+            for(const element of document.getElementsByClassName('quit')){
+                element.style.display = ''
             }
         }
     }, getRandomInt(1000))
@@ -191,6 +198,72 @@ const tutorialMessages = [
     },
 ]
 
+const deathMessages = [
+    {
+        message: " (✖╭╮✖) We didn’t had to die",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) It’s just a scratch",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) Your end is here",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) What have you done?!",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) We didn’t even survive, lame.",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) Death is always true.",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: " (✖╭╮✖) You think death favors you",
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: ' (✖╭╮✖) You can’t say “Not Today” forever',
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    },
+    {
+        message: ' (✖╭╮✖) Our death go brrrr',
+        offsetX: 0,
+        offsetY: 0,
+        duration: 5,
+        wait: 1
+    }
+]
+
 const quitGame = async (isPlayingDelay=0) => {
     gsap.to(cameraParams,  {
         duration: 2,
@@ -200,35 +273,51 @@ const quitGame = async (isPlayingDelay=0) => {
         cameraRadiusMultiplier: 0.7,
     })
     await sleep(isPlayingDelay)
-    gameIsPlaying = false
+    gameIsPlayingB = false
 }
 
-const playClicked = async (getElapsedTime, scene, camera) => {        
-    if(!gameIsPlaying){
-        gameIsPlaying = true
-        const currentShowMessages = !messagesShownOnce
-        if(!messagesShownOnce){
-            messagesShownOnce = true
+const gameOver = async (isPlayingDelay=0, getElapsedTime) => {
+    if(spaceShipParams.spaceshipDestroyed){
+        await showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
+    }
+    gsap.to(cameraParams,  {
+        duration: 2,
+        // manually set values back to default, (check Spaceship.js for default values)
+        cameraDummyPointOffset: 0,
+        cameraToSpaceshipOffset: 0.4,
+        cameraRadiusMultiplier: 0.7,
+    })
+    await sleep(isPlayingDelay)
+    gameIsPlayingB = false
+}
+
+
+const playClicked = async (scene, camera) => {        
+    if(!gameIsPlayingB){
+        gameIsPlayingB = true
+        const currentShowOnceMessagesB = !messagesShownOnceB
+        if(!messagesShownOnceB){
+            messagesShownOnceB = true
         }
-        if(currentShowMessages && !hideMessages){
+        if(currentShowOnceMessagesB && !hideMessages){
             await showMessages(isGamePlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
-                if(gameIsPlaying){
+                if(gameIsPlayingB){
                     spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 2})
                     spawnDenseZoneAsteroids(getRandomInt(50, 200))
                 }
             }, interval)
         }
         spawnDenseZoneAsteroids()
-        if(currentShowMessages && !hideMessages){
+        if(currentShowOnceMessagesB && !hideMessages){
             await showMessages(isGamePlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
         }
         // Move camera further away for better visibility
-        if(gameIsPlaying){
+        if(gameIsPlayingB){
             gsap.to(cameraParams,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 2,
@@ -239,7 +328,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         const whatever = (interval=0) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
-                if(gameIsPlaying){
+                if(gameIsPlayingB){
                     if(!spaceShipParams.spaceshipDestroyed){
                         spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
                         spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
@@ -255,13 +344,11 @@ const playClicked = async (getElapsedTime, scene, camera) => {
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
-
-
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
-        gameIsPlaying = false
+        gameIsPlayingB = false
     }
 } 
 
 
-export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, playTick, isGamePlaying}
+export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, gameOver, playTick, isGamePlaying}

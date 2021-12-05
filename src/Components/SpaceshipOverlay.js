@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
-import { rotateAboutPoint, sleep } from './Helpers'
+import { rotateAboutPoint, sleep, getElapsedTime } from './Helpers'
 import { spaceShipParams, cameraParams } from './Spaceship'
 import { asteroidTick, spawnAsteroid } from './Asteroids'
 
@@ -17,7 +17,7 @@ const setupSpaceshipOverlay = (scene) => {
     scene.add(overlay)
 }
 
-const spawnSpaceshipOverlay = (timeout, message, offset) => {
+const spawnSpaceshipOverlay = (timeout, message, offset, position) => {
     const pointClassName = "point-" + points.length 
     const pointHTML =
         `<div class="point ${pointClassName}">\n` +
@@ -30,7 +30,8 @@ const spawnSpaceshipOverlay = (timeout, message, offset) => {
     points.push({
         element: document.querySelector(`.${pointClassName}`),
         timeout,
-        offset
+        offset,
+        position
     })
 }
 
@@ -40,23 +41,38 @@ const showMessages = async (isGamePlaying, messages, getElapsedTime, setMessageI
         if(isGamePlaying() && !playMessageContinue()){
             const {message, offsetX, offsetY, duration, wait} = msg
             spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY})
+            console.log(getElapsedTime()+duration)
             await sleep(duration+wait)
         }
     } 
     setMessageIsPlaying(false)
 }
 
+const showDeathMessages = async (messages) => {
+    const deathPosition = [...spaceShipParams.latestSpaceshipPosition]
+    for (const msg of messages){
+        const {message, offsetX, offsetY, duration, wait} = msg
+        spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, deathPosition)
+        await sleep(duration+wait)
+    } 
+}
+
 const spaceshipOverlayTick = (elapsedTime, camera, sizes) => {
     // Go through each html point
     for(const point of points) {
         // Get 2D screen position
-        const {element, timeout, offset} = point
+        const {element, timeout, offset, position} = point
         if(elapsedTime<timeout){
-            const screenPosition = new Vector3(...spaceShipParams.latestSpaceshipPosition)
-            screenPosition.project(camera)
+            let screenPositionVec3
+            if(position){
+                screenPositionVec3 = new Vector3(...position)
+            } else {
+                screenPositionVec3 = new Vector3(...spaceShipParams.latestSpaceshipPosition)
+            }
+            screenPositionVec3.project(camera)
             element.classList.add('visible')
-            const translateX = screenPosition.x * sizes.width * 0.5
-            const translateY = - screenPosition.y * sizes.height * 0.5
+            const translateX = screenPositionVec3.x * sizes.width * 0.5
+            const translateY = - screenPositionVec3.y * sizes.height * 0.5
             element.style.transform = `translateX(${translateX+offset.x}px) translateY(${translateY+offset.y}px)`
         } else {
             element.remove()
@@ -64,4 +80,4 @@ const spaceshipOverlayTick = (elapsedTime, camera, sizes) => {
     }
 }
 
-export {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick, showMessages}
+export {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick, showMessages, showDeathMessages}

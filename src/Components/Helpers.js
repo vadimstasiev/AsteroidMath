@@ -39,4 +39,11 @@ const sleep = (s) => {
     return new Promise(resolve => setTimeout(resolve, s*1000))
 }
 
-export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep}
+let gameElapsedTime = 0
+const getElapsedTime = () => gameElapsedTime
+
+const elapsedTimeTick = (elapsedTime) => {
+    gameElapsedTime = elapsedTime
+}
+
+export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep, getElapsedTime, elapsedTimeTick}

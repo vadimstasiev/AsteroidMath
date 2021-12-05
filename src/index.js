@@ -9,6 +9,7 @@ import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
 import {setupGame, playClicked, quitGame, skipIntroduction, skipTutorial, playTick} from './Components/Game'
 import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
+import { elapsedTimeTick } from './Components/Helpers'
 
 
 // If freeView is enabled then the camera can be panned around manually
@@ -76,7 +77,7 @@ const loadingManager = new THREE.LoadingManager(
 			 * Define callable functions once scene is ready
 			 */
 			initializeDynamicSceneElements()
-			window.playClicked = () => playClicked(getElapsedTime, scene, camera)
+			window.playClicked = () => playClicked(scene, camera)
 			window.quitGame = () => quitGame()
 			window.skipIntroduction = () => skipIntroduction()
 			window.skipTutorial = () => skipTutorial()
@@ -140,6 +141,9 @@ setupAsteroids(loadingManager)
 setupGalaxyScene(scene)
 setupPointsOverlay(scene)
 setupSpaceshipOverlay(scene)
+const initializeDynamicSceneElements = () => {
+	setupGame(scene, camera)
+}
 
 /**
  * Lights
@@ -161,22 +165,16 @@ scene.add(ambientLight)
  */
 const renderer = setupRenderer(canvas, sizes, camera)
 const clock = new THREE.Clock()
-let elapsedTime = 0
-
-const getElapsedTime = () => {
-	return elapsedTime
-}
-
-const initializeDynamicSceneElements = () => {
-	setupGame(getElapsedTime, scene, camera)
-}
 
 /**
  * Animate
  */
 const tick = () => {
-	elapsedTime = clock.getElapsedTime()		
+	const elapsedTime = clock.getElapsedTime()		
 	if (isSceneReady) {
+        // elapsedTime for other components
+        elapsedTimeTick(elapsedTime)
+
 		// Animate Galaxies
 		galaxiesTick(elapsedTime)
 
