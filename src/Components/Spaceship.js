@@ -9,6 +9,7 @@ import { sleep } from './Helpers'
 const spaceshipG = new THREE.Group()
 const spaceShipParams = {
     // Default Spaceship Orbit Parameters:
+    spaceshipObj: undefined,
     spaceshipDestroyed: false,
     timeBeforeRespawn: 10,
     spaceshipRespawning: false,
@@ -48,6 +49,7 @@ const setupSpaceship = (loadingManager, camera, scene) => {
             const model = gltf.scene.children[0]
             model.scale.set(0.015, 0.015, 0.015)
             model.position.set(0,0,0)
+            spaceShipParams.spaceshipObj = model
             spaceshipG.add(model)
         }
     )
@@ -107,7 +109,7 @@ const spawnExplosion = (scene) => {
         innerColor: 0x007bff,
         outterColor: 0x007bff
     })
-    const explosionDuration = 4
+    const explosionDuration = 0.2
     // explosionParticlesG.position.set(...spaceShipParams.latestSpaceshipDummyPosition)
     explosionParticlesG.rotation.z = Math.PI/2
     explosionParticlesG.rotation.y = Math.PI/2
@@ -121,17 +123,16 @@ const spawnExplosion = (scene) => {
 
 const spaceshipDestroy = async (scene, elapsedTime) => {
     propulsionParticlesG.visible =false
+    spaceShipParams.spaceshipObj.visible=false
     spawnExplosion(scene)
-    await sleep(4)
-    scene.remove(spaceshipG)
     spaceShipParams.spaceshipDestroyed = true
     gameOver(scene)
-    // setTimeout(()=>spaceshipRespawn(scene, elapsedTime), spaceShipParams.timeBeforeRespawn*1000)
 }
 
 const spaceshipRespawn = (scene) => {
     scene.add(spaceshipG)
     propulsionParticlesG.visible = true
+    spaceShipParams.spaceshipObj.visible=true
     spaceShipParams.spaceshipRespawning = true
 }
 
@@ -145,7 +146,9 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     }
     // Set Spaceship Position
     spaceShipParams.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
-    spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
+    // if(!spaceShipParams.spaceshipDestroyed){
+        spaceshipG.position.set(...spaceShipParams.latestSpaceshipPosition)
+    // }
     // Set Spaceship Rotation by making it look at a point that is + dummyPointOffset ahead
     spaceShipParams.latestSpaceshipDummyPosition = calculateSpaceshipPosition(elapsedTime, spaceShipParams.dummyPointOffset)
     const dummyPoint = new THREE.Vector3(...spaceShipParams.latestSpaceshipDummyPosition)
