@@ -23,10 +23,10 @@ const spaceShipParams = {
 
 const cameraParams = {
     // Default Camera Orbit Parameters:
+    latestCameraPosition: [0,0,0],
     cameraLookPosition: new Vector3(),
     cameraDummyPoint: new Vector3(),
     cameraDummyPointOffset: 0, 
-    latestCameraPosition: [0,0,0],
     cameraToSpaceshipOffset: 0.4,
     cameraRadiusMultiplier: 0.7,
     cameraAmplitudeOffset: 1.2,
@@ -123,31 +123,36 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
 
     
     // check if the freeView is enabled before forcing updates to the camera position, useful for dev
-    if (!freeView){
-        // Camera Position
-        cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
-        camera.position.set(...cameraParams.latestCameraPosition)
-
-        // Camera Rotation
-        // camera looks at this point (rotation) when following the spaceship
+    if (!freeView){        
+        // Camera Rotation - camera looks at this point (rotation) when following the spaceship
         cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
+        // Camera Position
+
+
         
         if(spaceShipParams.spaceshipRespawning){
+            cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
             const lerpStep=0.001
             lerpFactor+=lerpStep*deltaTime
-            controls.target = cameraParams.cameraLookPosition
             if(lerpFactor<=1){
-                cameraParams.controls.target = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, lerpFactor)
+                controls.target.lerp(cameraParams.cameraDummyPoint, lerpFactor)
+                
+                const latestCameraPositionVec3 = new Vector3(...cameraParams.latestCameraPosition)
+                const targetPositionVec3 = camera.position.clone().lerp(latestCameraPositionVec3, lerpFactor)
+                cameraParams.latestCameraPosition = [targetPositionVec3.x, targetPositionVec3.y, targetPositionVec3.z]
             } 
             else {
                 spaceShipParams.spaceshipRespawning = false
                 spaceShipParams.spaceshipDestroyed = false
                 lerpFactor = 0
+                controls.target = cameraParams.cameraDummyPoint
+                // camera.position.set(...cameraParams.latestCameraPosition)
             }
-        }
-        if(!spaceShipParams.spaceshipDestroyed) {
+        } else if(!spaceShipParams.spaceshipDestroyed) {
+            cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraParams.cameraLookPosition
         } 
+        camera.position.set(...cameraParams.latestCameraPosition)
     }
     previousRAF = elapsedTime*1000
 }
