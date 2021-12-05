@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
 import generatePropulsionParticles from './PropulsionParticles'
-import { quitGame } from './Game'
+import { quitGame, isGamePlaying } from './Game'
 
 const spaceshipG = new THREE.Group()
 const spaceShipParams = {
@@ -148,7 +148,7 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
                 controls.target = cameraParams.cameraDummyPoint
                 // camera.position.set(...cameraParams.latestCameraPosition)
             }
-        } else if(!spaceShipParams.spaceshipDestroyed) {
+        } else if(!spaceShipParams.spaceshipDestroyed || !isGamePlaying()) {
             cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraParams.cameraLookPosition
         } 

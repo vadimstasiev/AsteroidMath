@@ -10,7 +10,7 @@ import { showMessages} from './SpaceshipOverlay'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = false
+const hideMessages = true
 
 
 let gameIsPlaying = false
@@ -19,6 +19,7 @@ let introIsPlaying = false
 let tutIsPlaying = false
 let skipIntroductionB = false
 let skipTutorialB = false
+
 const skipIntroduction = () => {
     skipIntroductionB=true
     introIsPlaying = false
@@ -26,6 +27,19 @@ const skipIntroduction = () => {
 const skipTutorial = () => {
     skipTutorialB = true
     tutIsPlaying = false
+}
+const isGamePlaying = () => {
+    return gameIsPlaying
+}
+
+const windowHasFocus = () => {
+    if (document.hasFocus()) return true
+    let windowIsFocused = false
+    window.addEventListener('focus', () => {
+        windowIsFocused = true
+    })
+    window.focus()
+    return windowIsFocused
 }
 
 const setupGame = (getElapsedTime, scene, camera) => {
@@ -197,7 +211,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
             messagesShownOnce = true
         }
         if(currentShowMessages && !hideMessages){
-            await showMessages(gameIsPlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
+            await showMessages(isGamePlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -211,7 +225,7 @@ const playClicked = async (getElapsedTime, scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowMessages && !hideMessages){
-            await showMessages(gameIsPlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
+            await showMessages(isGamePlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
         }
         // Move camera further away for better visibility
         if(gameIsPlaying){
@@ -244,10 +258,10 @@ const playClicked = async (getElapsedTime, scene, camera) => {
 
 
 const playTick = (elapsedTime, scene, camera) => {
-    if(gameIsPlaying){
-
+    if(!windowHasFocus()){
+        gameIsPlaying = false
     }
 } 
 
 
-export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, playTick}
+export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, playTick, isGamePlaying}

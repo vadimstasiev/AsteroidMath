@@ -5,6 +5,7 @@ import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
 import { spaceshipG, spaceShipParams, cameraParams, calculateCameraPosition, calculateSpaceshipPosition, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
+import { isGamePlaying } from './Game'
 
 const showTrajectories = false
 
@@ -166,6 +167,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             willHit,
             cameraWillFollow
         } = asteroidArray[i]
+        const gameIsPlaying =  isGamePlaying()
         if(elapsedTime<timeout){
             const trajectoryProgress = (duration - timeout + elapsedTime)/duration
             // the intersection timing is the same regardless of hit or miss 
@@ -225,10 +227,14 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
             // asteroid hits the ship
-            if((trajectoryProgress > progressToIntersection*0.96) && willHit){
+            if((trajectoryProgress > progressToIntersection*0.96) && willHit && gameIsPlaying){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 spaceshipDestroy(scene, elapsedTime)
+                // TODO !! only remove in that certain condition after playing again 
+            } else if (willHit && !gameIsPlaying) {
+                removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
             }
+            
         } else {
             removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
         }
