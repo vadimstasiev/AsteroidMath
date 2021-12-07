@@ -48,7 +48,7 @@ const showDeathMessages = async (messages) => {
     const deathPosition = [...spaceShipParams.latestSpaceshipPosition]
     for (const msg of messages){
         const {message, offsetX, offsetY, duration, wait} = msg
-        spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, tag="death", deathPosition)
+        spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, "death", deathPosition)
         await sleep(duration+wait)
     } 
 }
