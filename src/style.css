@@ -130,11 +130,12 @@ body {
   text-align: center;
 }
 
-.menu-buttons div {
+.navbar-play-and-leaderboard div {
   cursor: pointer;
+  display: none;
 }
 
-.play-menu {
+.play-and-leaderboard {
   display: none;
 }
 

@@ -7,7 +7,7 @@ import { spaceShipParams, cameraParams, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 import { getIsGamePlaying } from './Game'
 
-const showTrajectories = false
+const dev_showTrajectories = false
 
 let asteroidArray = []
 let asteroidsScene = null
@@ -92,7 +92,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
             
             let trajectoryObj
             // show trajectories of asteroids (for dev and troubleshooting)
-            if(showTrajectories) {
+            if(dev_showTrajectories) {
                 const trajectoryGeometry = new THREE.BufferGeometry()
                 const trajectoryMaterial = new THREE.LineBasicMaterial( { color : 0xff0000 } )
                 trajectoryObj = new THREE.Line( trajectoryGeometry, trajectoryMaterial )
@@ -146,13 +146,13 @@ const removeAsteroid = (scene, asteroid, index, hasOverlay, trajectoryObj) => {
     if(hasOverlay){
         removePointOverlay(asteroid)
     }
-    if(showTrajectories){
+    if(dev_showTrajectories){
         scene.remove(trajectoryObj)
     }
     asteroidArray.splice(index, 1)
 }
 
-const asteroidTick = (elapsedTime, scene, freeView) => {
+const asteroidTick = (elapsedTime, scene, dev_freeView) => {
     let cameraAlreadyFollowingSomething = false
     // reverse iteration for convinience of cameraAlreadyFollowingSomething, makes it easier to get the lastest (specific) asteroid that needs following 
     for (let i = asteroidArray.length - 1; i >= 0; i--) {
@@ -178,7 +178,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             // lerpFactor [ 0 ; 1 ]
             const lerpFactor = trajectoryProgress / progressToIntersection
             // Camera Rotation to follow a given asteroid
-            if(!freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceShipParams.spaceshipDestroyed){
+            if(!dev_freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceShipParams.spaceshipDestroyed){
                 cameraAlreadyFollowingSomething = true
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
@@ -222,7 +222,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
                     targetPointVec3,
                 )
             )
-            if(showTrajectories){
+            if(dev_showTrajectories){
                 const points = curve.getPoints(50);
                 trajectoryObj.geometry.setFromPoints(points)
             }

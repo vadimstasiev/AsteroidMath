@@ -12,8 +12,8 @@ import {setupSpaceshipOverlay, spaceshipOverlayTick} from './Components/Spaceshi
 import { elapsedTimeTick } from './Components/Helpers'
 
 
-// If freeView is enabled then the camera can be panned around manually
-const freeView = false
+// If dev_freeView is enabled then the camera can be panned around manually
+const dev_freeView = false
 
 
 /**
@@ -105,7 +105,7 @@ const camera = new THREE.PerspectiveCamera(vFOV, sizes.width / sizes.height, 0.1
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
-if (freeView) {
+if (dev_freeView) {
 	camera.position.set(10, 2, -10)
 	controls.enableZoom = true
 } else {
@@ -179,10 +179,10 @@ const tick = () => {
 		galaxiesTick(elapsedTime)
 
 		// Animate Spaceship trajectory
-		spaceshipTick(elapsedTime, camera, controls, freeView)
+		spaceshipTick(elapsedTime, camera, controls, dev_freeView)
 
 		// Animate Asteroids
-		asteroidTick(elapsedTime, scene, freeView)
+		asteroidTick(elapsedTime, scene, dev_freeView)
 
 		// Update Asteroid Points Overlay
 		pointOverlayTick(camera, sizes)

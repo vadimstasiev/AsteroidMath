@@ -3,13 +3,14 @@ import { Vector3, Group } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import generatePropulsionParticles from './PropulsionParticles'
 import { gameOver,  getIsGamePlaying } from './Game'
+import { sleep } from './Helpers'
 
 const spaceshipG = new Group()
 const spaceShipParams = {
     // Default Spaceship Orbit Parameters:
     spaceshipObj: undefined,
     spaceshipDestroyed: false,
-    timeBeforeRespawn: 10,
+    timeBeforeRespawn: 3,
     spaceshipRespawning: false,
     spaceshipSpeed: 9,
     spaceshipRadius: 6,
@@ -128,7 +129,7 @@ const spaceshipDestroy = async (scene, elapsedTime) => {
 }
 
 const spaceshipRespawn = async scene => {
-    await sleep (spaceShipParams.timeBeforeRespawn)
+    await sleep(spaceShipParams.timeBeforeRespawn)
     propulsionParticlesG.visible = true
     spaceShipParams.spaceshipObj.visible=true
     spaceShipParams.spaceshipRespawning = true
@@ -136,7 +137,7 @@ const spaceshipRespawn = async scene => {
 
 let lerpFactor=0
 let previousRAF=0
-const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
+const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
     const deltaTime = (elapsedTime*1000 - previousRAF)
     previousRAF = elapsedTime*1000
     if(propulsionParticles){
@@ -153,8 +154,8 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
     spaceshipG.lookAt(dummyPoint)
 
     
-    // check if the freeView is enabled before forcing updates to the camera position, useful for dev
-    if (!freeView){        
+    // check if the dev_freeView is enabled before forcing updates to the camera position, useful for dev
+    if (!dev_freeView){        
         // Camera Rotation - camera looks at this point (rotation) when following the spaceship
         cameraParams.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraParams.cameraDummyPointOffset))
         // Camera Position
