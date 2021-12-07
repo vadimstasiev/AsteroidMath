@@ -355,7 +355,7 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, sign="+") => {
     const maxNumber = 9
     const minNumberOfMultiplications = 1
     const maxNumberOfMultiplications = 1
-    const numberOfMultiplications = getRandomInt(minNumberOfMultiplications,maxNumberOfMultiplications)
+    const numberOfMultiplications = getRandomInt(minNumberOfOperations, maxNumberOfOperations)
     
     let question = ""
 
