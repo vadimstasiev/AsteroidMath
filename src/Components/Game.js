@@ -211,8 +211,15 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
             question += ` ${sign} ` + getRandomInt(minNumber, maxNumber)
         }
     }
+
+    const signProgramming = {
+        "+": "+", 
+        "-":"-",
+        "x":"*",
+        ":":"/",
+    }
     
-    const answer = eval(strReplaceAllOccurences(question, sign, '*'))
+    const answer = eval(strReplaceAllOccurences(question, sign, signProgramming[sign]))
 
     const getWrongAnswer = (minOffset=1, maxOffset=100) => Math.abs((Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100)))
 	return {question, answer, getWrongAnswer}
