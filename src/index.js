@@ -6,9 +6,9 @@ import {gsap} from 'gsap'
 import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
-import {setupPointsOverlay, spawnPointOverlay, removePointOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
+import {setupPointsOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
 import {setupGame, playClicked, quitGame, skipIntroduction, skipTutorial, playTick} from './Components/Game'
-import {setupSpaceshipOverlay, spawnSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
+import {setupSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
 import { elapsedTimeTick } from './Components/Helpers'
 
 

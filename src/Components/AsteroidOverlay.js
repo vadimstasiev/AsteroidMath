@@ -1,19 +1,13 @@
-import * as THREE from 'three'
-import gsap from 'gsap'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { Vector3 } from 'three'
-import { rotateAboutPoint } from './Helpers'
-import { spaceShipParams, cameraParams } from './Spaceship'
-import { asteroidTick, spawnAsteroid } from './Asteroids'
+import {PlaneBufferGeometry, ShaderMaterial, Mesh, Frustum, Matrix4} from 'three'
 
 let points = []
 
 const setupPointsOverlay = (scene) => {
-    const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
-    const overlayMaterial = new THREE.ShaderMaterial({
+    const overlayGeometry = new PlaneBufferGeometry(2, 2, 1, 1)
+    const overlayMaterial = new ShaderMaterial({
         transparent: true,
     })
-    const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+    const overlay = new Mesh(overlayGeometry, overlayMaterial)
     scene.add(overlay)
 }
 
@@ -45,9 +39,9 @@ const removePointOverlay = (asteroidObj) => {
     }
 }
 
-var frustum = new THREE.Frustum();
+var frustum = new Frustum();
 const pointOverlayTick = (camera, sizes) => {
-    frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    frustum.setFromProjectionMatrix(new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
     // Go through each html point
     for(const point of points) {
         // Ensure that a point is not rendered if it is behind the camera 

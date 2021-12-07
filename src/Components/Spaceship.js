@@ -1,12 +1,10 @@
 import * as THREE from 'three'
-import { Group, Vector3 } from 'three'
+import { Vector3, Group } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import gsap from 'gsap'
 import generatePropulsionParticles from './PropulsionParticles'
-import { quitGame, gameOver,  isGamePlaying } from './Game'
-import { sleep } from './Helpers'
+import { gameOver,  isGamePlaying } from './Game'
 
-const spaceshipG = new THREE.Group()
+const spaceshipG = new Group()
 const spaceShipParams = {
     // Default Spaceship Orbit Parameters:
     spaceshipObj: undefined,
@@ -57,7 +55,7 @@ const setupSpaceship = (loadingManager, camera, scene) => {
     /**
      * Spaceship propulsion particle system
      */
-    propulsionParticlesG = new THREE.Group()
+    propulsionParticlesG = new Group()
     spaceshipG.add(propulsionParticlesG)
     propulsionParticles = new generatePropulsionParticles({
         parent: propulsionParticlesG,
@@ -98,7 +96,7 @@ const calculateCameraPosition = (elapsedTime) => {
 }
 
 const spawnExplosion = (scene) => {
-    const explosionParticlesG = new THREE.Group()
+    const explosionParticlesG = new Group()
     spaceShipParams.explosionParticles = new generatePropulsionParticles({
         parent: explosionParticlesG,
         camera: cameraParams.camera,

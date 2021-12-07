@@ -1,10 +1,7 @@
 import * as THREE from 'three'
-import gsap from 'gsap'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
-import { rotateAboutPoint, sleep, getElapsedTime } from './Helpers'
-import { spaceShipParams, cameraParams } from './Spaceship'
-import { asteroidTick, spawnAsteroid } from './Asteroids'
+import { sleep, getElapsedTime } from './Helpers'
+import { spaceShipParams } from './Spaceship'
 
 let points = []
 
@@ -17,10 +14,10 @@ const setupSpaceshipOverlay = (scene) => {
     scene.add(overlay)
 }
 
-const spawnSpaceshipOverlay = (timeout, message, offset, position) => {
-    const pointClassName = "point-" + points.length 
+const spawnSpaceshipOverlay = (timeout, message, offset, tag="", position) => {
+    const pointClassName = "message-" + points.length 
     const pointHTML =
-        `<div class="point ${pointClassName}">\n` +
+        `<div class="point ${pointClassName} ${tag}">\n` +
             `<div class="overlay-text">${message}</div>\n` +
         '</div>\n'
 
@@ -35,12 +32,12 @@ const spawnSpaceshipOverlay = (timeout, message, offset, position) => {
     })
 }
 
-const showMessages = async (isGamePlaying, messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => false) => {
+const showMessages = async (isGamePlaying, messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, playMessageContinue = () => false, tag="") => {
     setMessageIsPlaying(true)
     for (const msg of messages){
         if(isGamePlaying() && !playMessageContinue()){
             const {message, offsetX, offsetY, duration, wait} = msg
-            spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY})
+            spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, tag)
             await sleep(duration+wait)
         }
     } 
@@ -51,7 +48,7 @@ const showDeathMessages = async (messages) => {
     const deathPosition = [...spaceShipParams.latestSpaceshipPosition]
     for (const msg of messages){
         const {message, offsetX, offsetY, duration, wait} = msg
-        spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, deathPosition)
+        spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, tag="death", deathPosition)
         await sleep(duration+wait)
     } 
 }

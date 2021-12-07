@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
-import { spaceshipG, spaceShipParams, cameraParams, calculateCameraPosition, calculateSpaceshipPosition, spaceshipDestroy } from './Spaceship'
+import { spaceShipParams, cameraParams, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 import { isGamePlaying } from './Game'
 

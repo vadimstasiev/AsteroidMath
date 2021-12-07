@@ -1,9 +1,6 @@
-import * as THREE from 'three'
 import gsap from 'gsap'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { Vector3 } from 'three'
-import { rotateAboutPoint, getElapsedTime } from './Helpers'
-import { spaceShipParams, cameraParams, spaceshipG, spaceshipRespawn } from './Spaceship'
+import { getElapsedTime } from './Helpers'
+import { spaceShipParams, cameraParams, spaceshipRespawn } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
@@ -66,12 +63,22 @@ const setupGame = (scene, camera) => {
                     element.style.display = 'none'
                 }
             }    
+            if(skipIntroductionB){
+                for(const element of document.getElementsByClassName('intro-message')){
+                    element.style.display = 'none'
+                }
+            }
             if(tutIsPlaying){
                 for(const element of document.getElementsByClassName('skip-tut')){
                     element.style.display = ''
                 }
             } else {
                 for(const element of document.getElementsByClassName('skip-tut')){
+                    element.style.display = 'none'
+                }
+            }
+            if(skipTutorialB){
+                for(const element of document.getElementsByClassName('tut-message')){
                     element.style.display = 'none'
                 }
             }
@@ -306,7 +313,7 @@ const playClicked = async (scene, camera) => {
             messagesShownOnceB = true
         }
         if(currentShowOnceMessagesB && !hideMessages){
-            await showMessages(isGamePlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB)
+            await showMessages(isGamePlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB, 'intro-message')
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -320,7 +327,7 @@ const playClicked = async (scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowOnceMessagesB && !hideMessages){
-            await showMessages(isGamePlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB)
+            await showMessages(isGamePlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB, 'tut-message')
         }
         // Move camera further away for better visibility
         if(gameIsPlayingB){
@@ -357,10 +364,9 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
 
     for (let i = 0; i <= numberOfMultiplications; i++) {
         if(i===0){
-            // if first number
+            // if first number dont add sign
             question += getRandomInt(minNumber, maxNumber)
         } else {
-            // if any number in between
             question += ` ${sign} ` + getRandomInt(minNumber, maxNumber)
         }
     }
@@ -376,9 +382,6 @@ const playTick = (elapsedTime, scene, camera) => {
         gameIsPlayingB = false
         spaceShipParams.spaceshipDestroyed = false
         spaceshipRespawn(scene)
-        // messagesShownOnceB = true
-        // introIsPlaying = false
-        // tutIsPlaying = false
     }
 } 
 
