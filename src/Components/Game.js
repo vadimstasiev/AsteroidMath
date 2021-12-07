@@ -1,5 +1,5 @@
 import gsap from 'gsap'
-import { getElapsedTime } from './Helpers'
+import { elapsedTimeTick, getElapsedTime } from './Helpers'
 import { spaceShipParams, cameraParams, spaceshipRespawn } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
@@ -8,7 +8,7 @@ import {introMessages, tutorialMessages, deathMessages} from './Messages'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const hideMessages = false
+const hideMessages = true
 
 
 let gameIsPlayingB = false
@@ -132,23 +132,24 @@ const quitGame = async () => {
 const gameOver = async (scene) => {
     gameIsPlayingB = false
     if(spaceShipParams.spaceshipDestroyed){
-        await showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
+        showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
-    await gsap.to(cameraParams,  {
+    gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
         cameraDummyPointOffset: 0,
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
-    // await sleep(3)
-    // spaceshipRespawn(scene)
+    await sleep(spaceShipParams.timeBeforeRespawn)
+    spaceshipRespawn(scene)
 }
 
 
 const playClicked = async (scene, camera) => {        
     if(!gameIsPlayingB){
         gameIsPlayingB = true
+        nextSpawnTime = 0
         const currentShowOnceMessagesB = !messagesShownOnceB
         if(!messagesShownOnceB){
             messagesShownOnceB = true
@@ -184,26 +185,27 @@ const playClicked = async (scene, camera) => {
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
             element.classList.add("show")
         }
-        while(gameIsPlayingB) {
-            if(!spaceShipParams.spaceshipDestroyed){
-                await sleep(5)
-                if(gameIsPlayingB){
-                    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
-                }
-                await sleep(10)
-            }
-        }
+        // while(gameIsPlayingB) {
+        //     console.log('going')
+        //     if(!spaceShipParams.spaceshipDestroyed){
+        //         // await sleep(5)
+        //         if(gameIsPlayingB){
+        //             spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+        //             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+        //             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+        //         }
+        //         // await sleep(20)
+        //     }
+        // }
     }
 }
 
 const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="+") => {
-    const numberOfMultiplications = getRandomInt(1, maxNumberOfOperations)
+    const numberOfOperations = getRandomInt(1, maxNumberOfOperations)
     
     let question = ""
 
-    for (let i = 0; i <= numberOfMultiplications; i++) {
+    for (let i = 0; i <= numberOfOperations; i++) {
         if(i===0){
             // if first number dont add sign
             question += getRandomInt(minNumber, maxNumber)
@@ -212,24 +214,35 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
         }
     }
 
-    const signProgramming = {
+    const signConversion = {
         "+": "+", 
         "-":"-",
         "x":"*",
         ":":"/",
     }
     
-    const answer = eval(strReplaceAllOccurences(question, sign, signProgramming[sign]))
+    const answer = eval(strReplaceAllOccurences(question, sign, signConversion[sign]))
 
     const getWrongAnswer = (minOffset=1, maxOffset=100) => Math.abs((Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100)))
 	return {question, answer, getWrongAnswer}
 }
 
+
+let nextSpawnTime = 0
+const spawnInterval = 10
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
         gameIsPlayingB = false
         spaceShipParams.spaceshipDestroyed = false
         spaceshipRespawn(scene)
+    }
+    if(gameIsPlayingB){
+        if(nextSpawnTime < elapsedTime){
+            nextSpawnTime = elapsedTime + spawnInterval
+            spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+            spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+            spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+        }
     }
 } 
 
