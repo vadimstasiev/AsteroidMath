@@ -13,6 +13,7 @@ let asteroidArray = []
 let asteroidsScene = null
 
 const setupAsteroids = (loadingManager) => {
+    // import gltf model from file
     const gltfLoader = new GLTFLoader(loadingManager)
     gltfLoader.load(
         '/models/Asteroids/Asteroids.gltf',
@@ -29,7 +30,8 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
         maxRandomOffsetMiss,
         hasOverlay,
         timeBeforeIntersection,
-        cameraWillFollow
+        cameraWillFollow,
+        spawnNumber
     } = params
     if(asteroidsScene){
         const frustum = new THREE.Frustum()
@@ -133,7 +135,7 @@ const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
             })
             // Add Overlay
             if(hasOverlay){
-                spawnPointOverlay(asteroidObj)
+                spawnPointOverlay(asteroidObj, spawnNumber || "not_set")
             }
         }
     }

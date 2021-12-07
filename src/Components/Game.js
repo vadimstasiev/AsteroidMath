@@ -5,7 +5,7 @@ import { Vector3 } from 'three'
 import { rotateAboutPoint, getElapsedTime } from './Helpers'
 import { spaceShipParams, cameraParams, spaceshipG, spaceshipRespawn } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
-import { getRandomInt, sleep } from './Helpers'
+import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 
 
@@ -140,7 +140,7 @@ const introMessages = [
     {
         message: "And the only way to get us through it is if you help us do some Maths really quickly.",
         offsetX: 100,
-        offsetY: -170,
+        offsetY: -260,
         duration: 6,
         wait: 2
     },
@@ -154,7 +154,7 @@ const introMessages = [
     {
         message: "You're still here ?! Take your sit Captain !",
         offsetX: 100,
-        offsetY: -100,
+        offsetY: -140,
         duration: 3,
         wait: 1
     },
@@ -171,7 +171,7 @@ const tutorialMessages = [
     {
         message: "The spaceship navigation system works for the most part...",
         offsetX: 100,
-        offsetY: -120,
+        offsetY: -200,
         duration: 5,
         wait: 1
     },
@@ -185,7 +185,7 @@ const tutorialMessages = [
     {
         message: "I need you to click on the right answer in time to prevent us crashing the ship.",
         offsetX: 50,
-        offsetY: 100,
+        offsetY: 70,
         duration: 4,
         wait: 1
     },
@@ -274,6 +274,11 @@ const quitGame = async (isPlayingDelay=0) => {
     })
     await sleep(isPlayingDelay)
     gameIsPlayingB = false
+    messagesShownOnceB = true
+    introIsPlaying = false
+    tutIsPlaying = false
+    skipIntroductionB=true
+    skipTutorialB = true
 }
 
 const gameOver = async (scene) => {
@@ -331,9 +336,9 @@ const playClicked = async (scene, camera) => {
                 // check if is playing to disrupt the loop when the game is over
                 if(gameIsPlayingB){
                     if(!spaceShipParams.spaceshipDestroyed){
-                        spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 3,})
-                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true,})
-                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5})
+                        spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
 
                     }
                     whatever(10000)
@@ -343,6 +348,31 @@ const playClicked = async (scene, camera) => {
         whatever()
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
+}
+
+const generateRandomQuestion = (minNumber = 2, maxNumber = 9, sign="+") => {
+    const minNumber = 2
+    const maxNumber = 9
+    const minNumberOfMultiplications = 1
+    const maxNumberOfMultiplications = 1
+    const numberOfMultiplications = getRandomInt(minNumberOfMultiplications,maxNumberOfMultiplications)
+    
+    let question = ""
+
+    for (let i = 0; i <= numberOfMultiplications; i++) {
+        if(i===0){
+            // if first number
+            question += getRandomInt(minNumber, maxNumber)
+        } else {
+            // if any number in between
+            question += ` ${sign} ` + getRandomInt(minNumber, maxNumber)
+        }
+    }
+    
+    const answer = eval(strReplaceAllOccurences(question, sign, '*'))
+
+    const getWrongAnswer = (minOffset=1, maxOffset=100) => Math.abs((Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100)))
+	return {question, answer, getWrongAnswer}
 }
 
 const playTick = (elapsedTime, scene, camera) => {

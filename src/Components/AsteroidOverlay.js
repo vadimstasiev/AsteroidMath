@@ -18,13 +18,13 @@ const setupPointsOverlay = (scene) => {
 }
 
 
-const spawnPointOverlay = (asteroidObj) => {
+const spawnPointOverlay = (asteroidObj, displayNumber) => {
     const pointClassName = "point-" + points.length 
 
 
     const pointHTML =
         `<div class="point ${pointClassName}">\n` +
-            `<div class="label">${points.length}</div>\n` +
+            `<div class="label">${displayNumber}</div>\n` +
         '</div>\n'
 
     document.getElementById('points-container').insertAdjacentHTML("beforeend", pointHTML)

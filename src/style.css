@@ -71,7 +71,7 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  /* pointer-events: none; */
+  pointer-events: none;
 }
 
 .point .label {
@@ -89,6 +89,7 @@ body {
   line-height: 40px;
   font-weight: 100;
   font-size: 14px;
+  font-family: Pixelated;
   cursor: help;
   transform: scale(0, 0);
   transition: transform 0.3s;
@@ -107,7 +108,8 @@ body {
   line-height: 1.3em;
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 100;
-  font-size: 14px;
+  font-size: 1.4em;
+  /* font-family: Pixelated; */
   /* transition: opacity 0.3s; */
   pointer-events: none;
 }
@@ -156,8 +158,6 @@ body {
   left: 10%;
   background-color: #007bff;
   width: 80%;
-  /* transform: scaleX(0); */
-  height: 10px;
   border-radius: 15px;
 }
 
@@ -166,7 +166,7 @@ body {
 }
 
 .game-ui-timerbar.show {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 1s;
 }
 

@@ -41,6 +41,7 @@ let propulsionParticles
 
 const setupSpaceship = (loadingManager, camera, scene) => {
     cameraParams.camera = camera
+    // import gltf model from file
     const gltfLoader = new GLTFLoader(loadingManager)
     gltfLoader.load(
         '/models/Spaceship/Spaceship.gltf',
