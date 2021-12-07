@@ -350,12 +350,8 @@ const playClicked = async (scene, camera) => {
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
-const generateRandomQuestion = (minNumber = 2, maxNumber = 9, sign="+") => {
-    const minNumber = 2
-    const maxNumber = 9
-    const minNumberOfMultiplications = 1
-    const maxNumberOfMultiplications = 1
-    const numberOfMultiplications = getRandomInt(minNumberOfOperations, maxNumberOfOperations)
+const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="+") => {
+    const numberOfMultiplications = getRandomInt(1, maxNumberOfOperations)
     
     let question = ""
 
