@@ -48,7 +48,7 @@ const setupGame = (scene, camera) => {
 
     // make game-ui visible
     for(const element of document.getElementsByClassName('game-ui')){
-        element.classList.remove("hide")
+        element.classList.add("show")
     }
     
     // show/hide buttons
@@ -107,7 +107,7 @@ const setupGame = (scene, camera) => {
     }, getRandomInt(1000))
 }
 
-const quitGame = async (isPlayingDelay=0) => {
+const quitGame = async () => {
     gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
@@ -115,8 +115,13 @@ const quitGame = async (isPlayingDelay=0) => {
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
-    await sleep(isPlayingDelay)
+    // make timebar invisible
+    for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+        element.classList.remove("show")
+    }
     gameIsPlayingB = false
+
+    // initial messages
     messagesShownOnceB = true
     introIsPlaying = false
     tutIsPlaying = false
@@ -125,10 +130,11 @@ const quitGame = async (isPlayingDelay=0) => {
 }
 
 const gameOver = async (scene) => {
+    gameIsPlayingB = false
     if(spaceShipParams.spaceshipDestroyed){
         await showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
-    gsap.to(cameraParams,  {
+    await gsap.to(cameraParams,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
         cameraDummyPointOffset: 0,
@@ -136,8 +142,7 @@ const gameOver = async (scene) => {
         cameraRadiusMultiplier: 0.7,
     })
     // await sleep(3)
-    gameIsPlayingB = false
-    spaceshipRespawn(scene)
+    // spaceshipRespawn(scene)
 }
 
 
@@ -175,21 +180,22 @@ const playClicked = async (scene, camera) => {
             })
         }
 
-        // make game-ui visible
+        // make timebar visible
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-            element.classList.remove("hide")
+            element.classList.add("show")
         }
         while(gameIsPlayingB) {
             if(!spaceShipParams.spaceshipDestroyed){
                 await sleep(5)
-                spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
-                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+                if(gameIsPlayingB){
+                    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+                }
                 await sleep(10)
             }
         }
     }
-    // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
 
 const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="+") => {

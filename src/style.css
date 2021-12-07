@@ -139,12 +139,12 @@ body {
 }
 
 .game-ui {
-  opacity: 1;
+  opacity: 0;
   transition: opacity 3s;
 }
 
-.game-ui.hide {
-  opacity: 0;
+.game-ui.show {
+  opacity: 1;
   transition: opacity 3s;
 }
 
@@ -156,12 +156,12 @@ body {
   background-color: #484d50;
   width: 80%;
   border-radius: 15px;
-  opacity: 1;
+  opacity: 0;
   transition: opacity 1s;
 }
 
-.game-ui-timerbar-container.hide {
-  opacity: 0;
+.game-ui-timerbar-container.show {
+  opacity: 1;
   transition: opacity 1s;
 }
 
@@ -188,19 +188,26 @@ body {
 }
 
 .math-question .title {
+  opacity: 0;
+  transition: opacity 1s;
   display: flex;
   justify-content: center;
 }
 
-.math-question .question {
+.math-question.show {
   opacity: 1;
+  transition: opacity 1s;
+}
+
+.math-question .question {
+  opacity: 0;
   transition: opacity 1s;
   display: flex;
   justify-content: center;
   font-size: 3em;
 }
 
-.math-question.hide {
-  opacity: 0;
+.math-question.show {
+  opacity: 1;
   transition: opacity 1s;
 }

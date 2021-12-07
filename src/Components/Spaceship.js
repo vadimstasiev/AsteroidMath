@@ -125,11 +125,11 @@ const spaceshipDestroy = async (scene, elapsedTime) => {
     spaceShipParams.spaceshipObj.visible=false
     spawnExplosion(scene)
     spaceShipParams.spaceshipDestroyed = true
-    gameOver(scene)
+    await gameOver(scene)
 }
 
 const spaceshipRespawn = (scene) => {
-    scene.add(spaceshipG)
+    // scene.add(spaceshipG)
     propulsionParticlesG.visible = true
     spaceShipParams.spaceshipObj.visible=true
     spaceShipParams.spaceshipRespawning = true

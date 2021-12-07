@@ -196,7 +196,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
                         cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
                     }
                 }
-            }
+            } 
             // only update intersectionPointVec3 until asteroid has reached/passed spaceship position
             if(trajectoryProgress <= progressToIntersection){
                 intersectionPointVec3.set(...spaceShipParams.latestSpaceshipPosition)
