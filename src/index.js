@@ -76,7 +76,7 @@ const loadingManager = new THREE.LoadingManager(
 			/**
 			 * Define callable functions once scene is ready
 			 */
-			initializeDynamicSceneElements()
+			onLoaderFinish()
 			window.playClicked = () => playClicked(scene, camera)
 			window.quitGame = () => quitGame()
 			window.skipIntroduction = () => skipIntroduction()
@@ -141,7 +141,7 @@ setupAsteroids(loadingManager)
 setupGalaxyScene(scene)
 setupPointsOverlay(scene)
 setupSpaceshipOverlay(scene)
-const initializeDynamicSceneElements = () => {
+const onLoaderFinish = () => {
 	setupGame(scene, camera)
 }
 
