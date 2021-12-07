@@ -135,3 +135,78 @@ body {
 .play-menu {
   display: none;
 }
+
+.game-ui {
+  opacity: 0;
+}
+
+.game-ui.show {
+  opacity: 1;
+  transition: opacity 3s;
+}
+
+.game-ui.hide {
+  opacity: 0;
+  transition: opacity 3s;
+}
+
+.game-ui-timerbar {
+  position: absolute;
+  top: 90%;
+  left: 10%;
+  background-color: #007bff;
+  width: 80%;
+  /* transform: scaleX(0); */
+  height: 10px;
+  border-radius: 15px;
+}
+
+.game-ui-timerbar.bg {
+  background-color: #484d50;
+}
+
+.game-ui-timerbar.show {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.game-ui-timerbar.hide {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.game-ui-timerbar.ended {
+  transform: scaleX(0%);
+  transform-origin: 0 100%;
+  transition: transform 4s;
+}
+
+.math-question {
+  position: absolute;
+  top: 20%;
+  width: 100%;
+  /* left: 50%; */
+  color: #ffffff;
+  font-family: Pixelated;
+}
+
+.math-question .title {
+  display: flex;
+  justify-content: center;
+}
+
+.math-question .question {
+  display: flex;
+  justify-content: center;
+  font-size: 3em;
+}
+
+.math-question.hide {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.math-question.show {
+  opacity: 1;
+  transition: opacity 1s;
+}

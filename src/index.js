@@ -68,7 +68,7 @@ const loadingManager = new THREE.LoadingManager(
 
 			// Update loadingBarElement
 			loadingBarElement.classList.add('ended')
-			loadingBarElement.style.transform = ''
+			// loadingBarElement.style.transform = ''
 		}, 500)
 
 		window.setTimeout(() => {
