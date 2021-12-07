@@ -169,21 +169,40 @@ const playClicked = async (scene, camera) => {
                 cameraRadiusMultiplier: 0.3,
             })
         }
-        const whatever = (interval=0) => {
-            setTimeout(() => { 
-                // check if is playing to disrupt the loop when the game is over
-                if(gameIsPlayingB){
-                    if(!spaceShipParams.spaceshipDestroyed){
-                        spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
-                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-                        spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+        
+        // seconds
+        // let secondsTracker = 0
+        // const gameLoopInterval = 0.5
 
-                    }
-                    whatever(10000)
-                }
-            }, interval)
+        // const gameLoop = (interval=0) => {
+        //     setTimeout(() => { 
+        //         // check if is playing to disrupt the loop when the game is over
+        //         if(gameIsPlayingB && !spaceShipParams.spaceshipDestroyed){
+        //             console.log(secondsTracker%10, secondsTracker)
+        //             // In (secondsTracker%10) the result goes from 0 to 9 
+        //             if(secondsTracker%10 == 0){
+
+        //                 spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+        //                 spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+        //                 spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+
+        //             }
+        //             secondsTracker += gameLoopInterval
+        //             gameLoop(gameLoopInterval*1000)
+        //         }
+        //     }, interval)
+        // }
+        // gameLoop()
+
+        while(gameIsPlayingB) {
+            if(!spaceShipParams.spaceshipDestroyed){
+                await sleep(5)
+                spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
+                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+                await sleep(10)
+            }
         }
-        whatever()
     }
     // spawnAsteroid(getElapsedTime(), scene, camera, {willHit: true, hasOverlay: true, timeBeforeIntersection: 2})
 }
