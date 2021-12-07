@@ -5,7 +5,7 @@ import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
 import { spaceShipParams, cameraParams, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
-import { isGamePlaying } from './Game'
+import { getIsGamePlaying } from './Game'
 
 const showTrajectories = false
 
@@ -169,7 +169,7 @@ const asteroidTick = (elapsedTime, scene, freeView) => {
             willHit,
             cameraWillFollow
         } = asteroidArray[i]
-        const gameIsPlaying =  isGamePlaying()
+        const gameIsPlaying =  getIsGamePlaying()
         if(elapsedTime<timeout){
             const trajectoryProgress = (duration - timeout + elapsedTime)/duration
             // the intersection timing is the same regardless of hit or miss 

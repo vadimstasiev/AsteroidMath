@@ -11,24 +11,25 @@ import {introMessages, tutorialMessages, deathMessages} from './Messages'
 const hideMessages = true
 
 
-let gameIsPlayingB = false
-let messagesShownOnceB = false
-let introIsPlaying = false
-let tutIsPlaying = false
-let skipIntroductionB = false
-let skipTutorialB = false
+let isGamePlaying = false
+let isMessagesShownOnce = false
+let isIntroPlaying = false
+let isTutPlaying = false
+let isSkipIntroduction = false
+let isSkipTutorial = false
 
 const skipIntroduction = () => {
-    skipIntroductionB=true
-    introIsPlaying = false
+    isSkipIntroduction=true
+    isIntroPlaying = false
 }
 const skipTutorial = () => {
-    skipTutorialB = true
-    tutIsPlaying = false
+    isSkipTutorial = true
+    isTutPlaying = false
 }
-const isGamePlaying = () => {
-    return gameIsPlayingB
-}
+
+const setIsGamePlaying = value => {isGamePlaying = value}
+
+const getIsGamePlaying = () => isGamePlaying
 
 const windowHasFocus = () => {
     if (document.hasFocus()) return true
@@ -53,14 +54,14 @@ const setupGame = (scene, camera) => {
     
     // show/hide buttons
     setInterval(() => { 
-        if(gameIsPlayingB){
+        if(isGamePlaying){
             for(const element of document.getElementsByClassName('menu-buttons')){
                 element.style.display = 'none'
             }
             for(const element of document.getElementsByClassName('play-menu')){
                 element.style.display = 'flex'
             }
-            if(introIsPlaying){
+            if(isIntroPlaying){
                 for(const element of document.getElementsByClassName('skip-intro')){
                     element.style.display = ''
                 }
@@ -69,12 +70,12 @@ const setupGame = (scene, camera) => {
                     element.style.display = 'none'
                 }
             }    
-            if(skipIntroductionB){
+            if(isSkipIntroduction){
                 for(const element of document.getElementsByClassName('intro-message')){
                     element.style.display = 'none'
                 }
             }
-            if(tutIsPlaying){
+            if(isTutPlaying){
                 for(const element of document.getElementsByClassName('skip-tut')){
                     element.style.display = ''
                 }
@@ -83,7 +84,7 @@ const setupGame = (scene, camera) => {
                     element.style.display = 'none'
                 }
             }
-            if(skipTutorialB){
+            if(isSkipTutorial){
                 for(const element of document.getElementsByClassName('tut-message')){
                     element.style.display = 'none'
                 }
@@ -119,18 +120,17 @@ const quitGame = async () => {
     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
         element.classList.remove("show")
     }
-    gameIsPlayingB = false
+    isGamePlaying = false
 
     // initial messages
-    messagesShownOnceB = true
-    introIsPlaying = false
-    tutIsPlaying = false
-    skipIntroductionB=true
-    skipTutorialB = true
+    isMessagesShownOnce = true
+    isIntroPlaying = false
+    isTutPlaying = false
+    isSkipIntroduction=true
+    isSkipTutorial = true
 }
 
-const gameOver = async (scene) => {
-    gameIsPlayingB = false
+const gameOver = scene => {
     if(spaceShipParams.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
@@ -141,27 +141,26 @@ const gameOver = async (scene) => {
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
-    await sleep(spaceShipParams.timeBeforeRespawn)
-    spaceshipRespawn(scene)
+    spaceshipRespawn(scene, setIsGamePlaying)
 }
 
 
 const playClicked = async (scene, camera) => {        
-    if(!gameIsPlayingB){
-        gameIsPlayingB = true
+    if(!isGamePlaying){
+        isGamePlaying = true
         nextSpawnTime = 0
-        const currentShowOnceMessagesB = !messagesShownOnceB
-        if(!messagesShownOnceB){
-            messagesShownOnceB = true
+        const currentShowOnceMessagesB = !isMessagesShownOnce
+        if(!isMessagesShownOnce){
+            isMessagesShownOnce = true
         }
         if(currentShowOnceMessagesB && !hideMessages){
-            await showMessages(isGamePlaying, introMessages, getElapsedTime, (ref) => {introIsPlaying = ref}, () => skipIntroductionB, 'intro-message')
+            await showMessages(getIsGamePlaying, introMessages, getElapsedTime, (ref) => {isIntroPlaying = ref}, () => isSkipIntroduction, 'intro-message')
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
             setTimeout(() => { 
                 // check if is playing to disrupt the loop when the game is over
-                if(gameIsPlayingB){
+                if(isGamePlaying){
                     spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 2})
                     spawnDenseZoneAsteroids(getRandomInt(50, 200))
                 }
@@ -169,10 +168,10 @@ const playClicked = async (scene, camera) => {
         }
         spawnDenseZoneAsteroids()
         if(currentShowOnceMessagesB && !hideMessages){
-            await showMessages(isGamePlaying, tutorialMessages, getElapsedTime, (ref) => {tutIsPlaying = ref}, () => skipTutorialB, 'tut-message')
+            await showMessages(getIsGamePlaying, tutorialMessages, getElapsedTime, (ref) => {isTutPlaying = ref}, () => isSkipTutorial, 'tut-message')
         }
         // Move camera further away for better visibility
-        if(gameIsPlayingB){
+        if(isGamePlaying){
             gsap.to(cameraParams,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 2,
@@ -185,11 +184,11 @@ const playClicked = async (scene, camera) => {
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
             element.classList.add("show")
         }
-        // while(gameIsPlayingB) {
+        // while(isGamePlaying) {
         //     console.log('going')
         //     if(!spaceShipParams.spaceshipDestroyed){
         //         // await sleep(5)
-        //         if(gameIsPlayingB){
+        //         if(isGamePlaying){
         //             spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
         //             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
         //             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
@@ -232,11 +231,11 @@ let nextSpawnTime = 0
 const spawnInterval = 10
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
-        gameIsPlayingB = false
+        isGamePlaying = false
         spaceShipParams.spaceshipDestroyed = false
         spaceshipRespawn(scene)
     }
-    if(gameIsPlayingB){
+    if(isGamePlaying){
         if(nextSpawnTime < elapsedTime){
             nextSpawnTime = elapsedTime + spawnInterval
             spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
@@ -247,4 +246,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, gameOver, playTick, isGamePlaying}
+export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, gameOver, playTick, getIsGamePlaying}

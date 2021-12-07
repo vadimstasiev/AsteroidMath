@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { Vector3, Group } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import generatePropulsionParticles from './PropulsionParticles'
-import { gameOver,  isGamePlaying } from './Game'
+import { gameOver,  getIsGamePlaying } from './Game'
 
 const spaceshipG = new Group()
 const spaceShipParams = {
@@ -109,7 +109,6 @@ const spawnExplosion = (scene) => {
         outterColor: 0x007bff
     })
     const explosionDuration = 0.2
-    // explosionParticlesG.position.set(...spaceShipParams.latestSpaceshipDummyPosition)
     explosionParticlesG.rotation.z = Math.PI/2
     explosionParticlesG.rotation.y = Math.PI/2
     explosionParticlesG.position.z = 1
@@ -128,8 +127,8 @@ const spaceshipDestroy = async (scene, elapsedTime) => {
     await gameOver(scene)
 }
 
-const spaceshipRespawn = (scene) => {
-    // scene.add(spaceshipG)
+const spaceshipRespawn = async scene => {
+    await sleep (spaceShipParams.timeBeforeRespawn)
     propulsionParticlesG.visible = true
     spaceShipParams.spaceshipObj.visible=true
     spaceShipParams.spaceshipRespawning = true
@@ -177,7 +176,7 @@ const spaceshipTick = (elapsedTime, camera, controls, freeView) => {
                 controls.target = cameraParams.cameraDummyPoint
                 // camera.position.set(...cameraParams.latestCameraPosition)
             }
-        } else if(!spaceShipParams.spaceshipDestroyed || !isGamePlaying()) {
+        } else if(!spaceShipParams.spaceshipDestroyed || !getIsGamePlaying()) {
             cameraParams.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraParams.cameraLookPosition
         } 

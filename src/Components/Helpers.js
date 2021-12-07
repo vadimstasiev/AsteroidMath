@@ -50,4 +50,9 @@ const elapsedTimeTick = (elapsedTime) => {
     gameElapsedTime = elapsedTime
 }
 
-export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep, getElapsedTime, elapsedTimeTick, strReplaceAllOccurences}
+const getterSetter = (initial) => {
+    let variable = initial
+    return [()=>variable, newValue => {variable=newValue}]
+}
+
+export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep, getElapsedTime, elapsedTimeTick, strReplaceAllOccurences, getterSetter}
