@@ -146,9 +146,7 @@ const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
     }
     // Set Spaceship Position
     spaceshipProps.latestSpaceshipPosition = calculateSpaceshipPosition(elapsedTime)
-    // if(!spaceshipProps.spaceshipDestroyed){
-        spaceshipG.position.set(...spaceshipProps.latestSpaceshipPosition)
-    // }
+    spaceshipG.position.set(...spaceshipProps.latestSpaceshipPosition)
     // Set Spaceship Rotation by making it look at a point that is + dummyPointOffset ahead
     spaceshipProps.latestSpaceshipDummyPosition = calculateSpaceshipPosition(elapsedTime, spaceshipProps.dummyPointOffset)
     const dummyPoint = new THREE.Vector3(...spaceshipProps.latestSpaceshipDummyPosition)
@@ -157,7 +155,7 @@ const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
     
     // check if the dev_freeView is enabled before forcing updates to the camera position, useful for dev
     if (!dev_freeView){        
-        // Camera Rotation - camera looks at this point (rotation) when following the spaceship
+        // Camera Rotation - camera looks at this point when following the spaceship
         cameraProps.cameraDummyPoint.set(...calculateSpaceshipPosition(elapsedTime, cameraProps.cameraDummyPointOffset))
         // Camera Position
         if(spaceshipProps.spaceshipRespawning){
@@ -170,18 +168,22 @@ const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
                 const latestCameraPositionVec3 = new Vector3(...cameraProps.latestCameraPosition)
                 const targetPositionVec3 = camera.position.clone().lerp(latestCameraPositionVec3, lerpFactor)
                 cameraProps.latestCameraPosition = [targetPositionVec3.x, targetPositionVec3.y, targetPositionVec3.z]
+                console.log("this one")
             } 
             else {
+                console.log("this two")
                 spaceshipProps.spaceshipRespawning = false
                 spaceshipProps.spaceshipDestroyed = false
                 lerpFactor = 0
                 controls.target = cameraProps.cameraDummyPoint
-                // camera.position.set(...cameraProps.latestCameraPosition)
             }
         } else if(!spaceshipProps.spaceshipDestroyed || !getIsGamePlaying()) {
+            console.log("this three")
             cameraProps.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraProps.cameraLookPosition
-        } 
+        } else {
+            console.log("this four")
+        }
         camera.position.set(...cameraProps.latestCameraPosition)
     }
 

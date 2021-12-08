@@ -159,11 +159,11 @@ const quitGame = async () => {
 }
 
 const gameOver = async scene => {
+    setIsGamePlaying(false)
     if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
     await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
-    setIsGamePlaying(false)
 }
 
 
@@ -293,35 +293,40 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
         console.log('show')
 
         await sleep(sleepTime+2)
-        setIsAskingQuestion(false)
-        startLoadingBar(currentPlayTurn, 1)
+        if(getIsGamePlaying()){
+
+            
+            setIsAskingQuestion(false)
+            startLoadingBar(currentPlayTurn, 1)
 
 
-        spawnPossibleAnswerAsteroids(scene, camera)
-        const updateTimer = () => {
-            setTimeout(async ()=>{
-                const timeLeft =  getLiveTimeBeforeCollision()
+            spawnPossibleAnswerAsteroids(scene, camera)
+            const updateTimer = () => {
+                setTimeout(async ()=>{
+                    const timeLeft =  getLiveTimeBeforeCollision()
 
-                titleElement.innerHTML = `Collision in: T-minus ${timeLeft} seconds`
-                if(timeLeft > 0) {
-                    updateTimer()
-                } else {
-                    console.log('no show')
-                    // if(getIsGamePlaying()) {
-                        //     await sleep(duration+1)
-                        // }
-                        
-                    // remove elements
-                    titleElement.classList.remove("show")
-                    questionElement.classList.remove("show")
-                    // wait for the element's to dissapear before removing text
-                    await sleep(2)
-                    titleElement.innerHTML = ""
-                    questionElement.innerHTML = ""
-                }
-            }, 500)
+                    titleElement.innerHTML = `Collision in: T-minus ${timeLeft} seconds`
+                    if(timeLeft > 0 && getIsGamePlaying()) {
+                        updateTimer()
+                    } else {
+                        console.log('no show')
+                        // if(getIsGamePlaying()) {
+                            //     await sleep(duration+1)
+                            // }
+                            
+                        // remove elements
+                        titleElement.classList.remove("show")
+                        questionElement.classList.remove("show")
+                        // wait for the element's to dissapear before removing text
+                        await sleep(2)
+                        titleElement.innerHTML = ""
+                        questionElement.innerHTML = ""
+                        setCurrentPlayTurn(currentPlayTurn+1)
+                    }
+                }, 500)
+            }
+            updateTimer(titleElement)
         }
-        updateTimer(titleElement)
     }
 }
 
@@ -348,7 +353,6 @@ const playTick = (elapsedTime, scene, camera) => {
                 if(currentPlayTurn===getCurrentPlayTurn()) {
                     startGameChallenge(currentPlayTurn, 1, scene, camera)
                     // end of current turn
-                    setCurrentPlayTurn(currentPlayTurn+1)
                 }
             }, 1*1000, currentPlayTurn)
             
