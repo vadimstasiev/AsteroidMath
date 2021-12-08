@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { Vector3 } from 'three'
 import { sleep, getElapsedTime } from './Helpers'
-import { spaceShipParams } from './Spaceship'
+import { spaceshipProps } from './Spaceship'
 
 let points = []
 
@@ -45,7 +45,7 @@ const showMessages = async (getIsGamePlaying, messages, getElapsedTime, setMessa
 }
 
 const showDeathMessages = async (messages) => {
-    const deathPosition = [...spaceShipParams.latestSpaceshipPosition]
+    const deathPosition = [...spaceshipProps.latestSpaceshipPosition]
     for (const msg of messages){
         const {message, offsetX, offsetY, duration, wait} = msg
         spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, "death", deathPosition)
@@ -63,7 +63,7 @@ const spaceshipOverlayTick = (elapsedTime, camera, sizes) => {
             if(position){
                 screenPositionVec3 = new Vector3(...position)
             } else {
-                screenPositionVec3 = new Vector3(...spaceShipParams.latestSpaceshipPosition)
+                screenPositionVec3 = new Vector3(...spaceshipProps.latestSpaceshipPosition)
             }
             screenPositionVec3.project(camera)
             element.classList.add('visible')

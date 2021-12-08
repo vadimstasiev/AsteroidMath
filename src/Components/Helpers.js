@@ -1,7 +1,3 @@
-import * as THREE from 'three'
-
-
-//// source: https://stackoverflow.com/questions/42812861/three-js-pivot-point/42866733#42866733
 // obj - your object (THREE.Object3D or derived)
 // point - the point of rotation (THREE.Vector3)
 // axis - the axis of rotation (normalized THREE.Vector3)

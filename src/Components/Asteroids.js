@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
-import { spaceShipParams, cameraParams, spaceshipDestroy } from './Spaceship'
+import { spaceshipProps, cameraProps, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 import { getIsGamePlaying } from './Game'
 
@@ -178,11 +178,11 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
             // lerpFactor [ 0 ; 1 ]
             const lerpFactor = trajectoryProgress / progressToIntersection
             // Camera Rotation to follow a given asteroid
-            if(!dev_freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceShipParams.spaceshipDestroyed){
+            if(!dev_freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceshipProps.spaceshipDestroyed){
                 cameraAlreadyFollowingSomething = true
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
-                    cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone()
+                    cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone()
                         .lerp(asteroid.position.clone()
                             .add(intersectionPointVec3)
                             .multiplyScalar(0.5),
@@ -191,15 +191,15 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
                 } else {
                     // progressToIntersection < trajectoryProgress < 2*progressToIntersection
                     if(trajectoryProgress>progressToIntersection && trajectoryProgress<(2*progressToIntersection)){
-                        cameraParams.cameraLookPosition = cameraParams.cameraLookPosition.clone().lerp(cameraParams.cameraDummyPoint, (trajectoryProgress/(progressToIntersection)-1))
+                        cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone().lerp(cameraProps.cameraDummyPoint, (trajectoryProgress/(progressToIntersection)-1))
                     } else {
-                        cameraParams.cameraLookPosition = cameraParams.cameraDummyPoint
+                        cameraProps.cameraLookPosition = cameraProps.cameraDummyPoint
                     }
                 }
             } 
             // only update intersectionPointVec3 until asteroid has reached/passed spaceship position
             if(trajectoryProgress <= progressToIntersection){
-                intersectionPointVec3.set(...spaceShipParams.latestSpaceshipPosition)
+                intersectionPointVec3.set(...spaceshipProps.latestSpaceshipPosition)
             }
             // calculate vector of the position that is targetScallarMultiplier times away in a straight line from intersectionPointVec3 to spawnPointVec3
             const targetPointVec3 = intersectionPointVec3.clone()

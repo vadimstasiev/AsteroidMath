@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { elapsedTimeTick, getElapsedTime, getterSetter } from './Helpers'
-import { spaceShipParams, cameraParams, spaceshipRespawn } from './Spaceship'
+import { spaceshipProps, cameraProps, spaceshipRespawn } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
@@ -87,7 +87,7 @@ const setupGame = (scene, camera) => {
                     element.style.display = 'none'
                 }
             }
-            if(spaceShipParams.spaceshipDestroyed){
+            if(spaceshipProps.spaceshipDestroyed){
                 for(const element of document.getElementsByClassName('quit')){
                     element.style.display = 'none'
                 }
@@ -107,7 +107,7 @@ const setupGame = (scene, camera) => {
 }
 
 const quitGame = async () => {
-    gsap.to(cameraParams,  {
+    gsap.to(cameraProps,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
         cameraDummyPointOffset: 0,
@@ -128,18 +128,19 @@ const quitGame = async () => {
     isSkipTutorial = true
 }
 
-const gameOver = scene => {
-    if(spaceShipParams.spaceshipDestroyed){
+const gameOver = async scene => {
+    if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
-    gsap.to(cameraParams,  {
+    gsap.to(cameraProps,  {
         duration: 2,
         // manually set values back to default, (check Spaceship.js for default values)
         cameraDummyPointOffset: 0,
         cameraToSpaceshipOffset: 0.4,
         cameraRadiusMultiplier: 0.7,
     })
-    spaceshipRespawn(scene, setIsGamePlaying)
+    await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
+    setIsGamePlaying(false)
 }
 
 
@@ -170,7 +171,7 @@ const playClicked = async (scene, camera) => {
         }
         // Move camera further away for better visibility
         if(getIsGamePlaying()){
-            gsap.to(cameraParams,  {
+            gsap.to(cameraProps,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 2,
                 cameraDummyPointOffset: 1,
@@ -223,7 +224,7 @@ const spawnInterval = 10
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
         setIsGamePlaying(false)
-        spaceShipParams.spaceshipDestroyed = false
+        spaceshipProps.spaceshipDestroyed = false
         spaceshipRespawn(scene)
     }
     if(getIsGamePlaying()){
