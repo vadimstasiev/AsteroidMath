@@ -134,7 +134,9 @@ const setupGame = (scene, camera) => {
                 element.style.display = ''
             }
         }
-        if(getIsGamePlaying() && (getIsIntroPlaying() || getIsTutPlaying())) {
+        const aspectRatio = window.innerHeight/window.innerWidth
+        if(getIsIntroPlaying() || getIsTutPlaying()) {
+            // when either of the introductory messages are playing 
             gsap.to(cameraProps,  {
                 duration: 2,
                 // manually set values back to default, (check Spaceship.js for default values)
@@ -142,15 +144,18 @@ const setupGame = (scene, camera) => {
                 cameraToSpaceshipOffset: 0.4,
                 cameraRadiusMultiplier: 0.7,
             })
-        } else if(getIsGamePlaying() && getIsAskingQuestion()) {
+        } else if(getIsAskingQuestion()) {
+            // period during which question is being asked 
             gsap.to(cameraProps,  {
                 duration: 2,
                 // manually set values back to default, (check Spaceship.js for default values)
-                cameraDummyPointOffset: 0.5,
-                cameraToSpaceshipOffset: 0.4,
-                cameraRadiusMultiplier: 0.7,
+                cameraDummyPointOffset: aspectRatio>1?1.5:0.5,
+                cameraToSpaceshipOffset: aspectRatio>1?1:0.4,
+                cameraRadiusMultiplier: aspectRatio>1?0.3:0.7,
+                // cameraRadiusMultiplier: 0.4,
             })
         } else if(!getIsGamePlaying()) {
+            // when game is not playing
             gsap.to(cameraProps,  {
                 duration: 2,
                 cameraDummyPointOffset: 0,
@@ -158,11 +163,12 @@ const setupGame = (scene, camera) => {
                 cameraRadiusMultiplier: 0.7,
             })
         } else  {
+            // e.g. when game is playing and is not doing any of the above
             // Move camera further away for better visibility
             gsap.to(cameraProps,  {
                 duration: 2,
                 cameraToSpaceshipOffset: 1.5,
-                cameraDummyPointOffset: 1,
+                cameraDummyPointOffset: aspectRatio>1?0:1,
                 cameraRadiusMultiplier: 0.3,
             })
         } 
@@ -349,8 +355,8 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
 const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
     const {answer, getWrongAnswer} = question
     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: answer})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: getWrongAnswer()})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: getWrongAnswer()})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
 }
 
 

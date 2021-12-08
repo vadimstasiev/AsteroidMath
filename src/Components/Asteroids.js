@@ -93,7 +93,7 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             const targetScallarMultiplier = 6
             // total duration of the asteroid trajectory course
             let duration = timeBeforeIntersection*targetScallarMultiplier
-            // account the early impact adjustment 
+            // account for the early impact adjustment 
             duration = duration + duration*(1-intersectionTrajectoryPercentageToPhysicalHit)
             
             let trajectoryObj
@@ -137,7 +137,6 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 duration: duration,
                 x: "random(-20.0,20.0)",
                 y: "random(-20.0,20.0)",
-                // z: "random(-20.0,20.0)",
             })
             // Add Overlay
             if(hasOverlay){
@@ -186,14 +185,19 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
             // Camera Rotation to follow a given asteroid
             if(!dev_freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceshipProps.spaceshipDestroyed){
                 cameraAlreadyFollowingSomething = true
+                const aspectRatio = window.innerHeight/window.innerWidth
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
-                    cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone()
-                        .lerp(asteroid.position.clone()
-                            .add(intersectionPointVec3)
-                            .multiplyScalar(0.5),
-                            lerpFactor
-                        )
+                    if(aspectRatio<1){
+                        cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone()
+                            .lerp(asteroid.position.clone()
+                                .add(intersectionPointVec3)
+                                .multiplyScalar(0.5),
+                                lerpFactor
+                            )
+                    } else {
+                        cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
+                    }
                 } else {
                     // progressToIntersection < trajectoryProgress < 2*progressToIntersection
                     if(trajectoryProgress>progressToIntersection && trajectoryProgress<(2*progressToIntersection)){
