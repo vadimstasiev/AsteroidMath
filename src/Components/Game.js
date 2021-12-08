@@ -26,10 +26,9 @@ const [getIsAskingQuestion, setIsAskingQuestion] = getterSetter(false)
 
 const [getCurrentPlayTurn, setCurrentPlayTurn] = getterSetter(0)
 
-const [getCollisionTime, setCollisionTime] = getterSetter(0)
-
 // seconds
-const answerTime = 5
+const delay = 3
+const answerTime = 0 + delay
 const spawnInterval = 10 + answerTime
 
 
@@ -250,7 +249,7 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
 	return {question, answer, getWrongAnswer}
 }
 
-const startLoadingBar = async(currentPlayTurn, sleepTime, duration) => {
+const startLoadingBar = async(currentPlayTurn, sleepTime) => {
     if(currentPlayTurn===getCurrentPlayTurn()){
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
             element.classList.add("show")
@@ -258,22 +257,23 @@ const startLoadingBar = async(currentPlayTurn, sleepTime, duration) => {
         await sleep(sleepTime)
         for(const element of document.getElementsByClassName('game-ui-timerbar')){
             element.classList.add("ended")
-            element.setAttribute("style", `transition: transform ${duration}s;`);
+            element.setAttribute("style", `transition: transform ${answerTime}s;`);
         }
-        await sleep(duration)
+        await sleep(answerTime)
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
             element.classList.remove("show")
         }
         // await the hiding transition to prevent it showing the bar full again
-        await sleep(duration)
+        await sleep(answerTime)
         for(const element of document.getElementsByClassName('game-ui-timerbar')){
             element.classList.remove("ended")
         }
     }
 }
 
-const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration, question) => {
+const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
     if(currentPlayTurn===getCurrentPlayTurn()){
+        const question = generateRandomQuestion()
         let titleElement
         let questionElement
         for(const element of document.getElementsByClassName('math-question')){
@@ -287,11 +287,17 @@ const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration, qu
 
         titleElement.classList.add("show")
         titleElement.innerHTML="Collision Detected!"
-        questionElement.innerHTML = question + '='
+        questionElement.innerHTML = question.question + '='
 
         questionElement.classList.add("show")
-        await sleep(sleepTime)
+        console.log('show')
 
+        await sleep(sleepTime+2)
+        setIsAskingQuestion(false)
+        startLoadingBar(currentPlayTurn, 1)
+
+
+        spawnPossibleAnswerAsteroids(scene, camera)
         const updateTimer = () => {
             setTimeout(async ()=>{
                 const timeLeft =  getLiveTimeBeforeCollision()
@@ -300,10 +306,11 @@ const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration, qu
                 if(timeLeft > 0) {
                     updateTimer()
                 } else {
+                    console.log('no show')
                     // if(getIsGamePlaying()) {
-                    //     await sleep(duration+1)
-                    // }
-                    
+                        //     await sleep(duration+1)
+                        // }
+                        
                     // remove elements
                     titleElement.classList.remove("show")
                     questionElement.classList.remove("show")
@@ -311,12 +318,17 @@ const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration, qu
                     await sleep(2)
                     titleElement.innerHTML = ""
                     questionElement.innerHTML = ""
-            
                 }
             }, 500)
         }
         updateTimer(titleElement)
     }
+}
+
+const spawnPossibleAnswerAsteroids = (scene, camera) => {
+    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
 }
 
 
@@ -331,18 +343,10 @@ const playTick = (elapsedTime, scene, camera) => {
         if(nextSpawn!==null && nextSpawn < elapsedTime){
             const currentPlayTurn = getCurrentPlayTurn()
             setIsAskingQuestion(true)
-            const question = generateRandomQuestion()
             setTimeout((currentPlayTurn)=>{
                 console.log(currentPlayTurn, getCurrentPlayTurn())
                 if(currentPlayTurn===getCurrentPlayTurn()) {
-                    setIsAskingQuestion(false)
-                    setCollisionTime(elapsedTime+answerTime)
-                    startLoadingBar(currentPlayTurn, 1, answerTime)
-                    showQuestionAndTitleTimer(currentPlayTurn, 1, answerTime, question.question)
-
-                    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+                    startGameChallenge(currentPlayTurn, 1, scene, camera)
                     // end of current turn
                     setCurrentPlayTurn(currentPlayTurn+1)
                 }
