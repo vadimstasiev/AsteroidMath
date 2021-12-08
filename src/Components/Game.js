@@ -16,6 +16,9 @@ const [getIsGamePlaying, setIsGamePlaying] = getterSetter(false)
 
 const [getIsIntroPlaying, setIsIntroPlaying] = getterSetter(false)
 const [getIsTutPlaying, setIsTutPlaying] = getterSetter(false)
+const [getIsIntroSkipped, setIsIntroSkipped] = getterSetter(false)
+const [getIsTutSkipped, setIsTutSkipped] = getterSetter(false)
+
 
 const [getNextSpawn, setNextSpawn] = getterSetter(null)
 
@@ -49,6 +52,12 @@ const setupGame = (scene, camera) => {
     
     // show/hide buttons / toggle settings
     setInterval(() => { 
+        if(getIsIntroSkipped()){
+            setIsIntroPlaying(false)
+        }
+        if(getIsTutSkipped()){
+            setIsTutPlaying(false)
+        }
         if(getIsGamePlaying()){
             for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
                 element.style.display = 'none'
@@ -108,18 +117,22 @@ const setupGame = (scene, camera) => {
                 cameraToSpaceshipOffset: 0.4,
                 cameraRadiusMultiplier: 0.7,
             })
-        } 
-        // else if(getIsGamePlaying() && getIsTutPlaying()) {
-        //     // Move camera further away for better visibility
-        //     gsap.to(cameraProps,  {
-        //         duration: 2,
-        //         cameraToSpaceshipOffset: 2,
-        //         cameraDummyPointOffset: 1,
-        //         cameraRadiusMultiplier: 0.3,
-        //     })
-        // } 
-        // if(spaceshipProps.spaceshipDestroyed){
-        else  {
+        } else if(getIsGamePlaying() && getIsAskingQuestion()) {
+            gsap.to(cameraProps,  {
+                duration: 2,
+                // manually set values back to default, (check Spaceship.js for default values)
+                cameraDummyPointOffset: 0.5,
+                cameraToSpaceshipOffset: 0.4,
+                cameraRadiusMultiplier: 0.7,
+            })
+        } else if(!getIsGamePlaying()) {
+            gsap.to(cameraProps,  {
+                duration: 2,
+                cameraDummyPointOffset: 0,
+                cameraToSpaceshipOffset: 0.4,
+                cameraRadiusMultiplier: 0.7,
+            })
+        } else  {
             // Move camera further away for better visibility
             gsap.to(cameraProps,  {
                 duration: 2,
@@ -128,15 +141,6 @@ const setupGame = (scene, camera) => {
                 cameraRadiusMultiplier: 0.3,
             })
         } 
-        // else {
-        //     gsap.to(cameraProps,  {
-        //         duration: 2,
-        //         // manually set values back to default, (check Spaceship.js for default values)
-        //         cameraDummyPointOffset: 0,
-        //         cameraToSpaceshipOffset: 0.4,
-        //         cameraRadiusMultiplier: 0.7,
-        //     })
-        // }
     }, getRandomInt(1000))
 }
 
@@ -147,10 +151,10 @@ const quitGame = async () => {
     }
     setIsGamePlaying(false)
 
-    // initial messages
+    // skip initial messages
     setIsMessagesShownOnce(true)
-    setIsIntroPlaying(false)
-    setIsTutPlaying(false)
+    setIsIntroSkipped(true)
+    setIsTutSkipped(true)
 }
 
 const gameOver = async scene => {
@@ -175,7 +179,7 @@ const playClicked = async (scene, camera) => {
         }
         if(isShowingMessages && !dev_hideMessages){
             setIsIntroPlaying(true)
-            await showMessages(getIsGamePlaying, introMessages, getElapsedTime, setIsIntroPlaying, getIsIntroPlaying, 'intro-message')
+            await showMessages(getIsGamePlaying, introMessages, getElapsedTime, setIsIntroPlaying, getIsIntroSkipped, 'intro-message')
         }
         // Spawn dense asteroid zone
         const spawnDenseZoneAsteroids = (interval=0) => {
@@ -190,7 +194,7 @@ const playClicked = async (scene, camera) => {
         spawnDenseZoneAsteroids()
         if(isShowingMessages && !dev_hideMessages){
             setIsTutPlaying(true)
-            await showMessages(getIsGamePlaying, tutorialMessages, getElapsedTime, setIsTutPlaying, getIsTutPlaying, 'tut-message')
+            await showMessages(getIsGamePlaying, tutorialMessages, getElapsedTime, setIsTutPlaying, getIsTutSkipped, 'tut-message')
 
         }
 
@@ -247,18 +251,24 @@ const playTick = (elapsedTime, scene, camera) => {
         if(nextSpawn!==null && nextSpawn < elapsedTime){
             setIsAskingQuestion(true)
             const question = generateRandomQuestion()
-            // cannot use sleep in here, must make this external!
+            setTimeout(()=>{
+                
+                setIsAskingQuestion(false)
+            }, answerTime*1000)
+            .then(()=>{
+                spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
+                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+            })
             for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
                 element.classList.add("show")
             }
 
             setNextSpawn(elapsedTime + spawnInterval)
-            spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
-            spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-            spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+            
         }
     }
 } 
 
 
-export {setupGame, playClicked, quitGame, setIsIntroPlaying, setIsTutPlaying, gameOver, playTick, getIsGamePlaying}
+export {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, gameOver, playTick, getIsGamePlaying}

@@ -35,7 +35,7 @@ const spawnSpaceshipOverlay = (timeout, message, offset, tag="", position) => {
 const showMessages = async (getIsGamePlaying, messages, getElapsedTime, setMessageIsPlaying = (messageIsPlaying) => {}, getUserHasSkipped = () => false, tag="") => {
     setMessageIsPlaying(true)
     for (const msg of messages){
-        if(getIsGamePlaying() && getUserHasSkipped()){
+        if(getIsGamePlaying() && !getUserHasSkipped()){
             const {message, offsetX, offsetY, duration, wait} = msg
             spawnSpaceshipOverlay(getElapsedTime()+duration, message, {x: offsetX, y: offsetY}, tag)
             await sleep(duration+wait)

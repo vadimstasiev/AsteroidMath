@@ -7,7 +7,7 @@ import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
 import {setupAsteroids, asteroidTick} from './Components/Asteroids'
 import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
-import {setupGame, playClicked, quitGame, setIsIntroPlaying, setIsTutPlaying, playTick} from './Components/Game'
+import {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick} from './Components/Game'
 import {setupSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
 import { elapsedTimeTick } from './Components/Helpers'
 
@@ -79,8 +79,8 @@ const loadingManager = new THREE.LoadingManager(
 			onLoaderFinish()
 			window.playClicked = () => playClicked(scene, camera)
 			window.quitGame = () => quitGame()
-			window.skipIntroduction = () => setIsIntroPlaying(false)
-			window.skipTutorial = () => setIsTutPlaying(false)
+			window.skipIntroduction = () => setIsIntroSkipped(true)
+			window.skipTutorial = () => setIsTutSkipped(true)
 		}, 2000)
 	},
 
