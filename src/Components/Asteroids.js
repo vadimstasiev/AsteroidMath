@@ -235,9 +235,12 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
             // update time for impact
-            const liveTimeBeforeIntersection = timeout - elapsedTime
-            const liveTimeBeforeCollision = Math.floor(liveTimeBeforeIntersection-liveTimeBeforeIntersection*(1-intersectionTrajectoryPercentageToPhysicalHit))
-            setLiveTimeBeforeCollision(liveTimeBeforeCollision)
+            if(willHit && gameIsPlaying){
+                const liveTimeBeforeIntersection =  Math.floor(duration/targetScallarMultiplier - (trajectoryProgress / progressToIntersection)*(duration/targetScallarMultiplier))
+                setLiveTimeBeforeCollision(liveTimeBeforeIntersection)
+            } else if(!gameIsPlaying){
+                setLiveTimeBeforeCollision(0)
+            }
 
             // asteroid hits the ship
             if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying){
