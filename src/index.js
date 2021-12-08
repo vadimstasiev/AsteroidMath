@@ -9,7 +9,7 @@ import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
 import {setupPointsOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
 import {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick} from './Components/Game'
 import {setupSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
-import { elapsedTimeTick } from './Components/Helpers'
+import { setElapsedTime } from './Components/Helpers'
 
 
 // If dev_freeView is enabled then the camera can be panned around manually
@@ -172,8 +172,8 @@ const clock = new THREE.Clock()
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime()		
 	if (isSceneReady) {
-        // elapsedTime for other components
-        elapsedTimeTick(elapsedTime)
+        // set elapsedTime for easy access in other components
+        setElapsedTime(elapsedTime)
 
 		// Animate Galaxies
 		galaxiesTick(elapsedTime)

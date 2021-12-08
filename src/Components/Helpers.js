@@ -39,16 +39,12 @@ const strReplaceAllOccurences = (str, find, replace) => {
     return str.replace(new RegExp(find, 'g'), replace);
 }
 
-let gameElapsedTime = 0
-const getElapsedTime = () => gameElapsedTime
-
-const elapsedTimeTick = (elapsedTime) => {
-    gameElapsedTime = elapsedTime
-}
 
 const getterSetter = (initial) => {
     let variable = initial
     return [()=>variable, newValue => {variable=newValue}]
 }
 
-export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep, getElapsedTime, elapsedTimeTick, strReplaceAllOccurences, getterSetter}
+const [getElapsedTime, setElapsedTime] = getterSetter(0)
+
+export {rotateAboutPoint, getRandomInt, getRandomArbitrary, sleep, getElapsedTime, setElapsedTime, strReplaceAllOccurences, getterSetter}

@@ -1,5 +1,5 @@
 import gsap from 'gsap'
-import { elapsedTimeTick, getElapsedTime, getterSetter } from './Helpers'
+import { getElapsedTime, getterSetter } from './Helpers'
 import { spaceshipProps, cameraProps, spaceshipRespawn, spaceshipG } from './Spaceship'
 import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
@@ -49,7 +49,7 @@ const setupGame = (scene, camera) => {
         spawnAsteroid(getElapsedTime(), scene, camera, {timeBeforeIntersection: 0.5})
     }, getRandomInt(10, 2000))
 
-    // make game-ui visible
+    // make game-ui visible on game setup as is invisible by default to prevent elements from popping up before things are loaded 
     for(const element of document.getElementsByClassName('game-ui')){
         element.classList.add("show")
     }
@@ -62,6 +62,7 @@ const setupGame = (scene, camera) => {
         if(getIsTutSkipped()){
             setIsTutPlaying(false)
         }
+        // make these changes when game state is "playing"
         if(getIsGamePlaying()){
             for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
                 element.style.display = 'none'
@@ -103,6 +104,7 @@ const setupGame = (scene, camera) => {
                 }
             }
         } else {
+            // make these changes when game state is "not playing"
             for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
                 element.style.display = ''
             }
@@ -149,10 +151,6 @@ const setupGame = (scene, camera) => {
 }
 
 const quitGame = async () => {
-    // // make timebar invisible
-    // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-    //     element.classList.remove("show")
-    // }
     setIsGamePlaying(false)
 
     // skip initial messages
@@ -162,10 +160,6 @@ const quitGame = async () => {
 }
 
 const gameOver = async scene => {
-    // // make timebar invisible
-    // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-    //     element.classList.remove("show")
-    // }
     if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
@@ -245,7 +239,14 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
         answer = eval(question)
     }
 
-    let getWrongAnswer = (minOffset=1, maxOffset=100) => (Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100))
+    const getWrongAnswer = (minOffset=1, maxOffset=100) => {
+        const wrongAnswer = (Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100))
+        if(answer>=0){
+            return Math.abs(wrongAnswer)
+        } else {
+            return -Math.abs(wrongAnswer)
+        }
+    }
 	return {question, answer, getWrongAnswer}
 }
 
@@ -271,7 +272,7 @@ const startLoadingBar = async(currentPlayTurn, sleepTime, duration) => {
     }
 }
 
-const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration) => {
+const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration, question) => {
     if(currentPlayTurn===getCurrentPlayTurn()){
         let titleElement
         let questionElement
@@ -286,24 +287,31 @@ const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration) =>
 
         titleElement.classList.add("show")
         titleElement.innerHTML="Collision Detected!"
+        questionElement.innerHTML = question + '='
 
+        questionElement.classList.add("show")
         await sleep(sleepTime)
 
         const updateTimer = () => {
             setTimeout(async ()=>{
                 const timeLeft =  getLiveTimeBeforeCollision()
-                if(timeLeft >= 0) {
-                    titleElement.innerHTML = `Collision in: ${timeLeft}`
+
+                titleElement.innerHTML = `Collision in: T-minus ${timeLeft} seconds`
+                if(timeLeft > 0) {
                     updateTimer()
                 } else {
-                    questionElement.classList.add("show")
-
-                    await sleep(duration+1)
-                    titleElement.innerHTML("")
-            
+                    // if(getIsGamePlaying()) {
+                    //     await sleep(duration+1)
+                    // }
+                    
                     // remove elements
                     titleElement.classList.remove("show")
                     questionElement.classList.remove("show")
+                    // wait for the element's to dissapear before removing text
+                    await sleep(2)
+                    titleElement.innerHTML = ""
+                    questionElement.innerHTML = ""
+            
                 }
             }, 500)
         }
@@ -330,7 +338,7 @@ const playTick = (elapsedTime, scene, camera) => {
                     setIsAskingQuestion(false)
                     setCollisionTime(elapsedTime+answerTime)
                     startLoadingBar(currentPlayTurn, 1, answerTime)
-                    showQuestionAndTitleTimer(currentPlayTurn, 1, answerTime)
+                    showQuestionAndTitleTimer(currentPlayTurn, 1, answerTime, question.question)
 
                     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
                     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
