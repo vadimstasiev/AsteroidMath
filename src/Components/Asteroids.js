@@ -45,7 +45,7 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         const center = new Vector3(0, 0, 0)
         
         const maxAsteroidSize = 0.2
-        const minAsteroidSize = 0.05
+        const minAsteroidSize = 0.1
         const spawnAngle = Math.PI/2
         const spawnAngleRange = 0.2
         const maxRadius = 12

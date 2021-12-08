@@ -149,10 +149,18 @@ const setupGame = (scene, camera) => {
             gsap.to(cameraProps,  {
                 duration: 2,
                 // manually set values back to default, (check Spaceship.js for default values)
-                cameraDummyPointOffset: aspectRatio>1?1.5:0.5,
+                cameraDummyPointOffset: aspectRatio>1?0:0.5,
                 cameraToSpaceshipOffset: aspectRatio>1?1:0.4,
                 cameraRadiusMultiplier: aspectRatio>1?0.3:0.7,
                 // cameraRadiusMultiplier: 0.4,
+            })
+        } else if(spaceshipProps.spaceshipDestroyed && aspectRatio>1) {
+            // when game is not playing
+            gsap.to(cameraProps,  {
+                duration: 2,
+                cameraDummyPointOffset: -8,
+                cameraToSpaceshipOffset: 0,
+                cameraRadiusMultiplier: 0.4,
             })
         } else if(!getIsGamePlaying()) {
             // when game is not playing
