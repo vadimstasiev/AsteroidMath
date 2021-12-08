@@ -152,13 +152,14 @@ body {
 .game-ui-timerbar-container {
   position: absolute;
   top: 90%;
-  left: 10%;
-  height: 9px;
-  background-color: #484d50;
-  width: 80%;
+  left: 20%;
+  height: 20px;
+  background-color: #1d1f20;
+  width: 60%;
   border-radius: 15px;
   opacity: 0;
   transition: opacity 1s;
+  overflow: hidden;
 }
 
 .game-ui-timerbar-container.show {
@@ -168,8 +169,8 @@ body {
 
 .game-ui-timerbar {
   position: relative;
-  height: 9px;
-  background-color: #007bff;
+  height: 20px;
+  background-color: #313335;
   border-radius: 15px;
 }
 

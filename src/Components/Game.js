@@ -160,9 +160,7 @@ const quitGame = async () => {
 
 const gameOver = async scene => {
     setIsGamePlaying(false)
-    if(spaceshipProps.spaceshipDestroyed){
-        showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
-    }
+    showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
 }
 
@@ -287,46 +285,44 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
 
         titleElement.classList.add("show")
         titleElement.innerHTML="Collision Detected!"
-        questionElement.innerHTML = question.question + '='
+        questionElement.innerHTML = question.question + ' ='
 
         questionElement.classList.add("show")
-        console.log('show')
 
-        await sleep(sleepTime+2)
+        const resetTitleAndQuestionElements = async () => {
+            // remove elements
+            titleElement.classList.remove("show")
+            questionElement.classList.remove("show")
+            // wait for the element's to dissapear before removing text
+            await sleep(2)
+            titleElement.innerHTML = ""
+            questionElement.innerHTML = ""
+        }
+
+        await sleep(sleepTime)
         if(getIsGamePlaying()){
-
-            
             setIsAskingQuestion(false)
             startLoadingBar(currentPlayTurn, 1)
-
-
             spawnPossibleAnswerAsteroids(scene, camera)
-            const updateTimer = () => {
-                setTimeout(async ()=>{
-                    const timeLeft =  getLiveTimeBeforeCollision()
+        }
 
+        const updateTimer = () => {
+            setTimeout(async ()=>{
+                if(getIsGamePlaying()){
+                    const timeLeft =  getLiveTimeBeforeCollision()
                     titleElement.innerHTML = `Collision in: T-minus ${timeLeft} seconds`
-                    if(timeLeft > 0 && getIsGamePlaying()) {
+                    if(timeLeft > 0) {
                         updateTimer()
                     } else {
-                        console.log('no show')
-                        // if(getIsGamePlaying()) {
-                            //     await sleep(duration+1)
-                            // }
-                            
-                        // remove elements
-                        titleElement.classList.remove("show")
-                        questionElement.classList.remove("show")
-                        // wait for the element's to dissapear before removing text
-                        await sleep(2)
-                        titleElement.innerHTML = ""
-                        questionElement.innerHTML = ""
-                        setCurrentPlayTurn(currentPlayTurn+1)
+                        await resetTitleAndQuestionElements()
+                        // setCurrentPlayTurn(currentPlayTurn+1)
                     }
-                }, 500)
-            }
-            updateTimer(titleElement)
+                } else {
+                    await resetTitleAndQuestionElements()
+                }
+            }, 500)
         }
+        updateTimer(titleElement)
     }
 }
 
@@ -351,7 +347,7 @@ const playTick = (elapsedTime, scene, camera) => {
             setTimeout((currentPlayTurn)=>{
                 console.log(currentPlayTurn, getCurrentPlayTurn())
                 if(currentPlayTurn===getCurrentPlayTurn()) {
-                    startGameChallenge(currentPlayTurn, 1, scene, camera)
+                    startGameChallenge(currentPlayTurn, 3, scene, camera)
                     // end of current turn
                 }
             }, 1*1000, currentPlayTurn)
