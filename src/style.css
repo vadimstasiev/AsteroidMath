@@ -41,6 +41,15 @@ body {
   color: #ffffff;
 }
 
+.navbar-toggler {
+  opacity: 0;
+}
+
+.navbar-toggler.show {
+  opacity: 1;
+  transition: opacity 3s;
+}
+
 .webgl {
   /* position: fixed; */
   top: 0;
@@ -130,12 +139,12 @@ body {
   text-align: center;
 }
 
-.navbar-play-and-leaderboard div {
+.play-and-leaderboard div {
   cursor: pointer;
   display: none;
 }
 
-.play-and-leaderboard {
+.score-skip-quit {
   display: none;
 }
 

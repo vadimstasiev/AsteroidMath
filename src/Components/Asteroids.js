@@ -137,11 +137,11 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 duration: duration,
                 x: "random(-20.0,20.0)",
                 y: "random(-20.0,20.0)",
-                z: "random(-20.0,20.0)",
+                // z: "random(-20.0,20.0)",
             })
             // Add Overlay
             if(hasOverlay){
-                spawnPointOverlay(asteroidObj, spawnNumber || "not_set")
+                spawnPointOverlay(asteroidObj, spawnNumber!==undefined?spawnNumber:"not_set")
             }
         }
     }

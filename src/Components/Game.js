@@ -61,14 +61,41 @@ const setupGame = (scene, camera) => {
         if(getIsTutSkipped()){
             setIsTutPlaying(false)
         }
-        // make these changes when game state is "playing"
         if(getIsGamePlaying()){
-            for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
+            // show /hide mobile login singup toggle 
+            for(const element of document.getElementsByClassName('navbar-toggler')){
+                element.classList.remove("show")
+                element.setAttribute('data-toggle', '')
+            }
+        } else {
+            // show /hide mobile login singup toggle 
+            for(const element of document.getElementsByClassName('navbar-toggler')){
+                element.classList.add("show")
+                element.setAttribute('data-toggle', 'collapse')
+            }
+        }
+
+        if(getIsGamePlaying() || spaceshipProps.spaceshipDestroyed){
+            // hide
+            for(const element of document.getElementsByClassName('play-and-leaderboard')){
                 element.style.display = 'none'
             }
-            for(const element of document.getElementsByClassName('play-and-leaderboard')){
+            // show
+            for(const element of document.getElementsByClassName('score-skip-quit')){
                 element.style.display = 'flex'
             }
+        } else {
+            // show
+            for(const element of document.getElementsByClassName('play-and-leaderboard')){
+                element.style.display = ''
+            }
+            // hide
+            for(const element of document.getElementsByClassName('score-skip-quit')){
+                element.style.display = 'none'
+            }
+        }
+        
+        if(getIsGamePlaying()){        
             // hide/show skip intro button
             if(getIsIntroPlaying()){
                 for(const element of document.getElementsByClassName('skip-intro')){
@@ -103,13 +130,6 @@ const setupGame = (scene, camera) => {
                 }
             }
         } else {
-            // make these changes when game state is "not playing"
-            for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
-                element.style.display = ''
-            }
-            for(const element of document.getElementsByClassName('play-and-leaderboard')){
-                element.style.display = 'none'
-            }
             for(const element of document.getElementsByClassName('quit')){
                 element.style.display = ''
             }
@@ -303,14 +323,14 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
         if(getIsGamePlaying()){
             setIsAskingQuestion(false)
             startLoadingBar(currentPlayTurn, 1)
-            spawnPossibleAnswerAsteroids(scene, camera)
+            spawnPossibleAnswerAsteroids(scene, camera, question)
         }
 
         const updateTimer = () => {
             setTimeout(async ()=>{
                 if(getIsGamePlaying()){
                     const timeLeft =  getLiveTimeBeforeCollision()
-                    titleElement.innerHTML = `Collision in: T-minus ${timeLeft} seconds`
+                    titleElement.innerHTML = `Collision in: ${timeLeft} seconds`
                     if(timeLeft > 0) {
                         updateTimer()
                     } else {
@@ -326,10 +346,11 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
     }
 }
 
-const spawnPossibleAnswerAsteroids = (scene, camera) => {
-    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
+    const {answer, getWrongAnswer} = question
+    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: answer})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: getWrongAnswer()})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
 }
 
 

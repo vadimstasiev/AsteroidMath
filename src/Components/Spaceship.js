@@ -168,21 +168,16 @@ const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
                 const latestCameraPositionVec3 = new Vector3(...cameraProps.latestCameraPosition)
                 const targetPositionVec3 = camera.position.clone().lerp(latestCameraPositionVec3, lerpFactor)
                 cameraProps.latestCameraPosition = [targetPositionVec3.x, targetPositionVec3.y, targetPositionVec3.z]
-                console.log("this one")
             } 
             else {
-                console.log("this two")
                 spaceshipProps.spaceshipRespawning = false
                 spaceshipProps.spaceshipDestroyed = false
                 lerpFactor = 0
                 controls.target = cameraProps.cameraDummyPoint
             }
         } else if(!spaceshipProps.spaceshipDestroyed || !getIsGamePlaying()) {
-            console.log("this three")
             cameraProps.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraProps.cameraLookPosition
-        } else {
-            console.log("this four")
         }
         camera.position.set(...cameraProps.latestCameraPosition)
     }
