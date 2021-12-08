@@ -176,7 +176,6 @@ body {
 .game-ui-timerbar.ended {
   transform: scaleX(0%);
   transform-origin: 0 100%;
-  transition: transform 4s;
 }
 
 .math-question {

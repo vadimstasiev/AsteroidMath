@@ -12,6 +12,9 @@ const dev_showTrajectories = false
 let asteroidArray = []
 let asteroidsScene = null
 
+// the asteroid will fully clip through the ship if set to 100% (1), this makes the impact "trigger" earlier to give a better illusion of physics
+const intersectionTrajectoryPercentageToPhysicalHit = 0.96
+
 const setupAsteroids = (loadingManager) => {
     // import gltf model from file
     const gltfLoader = new GLTFLoader(loadingManager)
@@ -51,7 +54,6 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
 
 
         const asteroidObj = asteroidsScene.children[getRandomInt(0, 8)].clone()
-        asteroidObj.castShadow = true
         const randomSize = getRandomArbitrary(minAsteroidSize, maxAsteroidSize)
         asteroidObj.scale.set(randomSize, randomSize, randomSize)
         
@@ -88,7 +90,9 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             // how many times the distance from the asteroid spawn point to the intersection point
             const targetScallarMultiplier = 6
             // total duration of the asteroid trajectory course
-            const duration = timeBeforeIntersection*targetScallarMultiplier
+            let duration = timeBeforeIntersection*targetScallarMultiplier
+            // account the early impact adjustment 
+            duration = duration + duration*(1-intersectionTrajectoryPercentageToPhysicalHit)
             
             let trajectoryObj
             // show trajectories of asteroids (for dev and troubleshooting)
@@ -229,7 +233,7 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
             // asteroid hits the ship
-            if((trajectoryProgress > progressToIntersection*0.96) && willHit && gameIsPlaying){
+            if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 spaceshipDestroy(scene, elapsedTime)
                 // TODO !! only remove in that certain condition after playing again 

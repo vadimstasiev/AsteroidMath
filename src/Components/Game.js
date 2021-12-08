@@ -24,6 +24,8 @@ const [getNextSpawn, setNextSpawn] = getterSetter(null)
 
 const [getIsAskingQuestion, setIsAskingQuestion] = getterSetter(false)
 
+const [getCurrentPlayTurn, setCurrentPlayTurn] = getterSetter(0)
+
 // seconds
 const answerTime = 5
 const spawnInterval = 10 + answerTime
@@ -145,10 +147,10 @@ const setupGame = (scene, camera) => {
 }
 
 const quitGame = async () => {
-    // make timebar invisible
-    for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-        element.classList.remove("show")
-    }
+    // // make timebar invisible
+    // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+    //     element.classList.remove("show")
+    // }
     setIsGamePlaying(false)
 
     // skip initial messages
@@ -158,10 +160,10 @@ const quitGame = async () => {
 }
 
 const gameOver = async scene => {
-    // make timebar invisible
-    for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-        element.classList.remove("show")
-    }
+    // // make timebar invisible
+    // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+    //     element.classList.remove("show")
+    // }
     if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
@@ -170,7 +172,8 @@ const gameOver = async scene => {
 }
 
 
-const playClicked = async (scene, camera) => {        
+const playClicked = async (scene, camera) => {     
+    const currentPlayTurn = getCurrentPlayTurn()   
     if(!getIsGamePlaying()){
         setIsGamePlaying(true)
         const isShowingMessages = !getIsMessagesShownOnce()
@@ -204,6 +207,7 @@ const playClicked = async (scene, camera) => {
         //     element.classList.add("show")
         // }
         setNextSpawn(getElapsedTime()+spawnInterval)
+        setCurrentPlayTurn(currentPlayTurn+1)
     }
 }
 
@@ -239,31 +243,74 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
 	return {question, answer, getWrongAnswer}
 }
 
+const startLoadingBar = async(currentPlayTurn, sleepTime, duration) => {
+    if(currentPlayTurn===getCurrentPlayTurn()){
+        for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+            element.classList.add("show")
+        }
+        await sleep(sleepTime)
+        for(const element of document.getElementsByClassName('game-ui-timerbar')){
+            element.classList.add("ended")
+            element.setAttribute("style", `transition: transform ${duration}s;`);
+        }
+        await sleep(duration)
+        for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+            element.classList.remove("show")
+        }
+        // await the hiding transition to prevent it showing the bar full again
+        await sleep(duration)
+        for(const element of document.getElementsByClassName('game-ui-timerbar')){
+            element.classList.remove("ended")
+        }
+    }
+}
+
+// window.startLoadingBar = async( sleepTime, duration) => {
+//     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+//         element.classList.add("show")
+//     }
+//     await sleep(sleepTime)
+//     for(const element of document.getElementsByClassName('game-ui-timerbar')){
+//         element.classList.add("ended")
+//         element.setAttribute("style", `transition: transform ${duration}s;`);
+//     }
+//     await sleep(duration)
+//     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+//         element.classList.remove("show")
+//     }
+//     // await the hiding transition to prevent it showing the bar full again
+//     await sleep(duration)
+//     for(const element of document.getElementsByClassName('game-ui-timerbar')){
+//         element.classList.remove("ended")
+//     }
+// }
+
 const playTick = (elapsedTime, scene, camera) => {
-    if(!windowHasFocus()){
+    if(!windowHasFocus() && !spaceshipProps.spaceshipDestroyed){
         setIsGamePlaying(false)
         spaceshipProps.spaceshipDestroyed = false
         spaceshipRespawn(scene)
     }
     if(getIsGamePlaying()){
         const nextSpawn = getNextSpawn()
-        // make timebar visible
         if(nextSpawn!==null && nextSpawn < elapsedTime){
+            const currentPlayTurn = getCurrentPlayTurn()
             setIsAskingQuestion(true)
             const question = generateRandomQuestion()
-            setTimeout(()=>{
-                
-                setIsAskingQuestion(false)
-            }, answerTime*1000)
-            .then(()=>{
-                spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
-                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
-                spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
-            })
-            for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-                element.classList.add("show")
-            }
-
+            setTimeout((currentPlayTurn)=>{
+                console.log(currentPlayTurn, getCurrentPlayTurn())
+                if(currentPlayTurn===getCurrentPlayTurn()) {
+                    startLoadingBar(currentPlayTurn, 1, answerTime)
+                    setIsAskingQuestion(false)
+                    
+                    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
+                    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
+                    // end of current turn
+                    setCurrentPlayTurn(currentPlayTurn+1)
+                }
+            }, 1*1000, currentPlayTurn)
+            
             setNextSpawn(elapsedTime + spawnInterval)
             
         }
