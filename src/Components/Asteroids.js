@@ -24,7 +24,7 @@ const setupAsteroids = (loadingManager) => {
     )
 }
 
-const spawnAsteroid = (elapsedTime, scene, camera, params={}) => {
+const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
     const {
         willHit,
         maxRandomOffsetMiss,

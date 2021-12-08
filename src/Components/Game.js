@@ -19,6 +19,13 @@ const [getIsTutPlaying, setIsTutPlaying] = getterSetter(false)
 
 const [getNextSpawn, setNextSpawn] = getterSetter(null)
 
+const [getIsAskingQuestion, setIsAskingQuestion] = getterSetter(false)
+
+// seconds
+const answerTime = 5
+const spawnInterval = 10 + answerTime
+
+
 const windowHasFocus = () => {
     if (document.hasFocus()) return true
     let windowIsFocused = false
@@ -93,22 +100,7 @@ const setupGame = (scene, camera) => {
                 element.style.display = ''
             }
         }
-        if(getIsGamePlaying() && !getIsIntroPlaying() && !getIsTutPlaying()) {
-            // Move camera further away for better visibility
-            gsap.to(cameraProps,  {
-                duration: 2,
-                cameraToSpaceshipOffset: 2,
-                cameraDummyPointOffset: 1,
-                cameraRadiusMultiplier: 0.3,
-            })
-        } else if(spaceshipProps.spaceshipDestroyed){
-            gsap.to(cameraProps,  {
-                duration: 2,
-                cameraToSpaceshipOffset: 2,
-                cameraDummyPointOffset: 1,
-                cameraRadiusMultiplier: 0.3,
-            })
-        } else {
+        if(getIsGamePlaying() && (getIsIntroPlaying() || getIsTutPlaying())) {
             gsap.to(cameraProps,  {
                 duration: 2,
                 // manually set values back to default, (check Spaceship.js for default values)
@@ -116,7 +108,35 @@ const setupGame = (scene, camera) => {
                 cameraToSpaceshipOffset: 0.4,
                 cameraRadiusMultiplier: 0.7,
             })
-        }
+        } 
+        // else if(getIsGamePlaying() && getIsTutPlaying()) {
+        //     // Move camera further away for better visibility
+        //     gsap.to(cameraProps,  {
+        //         duration: 2,
+        //         cameraToSpaceshipOffset: 2,
+        //         cameraDummyPointOffset: 1,
+        //         cameraRadiusMultiplier: 0.3,
+        //     })
+        // } 
+        // if(spaceshipProps.spaceshipDestroyed){
+        else  {
+            // Move camera further away for better visibility
+            gsap.to(cameraProps,  {
+                duration: 2,
+                cameraToSpaceshipOffset: 1.5,
+                cameraDummyPointOffset: 1,
+                cameraRadiusMultiplier: 0.3,
+            })
+        } 
+        // else {
+        //     gsap.to(cameraProps,  {
+        //         duration: 2,
+        //         // manually set values back to default, (check Spaceship.js for default values)
+        //         cameraDummyPointOffset: 0,
+        //         cameraToSpaceshipOffset: 0.4,
+        //         cameraRadiusMultiplier: 0.7,
+        //     })
+        // }
     }, getRandomInt(1000))
 }
 
@@ -134,6 +154,10 @@ const quitGame = async () => {
 }
 
 const gameOver = async scene => {
+    // make timebar invisible
+    for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+        element.classList.remove("show")
+    }
     if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
@@ -171,15 +195,15 @@ const playClicked = async (scene, camera) => {
         }
 
 
-        // make timebar visible
-        for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-            element.classList.add("show")
-        }
-        setNextSpawn(0)
+        // // make timebar visible
+        // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+        //     element.classList.add("show")
+        // }
+        setNextSpawn(getElapsedTime()+spawnInterval)
     }
 }
 
-window.generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="-") => {
+const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="-") => {
     const numberOfOperations = getRandomInt(1, maxNumberOfOperations)
     
     let question = ""
@@ -211,7 +235,6 @@ window.generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperat
 	return {question, answer, getWrongAnswer}
 }
 
-const spawnInterval = 10
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
         setIsGamePlaying(false)
@@ -220,7 +243,15 @@ const playTick = (elapsedTime, scene, camera) => {
     }
     if(getIsGamePlaying()){
         const nextSpawn = getNextSpawn()
+        // make timebar visible
         if(nextSpawn!==null && nextSpawn < elapsedTime){
+            setIsAskingQuestion(true)
+            const question = generateRandomQuestion()
+            // cannot use sleep in here, must make this external!
+            for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
+                element.classList.add("show")
+            }
+
             setNextSpawn(elapsedTime + spawnInterval)
             spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
