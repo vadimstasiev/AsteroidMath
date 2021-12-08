@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { elapsedTimeTick, getElapsedTime, getterSetter } from './Helpers'
-import { spaceshipProps, cameraProps, spaceshipRespawn } from './Spaceship'
+import { spaceshipProps, cameraProps, spaceshipRespawn, spaceshipG } from './Spaceship'
 import { spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
@@ -8,26 +8,16 @@ import {introMessages, tutorialMessages, deathMessages} from './Messages'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
-const dev_hideMessages = true
+const dev_hideMessages = false
 
 
+const [getIsMessagesShownOnce, setIsMessagesShownOnce] = getterSetter(false)
 const [getIsGamePlaying, setIsGamePlaying] = getterSetter(false)
-let isMessagesShownOnce = false
+
 const [getIsIntroPlaying, setIsIntroPlaying] = getterSetter(false)
 const [getIsTutPlaying, setIsTutPlaying] = getterSetter(false)
-// let isTutPlaying = false
-let isSkipIntroduction = false
-let isSkipTutorial = false
 
-const skipIntroduction = () => {
-    isSkipIntroduction=true
-    setIsIntroPlaying(false)
-}
-const skipTutorial = () => {
-    isSkipTutorial = true
-    setIsTutPlaying(false)
-}
-
+const [getNextSpawn, setNextSpawn] = getterSetter(null)
 
 const windowHasFocus = () => {
     if (document.hasFocus()) return true
@@ -50,7 +40,7 @@ const setupGame = (scene, camera) => {
         element.classList.add("show")
     }
     
-    // show/hide buttons
+    // show/hide buttons / toggle settings
     setInterval(() => { 
         if(getIsGamePlaying()){
             for(const element of document.getElementsByClassName('navbar-play-and-leaderboard')){
@@ -103,17 +93,34 @@ const setupGame = (scene, camera) => {
                 element.style.display = ''
             }
         }
+        if(getIsGamePlaying() && !getIsIntroPlaying() && !getIsTutPlaying()) {
+            // Move camera further away for better visibility
+            gsap.to(cameraProps,  {
+                duration: 2,
+                cameraToSpaceshipOffset: 2,
+                cameraDummyPointOffset: 1,
+                cameraRadiusMultiplier: 0.3,
+            })
+        } else if(spaceshipProps.spaceshipDestroyed){
+            gsap.to(cameraProps,  {
+                duration: 2,
+                cameraToSpaceshipOffset: 2,
+                cameraDummyPointOffset: 1,
+                cameraRadiusMultiplier: 0.3,
+            })
+        } else {
+            gsap.to(cameraProps,  {
+                duration: 2,
+                // manually set values back to default, (check Spaceship.js for default values)
+                cameraDummyPointOffset: 0,
+                cameraToSpaceshipOffset: 0.4,
+                cameraRadiusMultiplier: 0.7,
+            })
+        }
     }, getRandomInt(1000))
 }
 
 const quitGame = async () => {
-    gsap.to(cameraProps,  {
-        duration: 2,
-        // manually set values back to default, (check Spaceship.js for default values)
-        cameraDummyPointOffset: 0,
-        cameraToSpaceshipOffset: 0.4,
-        cameraRadiusMultiplier: 0.7,
-    })
     // make timebar invisible
     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
         element.classList.remove("show")
@@ -121,24 +128,15 @@ const quitGame = async () => {
     setIsGamePlaying(false)
 
     // initial messages
-    isMessagesShownOnce = true
+    setIsMessagesShownOnce(true)
     setIsIntroPlaying(false)
     setIsTutPlaying(false)
-    isSkipIntroduction=true
-    isSkipTutorial = true
 }
 
 const gameOver = async scene => {
     if(spaceshipProps.spaceshipDestroyed){
         showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     }
-    gsap.to(cameraProps,  {
-        duration: 2,
-        // manually set values back to default, (check Spaceship.js for default values)
-        cameraDummyPointOffset: 0,
-        cameraToSpaceshipOffset: 0.4,
-        cameraRadiusMultiplier: 0.7,
-    })
     await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
     setIsGamePlaying(false)
 }
@@ -147,12 +145,12 @@ const gameOver = async scene => {
 const playClicked = async (scene, camera) => {        
     if(!getIsGamePlaying()){
         setIsGamePlaying(true)
-        nextSpawnTime = 0
-        const currentShowOnceMessagesB = !isMessagesShownOnce
-        if(!isMessagesShownOnce){
-            isMessagesShownOnce = true
+        const isShowingMessages = !getIsMessagesShownOnce()
+        if(isShowingMessages){
+            setIsMessagesShownOnce(true)
         }
-        if(currentShowOnceMessagesB && !dev_hideMessages){
+        if(isShowingMessages && !dev_hideMessages){
+            setIsIntroPlaying(true)
             await showMessages(getIsGamePlaying, introMessages, getElapsedTime, setIsIntroPlaying, getIsIntroPlaying, 'intro-message')
         }
         // Spawn dense asteroid zone
@@ -166,23 +164,18 @@ const playClicked = async (scene, camera) => {
             }, interval)
         }
         spawnDenseZoneAsteroids()
-        if(currentShowOnceMessagesB && !dev_hideMessages){
+        if(isShowingMessages && !dev_hideMessages){
+            setIsTutPlaying(true)
             await showMessages(getIsGamePlaying, tutorialMessages, getElapsedTime, setIsTutPlaying, getIsTutPlaying, 'tut-message')
+
         }
-        // Move camera further away for better visibility
-        if(getIsGamePlaying()){
-            gsap.to(cameraProps,  {
-                duration: 2,
-                cameraToSpaceshipOffset: 2,
-                cameraDummyPointOffset: 1,
-                cameraRadiusMultiplier: 0.3,
-            })
-        }
+
 
         // make timebar visible
         for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
             element.classList.add("show")
         }
+        setNextSpawn(0)
     }
 }
 
@@ -218,8 +211,6 @@ window.generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperat
 	return {question, answer, getWrongAnswer}
 }
 
-
-let nextSpawnTime = 0
 const spawnInterval = 10
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus()){
@@ -228,8 +219,9 @@ const playTick = (elapsedTime, scene, camera) => {
         spaceshipRespawn(scene)
     }
     if(getIsGamePlaying()){
-        if(nextSpawnTime < elapsedTime){
-            nextSpawnTime = elapsedTime + spawnInterval
+        const nextSpawn = getNextSpawn()
+        if(nextSpawn!==null && nextSpawn < elapsedTime){
+            setNextSpawn(elapsedTime + spawnInterval)
             spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: 3, spawnNumber: 4})
             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
             spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})
@@ -238,4 +230,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {setupGame, playClicked, skipIntroduction, skipTutorial, quitGame, gameOver, playTick, getIsGamePlaying}
+export {setupGame, playClicked, quitGame, setIsIntroPlaying, setIsTutPlaying, gameOver, playTick, getIsGamePlaying}

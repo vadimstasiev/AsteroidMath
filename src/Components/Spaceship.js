@@ -128,7 +128,7 @@ const spaceshipDestroy = async (scene, elapsedTime) => {
     await gameOver(scene)
 }
 
-const spaceshipRespawn = async (scene, timeBeforeRespawn) => {
+const spaceshipRespawn = async (scene, timeBeforeRespawn=0) => {
     await sleep(timeBeforeRespawn)
     propulsionParticlesG.visible = true
     spaceshipProps.spaceshipDestroyed = false
