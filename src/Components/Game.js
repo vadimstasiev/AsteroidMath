@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import { elapsedTimeTick, getElapsedTime, getterSetter } from './Helpers'
 import { spaceshipProps, cameraProps, spaceshipRespawn, spaceshipG } from './Spaceship'
-import { spawnAsteroid } from './Asteroids'
+import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 import {introMessages, tutorialMessages, deathMessages} from './Messages'
@@ -25,6 +25,8 @@ const [getNextSpawn, setNextSpawn] = getterSetter(null)
 const [getIsAskingQuestion, setIsAskingQuestion] = getterSetter(false)
 
 const [getCurrentPlayTurn, setCurrentPlayTurn] = getterSetter(0)
+
+const [getCollisionTime, setCollisionTime] = getterSetter(0)
 
 // seconds
 const answerTime = 5
@@ -206,7 +208,11 @@ const playClicked = async (scene, camera) => {
         // for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
         //     element.classList.add("show")
         // }
-        setNextSpawn(getElapsedTime()+spawnInterval)
+
+        
+        // make first spawn shorter
+        setNextSpawn(getElapsedTime()+3)
+        // setNextSpawn(getElapsedTime()+spawnInterval)
         setCurrentPlayTurn(currentPlayTurn+1)
     }
 }
@@ -265,25 +271,46 @@ const startLoadingBar = async(currentPlayTurn, sleepTime, duration) => {
     }
 }
 
-// window.startLoadingBar = async( sleepTime, duration) => {
-//     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-//         element.classList.add("show")
-//     }
-//     await sleep(sleepTime)
-//     for(const element of document.getElementsByClassName('game-ui-timerbar')){
-//         element.classList.add("ended")
-//         element.setAttribute("style", `transition: transform ${duration}s;`);
-//     }
-//     await sleep(duration)
-//     for(const element of document.getElementsByClassName('game-ui-timerbar-container')){
-//         element.classList.remove("show")
-//     }
-//     // await the hiding transition to prevent it showing the bar full again
-//     await sleep(duration)
-//     for(const element of document.getElementsByClassName('game-ui-timerbar')){
-//         element.classList.remove("ended")
-//     }
-// }
+const showQuestionAndTitleTimer = async(currentPlayTurn, sleepTime, duration) => {
+    if(currentPlayTurn===getCurrentPlayTurn()){
+        let titleElement
+        let questionElement
+        for(const element of document.getElementsByClassName('math-question')){
+            for(const insideElement of element.getElementsByClassName('title')){
+                titleElement = insideElement
+            }
+            for(const insideElement of element.getElementsByClassName('question')){
+                questionElement = insideElement
+            }
+        }
+
+        titleElement.classList.add("show")
+        titleElement.innerHTML="Collision Detected!"
+
+        await sleep(sleepTime)
+
+        const updateTimer = () => {
+            setTimeout(async ()=>{
+                const timeLeft =  getLiveTimeBeforeCollision()
+                if(timeLeft >= 0) {
+                    titleElement.innerHTML = `Collision in: ${timeLeft}`
+                    updateTimer()
+                } else {
+                    questionElement.classList.add("show")
+
+                    await sleep(duration+1)
+                    titleElement.innerHTML("")
+            
+                    // remove elements
+                    titleElement.classList.remove("show")
+                    questionElement.classList.remove("show")
+                }
+            }, 500)
+        }
+        updateTimer(titleElement)
+    }
+}
+
 
 const playTick = (elapsedTime, scene, camera) => {
     if(!windowHasFocus() && !spaceshipProps.spaceshipDestroyed){
@@ -300,9 +327,11 @@ const playTick = (elapsedTime, scene, camera) => {
             setTimeout((currentPlayTurn)=>{
                 console.log(currentPlayTurn, getCurrentPlayTurn())
                 if(currentPlayTurn===getCurrentPlayTurn()) {
-                    startLoadingBar(currentPlayTurn, 1, answerTime)
                     setIsAskingQuestion(false)
-                    
+                    setCollisionTime(elapsedTime+answerTime)
+                    startLoadingBar(currentPlayTurn, 1, answerTime)
+                    showQuestionAndTitleTimer(currentPlayTurn, 1, answerTime)
+
                     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: 4})
                     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: 33})
                     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true, timeBeforeIntersection: 3, maxRandomOffsetMiss: 5, spawnNumber: 8})

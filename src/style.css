@@ -194,7 +194,7 @@ body {
   justify-content: center;
 }
 
-.math-question.show {
+.math-question .title.show {
   opacity: 1;
   transition: opacity 1s;
 }
@@ -207,7 +207,7 @@ body {
   font-size: 3em;
 }
 
-.math-question.show {
+.math-question .question.show {
   opacity: 1;
   transition: opacity 1s;
 }

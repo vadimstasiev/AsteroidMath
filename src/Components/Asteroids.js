@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Vector3 } from 'three'
-import { rotateAboutPoint, getRandomInt, getRandomArbitrary } from './Helpers'
+import { rotateAboutPoint, getRandomInt, getRandomArbitrary, getterSetter } from './Helpers'
 import { spaceshipProps, cameraProps, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 import { getIsGamePlaying } from './Game'
@@ -14,6 +14,8 @@ let asteroidsScene = null
 
 // the asteroid will fully clip through the ship if set to 100% (1), this makes the impact "trigger" earlier to give a better illusion of physics
 const intersectionTrajectoryPercentageToPhysicalHit = 0.96
+
+const [getLiveTimeBeforeCollision, setLiveTimeBeforeCollision] = getterSetter(0)
 
 const setupAsteroids = (loadingManager) => {
     // import gltf model from file
@@ -232,6 +234,11 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
             }
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
+            // update time for impact
+            const liveTimeBeforeIntersection = timeout - elapsedTime
+            const liveTimeBeforeCollision = Math.floor(liveTimeBeforeIntersection-liveTimeBeforeIntersection*(1-intersectionTrajectoryPercentageToPhysicalHit))
+            setLiveTimeBeforeCollision(liveTimeBeforeCollision)
+
             // asteroid hits the ship
             if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
@@ -250,4 +257,4 @@ const asteroidTick = (elapsedTime, scene, dev_freeView) => {
 
 
 
-export {setupAsteroids, spawnAsteroid, asteroidTick}
+export {setupAsteroids, spawnAsteroid, asteroidTick, getLiveTimeBeforeCollision}
