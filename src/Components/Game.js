@@ -185,7 +185,7 @@ const playClicked = async (scene, camera) => {
     }
 }
 
-const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="+") => {
+window.generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperations=1, sign="-") => {
     const numberOfOperations = getRandomInt(1, maxNumberOfOperations)
     
     let question = ""
@@ -205,10 +205,15 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
         "x":"*",
         ":":"/",
     }
-    
-    const answer = eval(strReplaceAllOccurences(question, sign, signConversion[sign]))
 
-    const getWrongAnswer = (minOffset=1, maxOffset=100) => Math.abs((Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100)))
+    let answer = ""
+    if (sign!==signConversion[sign]){
+        answer = eval(strReplaceAllOccurences(question, sign, signConversion[sign]))
+    } else {
+        answer = eval(question)
+    }
+
+    let getWrongAnswer = (minOffset=1, maxOffset=100) => (Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100))
 	return {question, answer, getWrongAnswer}
 }
 
