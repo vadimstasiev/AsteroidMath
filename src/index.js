@@ -137,7 +137,7 @@ debugObject.envMapIntensity = 5
  */
 
 setupSpaceship(loadingManager, camera, scene, controls)
-setupAsteroids(loadingManager)
+setupAsteroids(loadingManager, sizes)
 setupGalaxyScene(scene)
 setupPointsOverlay(scene)
 setupSpaceshipOverlay(scene)
@@ -182,7 +182,7 @@ const tick = () => {
 		spaceshipTick(elapsedTime, camera, controls, dev_freeView)
 
 		// Animate Asteroids
-		asteroidTick(elapsedTime, scene, dev_freeView)
+		asteroidTick(elapsedTime, scene, camera, dev_freeView)
 
 		// Update Asteroid Points Overlay
 		pointOverlayTick(camera, sizes)

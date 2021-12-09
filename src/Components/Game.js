@@ -272,11 +272,8 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
 
     const getWrongAnswer = (minOffset=1, maxOffset=100) => {
         const wrongAnswer = (Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100))
-        if(answer>=0){
-            return Math.abs(wrongAnswer)
-        } else {
-            return -Math.abs(wrongAnswer)
-        }
+        const wrongAnswerSameSign = (answer>=0?Math.abs(wrongAnswer):-Math.abs(wrongAnswer))
+        return wrongAnswerSameSign!==answer?wrongAnswerSameSign:getWrongAnswer(minOffset, maxOffset)
     }
 	return {question, answer, getWrongAnswer}
 }
@@ -380,7 +377,6 @@ const playTick = (elapsedTime, scene, camera) => {
             const currentPlayTurn = getCurrentPlayTurn()
             setIsAskingQuestion(true)
             setTimeout((currentPlayTurn)=>{
-                console.log(currentPlayTurn, getCurrentPlayTurn())
                 if(currentPlayTurn===getCurrentPlayTurn()) {
                     startGameChallenge(currentPlayTurn, 3, scene, camera)
                     // end of current turn
