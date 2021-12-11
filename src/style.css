@@ -83,7 +83,6 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  pointer-events: none;
 }
 
 .point .label {
@@ -103,9 +102,9 @@ body {
   font-weight: 100;
   font-size: 14px;
   font-family: Pixelated;
-  cursor: help;
   transform: scale(0, 0);
   transition: transform 0.3s;
+  /* pointer-events: none; */
 }
 
 .overlay-text {
@@ -129,6 +128,7 @@ body {
 
 .point.visible .label {
   transform: scale(1, 1);
+  cursor: pointer;
 }
 
 .mobile-buttons {
