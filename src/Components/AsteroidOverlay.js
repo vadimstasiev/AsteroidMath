@@ -12,12 +12,13 @@ const setupPointsOverlay = (scene) => {
 }
 
 
-const spawnPointOverlay = (asteroidObj, displayNumber) => {
+const spawnPointOverlay = (asteroidObj, displayNumber, clickablePlaneIndex) => {
     const pointClassName = "point-" + points.length 
 
 
+
     const pointHTML =
-        `<div class="point ${pointClassName}">\n` +
+        `<div class="point ${pointClassName}" onclick='window.markAsteroidClicked(${clickablePlaneIndex})'>\n` +
             `<div class="label">${displayNumber}</div>\n` +
         '</div>\n'
 

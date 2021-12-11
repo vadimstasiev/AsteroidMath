@@ -367,10 +367,10 @@ const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
 
 
 const playTick = (elapsedTime, scene, camera) => {
-    if(!windowHasFocus()){
-        quitGame()
-        spaceshipRespawn(scene, 1)
-    }
+    // if(!windowHasFocus()){
+    //     quitGame()
+    //     spaceshipRespawn(scene, 1)
+    // }
     if(getIsGamePlaying()){
         const nextSpawn = getNextSpawn()
         if(nextSpawn!==null && nextSpawn < elapsedTime){

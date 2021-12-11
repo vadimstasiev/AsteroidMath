@@ -11,7 +11,7 @@ const dev_showTrajectories = false
 const dev_showPlane = false
 
 
-const planeGeometry = new THREE.PlaneGeometry( 4, 3 )
+const planeGeometry = new THREE.PlaneGeometry( 3, 3 )
 const planeMaterial = new THREE.MeshBasicMaterial();
 
 let asteroidArray = []
@@ -25,6 +25,11 @@ let currentIntersect = null
 const mouseRaycaster = new THREE.Raycaster()
 let asteroidArrayClickable = []
 
+// make it globally accessible so it can be accessed by functions in the html
+window.asteroidArrayClickable = asteroidArrayClickable
+window.markAsteroidClicked = (clickablePlaneIndex) => {
+    asteroidArrayClickable[clickablePlaneIndex].wasClicked = true
+}
 
 // the asteroid will fully clip through the ship if set to 100% (1), this makes the impact "trigger" earlier to give a better illusion of physics
 const intersectionTrajectoryPercentageToPhysicalHit = 0.96
@@ -49,7 +54,6 @@ const setupAsteroids = (loadingManager, sizes) => {
     window.document.addEventListener('mousemove', (event) => {
         mouse.x = event.clientX / window.innerWidth * 2 - 1
         mouse.y = - (event.clientY / window.innerHeight) * 2 + 1
-        console.log( mouse.x,  mouse.y)
     })
     
     window.addEventListener('pointerdown', () =>
@@ -58,7 +62,6 @@ const setupAsteroids = (loadingManager, sizes) => {
             setTimeout(()=>{
                 if(currentIntersect)
                 {
-                    console.log(currentIntersect.object)
                     currentIntersect.object.wasClicked = true
                 }
             }, timeout)
@@ -193,8 +196,9 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 clickablePlane.position.set(0,0,3)
                 clickablePlane.visible = dev_showPlane
                 asteroidGroup.add(clickablePlane)
-                spawnPointOverlay(asteroidGroup, spawnNumber!==undefined?spawnNumber:"not_set")
                 asteroidArrayClickable.push(clickablePlane)
+                const clickablePlaneIndex = asteroidArrayClickable.length - 1
+                spawnPointOverlay(asteroidGroup, spawnNumber!==undefined?spawnNumber:"not_set", clickablePlaneIndex)
             }
 
             const asteroidProps = {
