@@ -79,7 +79,7 @@ const setupAsteroids = (loadingManager, sizes) => {
 
 }
 
-const spawnExplosion = (scene, parent, trajectoryObj) => {
+const spawnExplosion = (scene, asteroidG, trajectoryObj) => {
     const particlesG = new Group()
     const particles = new generatePropulsionParticles({
         parent: particlesG,
@@ -96,10 +96,10 @@ const spawnExplosion = (scene, parent, trajectoryObj) => {
     particlesG.rotation.z = Math.PI/2
     particlesG.rotation.y = Math.PI/2
     particlesG.position.z = 1
-    parent.add(particlesG)
+    asteroidG.add(particlesG)
     explosionsArray.push(particles)
     setTimeout(()=> {
-        parent.remove(particlesG)
+        // asteroidG.remove(particlesG)
         removeAsteroid(scene, asteroidG, false, trajectoryObj)
         explosionsArray.filter(particlesE => particlesE!==particles)
     }, explosionDuration*1000)
@@ -371,6 +371,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             if(willHit && gameIsPlaying){
                 // update time before impact (this is used in the overlay to show the seconds left before impact)
                 const liveTimeBeforeIntersection =  Math.floor(duration/targetScallarMultiplier - (trajectoryProgress / progressToIntersection)*(duration/targetScallarMultiplier))
+                console.log(liveTimeBeforeIntersection)
                 setLiveTimeBeforeCollision(liveTimeBeforeIntersection)
             } else if(!gameIsPlaying){
                 setLiveTimeBeforeCollision(0)
@@ -392,7 +393,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                     removePointOverlay(asteroidG)
 
                     // removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
-                }
+                } 
             }
         } else {
             removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)

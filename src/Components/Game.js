@@ -360,7 +360,6 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
 const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
     const {answer, getWrongAnswer} = question
     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: answer})
-    // spawnAsteroid(getElapsedTime(), scene, camera, { timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, minSpawnRange:14, maxSpawnRange:14, maxAmplitudeYRange:0, spawnNumber:"c"})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+1, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+2, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
