@@ -390,4 +390,4 @@ const playTick = (elapsedTime, scene, camera) => {
 } 
 
 
-export {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, gameOver, playTick, getIsGamePlaying}
+export {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, gameOver, playTick, getIsGamePlaying, windowHasFocus}

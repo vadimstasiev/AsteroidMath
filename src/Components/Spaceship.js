@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { Vector3, Group } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import generatePropulsionParticles from './PropulsionParticles'
-import { gameOver,  getIsGamePlaying } from './Game'
+import { gameOver,  getIsGamePlaying, windowHasFocus } from './Game'
 import { sleep } from './Helpers'
 
 const spaceshipG = new Group()
@@ -179,6 +179,9 @@ const spaceshipTick = (elapsedTime, camera, controls, dev_freeView) => {
             cameraProps.latestCameraPosition = calculateCameraPosition(elapsedTime)
             controls.target = cameraProps.cameraLookPosition
         }
+        // if(!windowHasFocus){
+        //     controls.target = cameraProps.cameraDummyPoint
+        // }
         camera.position.set(...cameraProps.latestCameraPosition)
     }
 

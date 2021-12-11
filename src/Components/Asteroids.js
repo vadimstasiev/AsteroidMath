@@ -164,21 +164,22 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             const intersectionScalarOffsetMultiplier = (Math.random()<0.5?1:-1)*getRandomArbitrary(minScalarOffsetMultiplier, maxScalarOffsetMultiplier)
             
             // Add Overlay and hitbox mesh
-            let hitboxMesh
+            let clickablePlane
             if(hasOverlay){
-                const cubeGeometry = new THREE.BoxGeometry(6, 6, 6)
-                const cubeMaterial = new THREE.MeshBasicMaterial()
-                hitboxMesh = new THREE.Mesh(cubeGeometry, cubeMaterial)
-                // hitboxMesh.position.set(5,0,0)
-                // hitboxMesh.visible = false
-                asteroidGroup.add(hitboxMesh)
+                const planeGeometry = new THREE.PlaneGeometry( 6, 3 )
+                const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                clickablePlane = new THREE.Mesh(planeGeometry, planeMaterial)
+                clickablePlane.position.set(0,0,5)
+                // clickablePlane.visible = false
+                clickablePlane.useQuaternion = true;
+                asteroidGroup.add(clickablePlane)
                 spawnPointOverlay(asteroidGroup, spawnNumber!==undefined?spawnNumber:"not_set")
-                asteroidArrayClickable.push(hitboxMesh)
+                asteroidArrayClickable.push(clickablePlane)
             }
 
             const asteroidProps = {
                 asteroid: asteroidGroup, 
-                hitboxMesh,
+                clickablePlane,
                 spawnPointVec3,
                 intersectionPointVec3: new Vector3(),
                 trajectoryObj,
@@ -233,7 +234,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
     for (let i = asteroidArray.length - 1; i >= 0; i--) {
         const {
             asteroid, 
-            hitboxMesh,
+            clickablePlane,
             spawnPointVec3, 
             trajectoryObj, 
             intersectionPointVec3,
@@ -246,6 +247,10 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             cameraWillFollow
         } = asteroidArray[i]
         const gameIsPlaying =  getIsGamePlaying()
+        if(clickablePlane){
+            asteroid.quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 )
+            asteroid.lookAt(camera.position)
+        }
         if(elapsedTime<timeout){
             const trajectoryProgress = (duration - timeout + elapsedTime)/duration
             // the intersection timing is the same regardless of hit or miss 
@@ -325,8 +330,8 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             } else if (willHit && !gameIsPlaying) {
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
             }
-            if(hitboxMesh){
-                if(hitboxMesh.wasClicked){
+            if(clickablePlane){
+                if(clickablePlane.wasClicked){
                     console.log("was clicked")
                     removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 }
