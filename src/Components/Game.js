@@ -360,16 +360,16 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
 const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
     const {answer, getWrongAnswer} = question
     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: answer})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, cameraWillFollow:true, spawnNumber: getWrongAnswer()})
+    // spawnAsteroid(getElapsedTime(), scene, camera, { timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, minSpawnRange:14, maxSpawnRange:14, maxAmplitudeYRange:0, spawnNumber:"c"})
+    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true,  timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, minSpawnRange:14, maxSpawnRange:14, maxAmplitudeYRange:0, })
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
 }
 
 
 const playTick = (elapsedTime, scene, camera) => {
-    if(!windowHasFocus() && !spaceshipProps.spaceshipDestroyed){
-        setIsGamePlaying(false)
-        spaceshipProps.spaceshipDestroyed = false
-        spaceshipRespawn(scene)
+    if(!windowHasFocus()){
+        quitGame()
+        spaceshipRespawn(scene, 1)
     }
     if(getIsGamePlaying()){
         const nextSpawn = getNextSpawn()

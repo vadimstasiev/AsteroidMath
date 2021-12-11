@@ -8,6 +8,11 @@ import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
 import { getIsGamePlaying } from './Game'
 
 const dev_showTrajectories = false
+const dev_showPlane = false
+
+
+const planeGeometry = new THREE.PlaneGeometry( 4, 3 )
+const planeMaterial = new THREE.MeshBasicMaterial();
 
 let asteroidArray = []
 let asteroidsScene = null
@@ -40,10 +45,13 @@ const setupAsteroids = (loadingManager, sizes) => {
     /**
      * Mouse
      */
-    window.addEventListener('mousemove', (event) =>
-    {
-        mouse.x = event.clientX / sizes.width * 2 - 1
-        mouse.y = - (event.clientY / sizes.height) * 2 + 1
+    let canvas = document.querySelector('canvas');
+
+    canvas.addEventListener('mousemove', (event) => {
+        var rect = canvas.getBoundingClientRect();
+        mouse.x = event.clientX / canvas.clientWidth * 2 - 1
+        mouse.y = - (event.clientY / canvas.offsetHeight) * 2 + 1
+        console.log( mouse.x,  mouse.y)
     })
     
     window.addEventListener('pointerdown', () =>
@@ -73,8 +81,11 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         maxRandomOffsetMiss,
         hasOverlay,
         timeBeforeIntersection,
-        cameraWillFollow,
-        spawnNumber
+        onlyForCameraToFollow,
+        spawnNumber,
+        maxSpawnRange,
+        minSpawnRange,
+        maxAmplitudeYRange
     } = params
     if(asteroidsScene){
         const frustum = new THREE.Frustum()
@@ -86,18 +97,33 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         const minAsteroidSize = 0.2
         const spawnAngle = Math.PI/2
         const spawnAngleRange = 0.2
-        const maxRadius = 12
-        const minRadius = 11.8
-        const amplitudeY = 4
-        let x,y,z, theta
+        const maxSpawnRangeL = maxSpawnRange || 12
+        const minSpawnRangeL = minSpawnRange || 11.8
+        const maxAmplitudeYRangeL = maxAmplitudeYRange || 4
+        let x,y,z, theta = 0
         const vec3 = new Vector3()
 
+        // how many times the distance from the asteroid spawn point to the intersection point
+        const targetScallarMultiplier = 6
 
-        const asteroidObj = asteroidsScene.children[getRandomInt(0, 8)].clone()
-        asteroidObj.position.set(0,0,0)
-        const randomSize = getRandomArbitrary(minAsteroidSize, maxAsteroidSize)
+        // total duration of the asteroid trajectory course
+        let duration = timeBeforeIntersection*targetScallarMultiplier
+        // account for the early impact adjustment 
+        duration = duration + duration*(1-intersectionTrajectoryPercentageToPhysicalHit)
+
         const asteroidGroup = new THREE.Group()
-        asteroidGroup.add(asteroidObj)
+        if(!onlyForCameraToFollow){
+            const asteroidObj = asteroidsScene.children[getRandomInt(0, 8)].clone()
+            asteroidObj.position.set(0,0,0)
+            asteroidGroup.add(asteroidObj)
+            // animate random rotation on asteroid
+            gsap.to(asteroidObj.rotation,  {
+                duration: duration,
+                x: "random(-20.0,20.0)",
+                y: "random(-20.0,20.0)",
+            })
+        }
+        const randomSize = getRandomArbitrary(minAsteroidSize, maxAsteroidSize)
         asteroidGroup.scale.set(randomSize, randomSize, randomSize)
 
 
@@ -108,10 +134,10 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
 
         // Find coordinates for a random point within the radius of 10 and outside the radius of 6
         do {
-            const random = Math.random() *maxRadius 
-            x = Math.sin(random) *maxRadius - ((Math.random()-0.5)*minRadius)
-            y = (Math.random()-0.5)* amplitudeY
-            z = Math.cos(random) *maxRadius - ((Math.random()-0.5)*minRadius)
+            const random = Math.random() *maxSpawnRangeL 
+            x = Math.sin(random) *maxSpawnRangeL - ((Math.random()-0.5)*minSpawnRangeL)
+            y = (Math.random()-0.5)* maxAmplitudeYRangeL
+            z = Math.cos(random) *maxSpawnRangeL - ((Math.random()-0.5)*minSpawnRangeL)
             vec3.set(x,y,z)
 
             camera.getWorldDirection(cameraDirection)
@@ -130,12 +156,8 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             rotateAboutPoint(asteroidGroup, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidGroup)
 
-            // how many times the distance from the asteroid spawn point to the intersection point
-            const targetScallarMultiplier = 6
-            // total duration of the asteroid trajectory course
-            let duration = timeBeforeIntersection*targetScallarMultiplier
-            // account for the early impact adjustment 
-            duration = duration + duration*(1-intersectionTrajectoryPercentageToPhysicalHit)
+            
+            
             
             let trajectoryObj
             // show trajectories of asteroids (for dev and troubleshooting)
@@ -165,11 +187,9 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             // Add Overlay and hitbox mesh
             let clickablePlane
             if(hasOverlay){
-                const planeGeometry = new THREE.PlaneGeometry( 6, 3 )
-                const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
                 clickablePlane = new THREE.Mesh(planeGeometry, planeMaterial)
-                clickablePlane.position.set(0,0,5)
-                // clickablePlane.visible = false
+                clickablePlane.position.set(0,0,3)
+                clickablePlane.visible = dev_showPlane
                 asteroidGroup.add(clickablePlane)
                 spawnPointOverlay(asteroidGroup, spawnNumber!==undefined?spawnNumber:"not_set")
                 asteroidArrayClickable.push(clickablePlane)
@@ -187,14 +207,10 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 intersectionScalarOffsetMultiplier,
                 hasOverlay,
                 willHit,
-                cameraWillFollow
+                onlyForCameraToFollow
             }
             asteroidArray.push(asteroidProps)
-            gsap.to(asteroidObj.rotation,  {
-                duration: duration,
-                x: "random(-20.0,20.0)",
-                y: "random(-20.0,20.0)",
-            })
+            
 
         }
     }
@@ -216,15 +232,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
     mouseRaycaster.setFromCamera(mouse, camera)
     const intersects = mouseRaycaster.intersectObjects(asteroidArrayClickable)
     
-    if(intersects.length)
-    {
-        if(currentIntersect)
-        {
-            console.log('mouse enter')
-        }
-
-        currentIntersect = intersects[0]
-    }
+    if(intersects.length) { currentIntersect = intersects[0] }
     else { currentIntersect = null }
 
     let cameraAlreadyFollowingSomething = false
@@ -242,7 +250,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             intersectionScalarOffsetMultiplier,
             hasOverlay,
             willHit,
-            cameraWillFollow
+            onlyForCameraToFollow
         } = asteroidArray[i]
         const gameIsPlaying =  getIsGamePlaying()
         if(clickablePlane){
@@ -257,7 +265,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             // lerpFactor [ 0 ; 1 ]
             const lerpFactor = trajectoryProgress / progressToIntersection
             // Camera Rotation to follow a given asteroid
-            if(!dev_freeView && !cameraAlreadyFollowingSomething && cameraWillFollow && !spaceshipProps.spaceshipDestroyed){
+            if(!dev_freeView && !cameraAlreadyFollowingSomething && onlyForCameraToFollow && !spaceshipProps.spaceshipDestroyed){
                 cameraAlreadyFollowingSomething = true
                 const aspectRatio = window.innerHeight/window.innerWidth
                 // update camera looking direction
@@ -321,7 +329,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             }
 
             // asteroid hits the ship
-            if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying){
+            if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying && !onlyForCameraToFollow){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 spaceshipDestroy(scene, elapsedTime)
                 // TODO !! only remove in that certain condition after playing again 
@@ -330,7 +338,6 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             }
             if(clickablePlane){
                 if(clickablePlane.wasClicked){
-                    console.log("was clicked")
                     removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 }
             }

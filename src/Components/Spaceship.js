@@ -134,6 +134,7 @@ const spaceshipRespawn = async (scene, timeBeforeRespawn=0) => {
     spaceshipProps.spaceshipDestroyed = false
     spaceshipProps.spaceshipObj.visible=true
     spaceshipProps.spaceshipRespawning = true
+    cameraProps.cameraLookPosition = cameraProps.cameraDummyPoint
 }
 
 let lerpFactor=0
