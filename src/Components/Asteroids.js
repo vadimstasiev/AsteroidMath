@@ -40,14 +40,13 @@ const setupAsteroids = (loadingManager, sizes) => {
     /**
      * Mouse
      */
-    const canvas = document.getElementsByTagName('canvas')[0]
-    canvas.addEventListener('mousemove', (event) =>
+    window.addEventListener('mousemove', (event) =>
     {
         mouse.x = event.clientX / sizes.width * 2 - 1
         mouse.y = - (event.clientY / sizes.height) * 2 + 1
     })
     
-    canvas.addEventListener('pointerdown', () =>
+    window.addEventListener('pointerdown', () =>
     {
         const setWasClicked = (timeout=0) => {
             setTimeout(()=>{
@@ -171,7 +170,6 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 clickablePlane = new THREE.Mesh(planeGeometry, planeMaterial)
                 clickablePlane.position.set(0,0,5)
                 // clickablePlane.visible = false
-                clickablePlane.useQuaternion = true;
                 asteroidGroup.add(clickablePlane)
                 spawnPointOverlay(asteroidGroup, spawnNumber!==undefined?spawnNumber:"not_set")
                 asteroidArrayClickable.push(clickablePlane)

@@ -109,6 +109,7 @@ if (dev_freeView) {
 	camera.position.set(10, 2, -10)
 	controls.enableZoom = true
 } else {
+	controls.enabled = false
 	controls.enableZoom = false
 }
 
