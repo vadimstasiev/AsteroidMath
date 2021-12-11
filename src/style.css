@@ -51,7 +51,7 @@ body {
 }
 
 .webgl {
-  position: fixed;
+  /* position: fixed; */
   display: flex;
   top: 0;
   left: 0;
