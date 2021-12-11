@@ -79,7 +79,7 @@ const setupAsteroids = (loadingManager, sizes) => {
 
 }
 
-const spawnExplosion = (scene, asteroidG, trajectoryObj) => {
+const spawnExplosion = (scene, asteroidG, i, trajectoryObj) => {
     const particlesG = new Group()
     const particles = new generatePropulsionParticles({
         parent: particlesG,
@@ -100,7 +100,7 @@ const spawnExplosion = (scene, asteroidG, trajectoryObj) => {
     explosionsArray.push(particles)
     setTimeout(()=> {
         // asteroidG.remove(particlesG)
-        removeAsteroid(scene, asteroidG, false, trajectoryObj)
+        removeAsteroid(scene, asteroidObj, false, trajectoryObj)
         explosionsArray.filter(particlesE => particlesE!==particles)
     }, explosionDuration*1000)
 }
@@ -261,15 +261,15 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
     }
 }
 
-const removeAsteroid = (scene, asteroidG, hasOverlay, trajectoryObj) => {
-    scene.remove(asteroidG)
+const removeAsteroid = (scene, asteroid, index, hasOverlay, trajectoryObj) => {
+    scene.remove(asteroid)
     if(hasOverlay){
-        removePointOverlay(asteroidG)
+        removePointOverlay(asteroid)
     }
     if(dev_showTrajectories){
         scene.remove(trajectoryObj)
     }
-    asteroidArray.filter(asteroid=> asteroid!==asteroidG)
+    asteroidArray.splice(index, 1)
 }
 
 const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
@@ -379,24 +379,24 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
 
             // asteroidG hits the ship
             if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying && !onlyForCameraToFollow && !asteroidG.isRemoving){
-                removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+                removeAsteroid(scene, asteroidG, i, hasOverlay, trajectoryObj)
                 spaceshipDestroy(scene, elapsedTime)
                 // TODO !! only remove one per turn!!! 
             } else if (willHit && !gameIsPlaying) {
-                removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+                removeAsteroid(scene, asteroidG, i, hasOverlay, trajectoryObj)
             }
             if(clickablePlane && !asteroidG.isRemoving){
                 if(clickablePlane.wasClicked){
-                    spawnExplosion(scene, asteroidG, trajectoryObj)
+                    spawnExplosion(scene, asteroidG, i, trajectoryObj)
                     asteroidG.isRemoving = true
                     asteroidObj.visible = false
                     removePointOverlay(asteroidG)
 
-                    // removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+                    // removeAsteroid(scene, asteroidG, i, hasOverlay, trajectoryObj)
                 } 
             }
         } else {
-            removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+            removeAsteroid(scene, asteroidG, i, hasOverlay, trajectoryObj)
         }
     }
     explosionsTick(elapsedTime)
