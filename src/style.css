@@ -32,6 +32,8 @@ body {
   background-color: #313335;
   padding-top: 0;
   padding-bottom: 0;
+  position: relative;
+  width: 100%;
 }
 
 .button-login {
