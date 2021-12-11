@@ -95,7 +95,7 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         const center = new Vector3(0, 0, 0)
         
         const maxAsteroidSize = 0.3
-        const minAsteroidSize = 0.2
+        const minAsteroidSize = 0.15
         const spawnAngle = Math.PI/2
         const spawnAngleRange = 0.2
         const maxSpawnRangeL = maxSpawnRange || 12
@@ -277,6 +277,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                 // update camera looking direction
                 if(trajectoryProgress <= progressToIntersection){
                     if(aspectRatio<1){
+                        // use this for horizontal screens
                         cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone()
                             .lerp(asteroid.position.clone()
                                 .add(intersectionPointVec3)
@@ -284,6 +285,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                                 lerpFactor
                             )
                     } else {
+                        // use this for vertical screens
                         cameraProps.cameraLookPosition = cameraProps.cameraLookPosition.clone().lerp(asteroid.position.clone(), lerpFactor)
                     }
                 } else {
@@ -306,7 +308,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                 .add(spawnPointVec3)
             // up must be a vector greater than intersectionPointVec3 (up > intersectionPointVec3)
             const up = new Vector3(0, 10, 0)
-            // up is added because as the ship goes above and bellow y=0 , it changes the direction of the vector, so we add a vector "up" to offset it 
+            // up is added because as the ship goes above and bellow y=0 , it changes the direction of the vector, so we add a vector "up" to offset it (it is normalized anyway)
             const parallelVec3 = new Vector3(intersectionPointVec3.y, intersectionPointVec3.x)
                 .add(up)
                 .normalize()
@@ -321,13 +323,13 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                 )
             )
             if(dev_showTrajectories){
-                const points = curve.getPoints(50);
+                const points = curve.getPoints(50)
                 trajectoryObj.geometry.setFromPoints(points)
             }
             const newPosition = curve.getPoint(trajectoryProgress)
             asteroid.position.copy(newPosition)
-            // update time for impact
             if(willHit && gameIsPlaying){
+                // update time before impact (this is used in the overlay to show the seconds left before impact)
                 const liveTimeBeforeIntersection =  Math.floor(duration/targetScallarMultiplier - (trajectoryProgress / progressToIntersection)*(duration/targetScallarMultiplier))
                 setLiveTimeBeforeCollision(liveTimeBeforeIntersection)
             } else if(!gameIsPlaying){
@@ -338,7 +340,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             if((trajectoryProgress > progressToIntersection*intersectionTrajectoryPercentageToPhysicalHit) && willHit && gameIsPlaying && !onlyForCameraToFollow){
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
                 spaceshipDestroy(scene, elapsedTime)
-                // TODO !! only remove in that certain condition after playing again 
+                // TODO !! only remove one per turn!!! 
             } else if (willHit && !gameIsPlaying) {
                 removeAsteroid(scene, asteroid, i, hasOverlay, trajectoryObj)
             }

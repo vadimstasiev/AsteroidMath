@@ -2,70 +2,70 @@ const introMessages = [
     {
         message: "Oh, Hi !",
         offsetX: 90,
-        offsetY: -100,
+        offsetY: -150,
         duration: 3,
         wait: 1
     },
     {
         message: "I see you love doing Maths !",
         offsetX: 0,
-        offsetY: 80,
+        offsetY: 20,
         duration: 3,
         wait: 1
     },
     {
         message: "You don't !?",
-        offsetX: 90,
-        offsetY: -100,
+        offsetX: 50,
+        offsetY: 40,
         duration: 2.5,
         wait: 1
     },
     {
         message: "Oh",
         offsetX: 90,
-        offsetY: -100,
+        offsetY: -160,
         duration: 1,
         wait: 2
     },
     {
         message: "Well, you may not know this, but I'm in a bit of trouble...",
         offsetX: 20,
-        offsetY: 100,
+        offsetY: 50,
         duration: 4,
         wait: 1
     },
     {
         message: "There is a dense asteroid zone coming up ahead.",
-        offsetX: 70,
-        offsetY: 80,
+        offsetX: 20,
+        offsetY: 70,
         duration: 3,
         wait: 1
     },
     {
         message: "And the only way to get us through it is if you help us do some Maths really quickly.",
-        offsetX: 100,
-        offsetY: -260,
-        duration: 6,
-        wait: 2
-    },
-    {
-        message: "Here is your chance to leave and survive if you think you can't handle it ! (......)",
         offsetX: 20,
         offsetY: 70,
         duration: 6,
         wait: 2
     },
     {
+        message: "Here is your chance to leave and survive if you think you can't handle it ! (......)",
+        offsetX: 20,
+        offsetY: 60,
+        duration: 6,
+        wait: 2
+    },
+    {
         message: "You're still here ?! Take your sit Captain !",
         offsetX: 100,
-        offsetY: -140,
+        offsetY: -200,
         duration: 3,
         wait: 1
     },
     {
         message: "You're awesome ! Here it comes then...",
         offsetX: 0,
-        offsetY: 70,
+        offsetY: 20,
         duration: 3,
         wait: 2
     },
@@ -74,29 +74,29 @@ const introMessages = [
 const tutorialMessages = [
     {
         message: "The spaceship navigation system works for the most part...",
-        offsetX: 100,
-        offsetY: -200,
+        offsetX: 20,
+        offsetY: 20,
         duration: 5,
         wait: 1
     },
     {
         message: "But sometimes it fails and needs manual takeover.",
-        offsetX: 50,
-        offsetY: 80,
+        offsetX: 90,
+        offsetY: -240,
         duration: 3,
         wait: 1
     },
     {
         message: "I need you to click on the right answer in time to prevent us crashing the ship.",
         offsetX: 50,
-        offsetY: 70,
+        offsetY: 20,
         duration: 4,
         wait: 1
     },
     {
         message: "Good Luck!",
         offsetX: 90,
-        offsetY: -100,
+        offsetY: -150,
         duration: 1,
         wait: 3
     },
