@@ -45,12 +45,10 @@ const setupAsteroids = (loadingManager, sizes) => {
     /**
      * Mouse
      */
-    let canvas = document.querySelector('canvas');
 
-    canvas.addEventListener('mousemove', (event) => {
-        var rect = canvas.getBoundingClientRect();
-        mouse.x = event.clientX / canvas.clientWidth * 2 - 1
-        mouse.y = - (event.clientY / canvas.offsetHeight) * 2 + 1
+    window.document.addEventListener('mousemove', (event) => {
+        mouse.x = event.clientX / window.innerWidth * 2 - 1
+        mouse.y = - (event.clientY / window.innerHeight) * 2 + 1
         console.log( mouse.x,  mouse.y)
     })
     
@@ -104,7 +102,11 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         const vec3 = new Vector3()
 
         // how many times the distance from the asteroid spawn point to the intersection point
-        const targetScallarMultiplier = 6
+        let targetScallarMultiplier = 6
+
+        if(onlyForCameraToFollow){
+            targetScallarMultiplier=5
+        }
 
         // total duration of the asteroid trajectory course
         let duration = timeBeforeIntersection*targetScallarMultiplier

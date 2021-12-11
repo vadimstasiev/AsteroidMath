@@ -29,10 +29,10 @@ body {
 }
 
 .navbar-custom {
-  background-color: #313335;
+  /* background-color: #313335; */
   padding-top: 0;
   padding-bottom: 0;
-  position: relative;
+  position: absolute;
   width: 100%;
 }
 
@@ -88,10 +88,11 @@ body {
 
 .point .label {
   position: absolute;
-  top: -20px;
+  top: -60px;
   left: -20px;
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
+  padding-top: 19px;
   border-radius: 50%;
   background: #00000077;
   border: 1px solid #ffffff77;
