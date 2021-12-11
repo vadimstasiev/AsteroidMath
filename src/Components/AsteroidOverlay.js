@@ -12,32 +12,33 @@ const setupPointsOverlay = (scene) => {
 }
 
 
-const spawnPointOverlay = (asteroidObj, displayNumber, clickablePlaneIndex) => {
+const spawnPointOverlay = (asteroid, displayNumber, clickablePlaneIndex) => {
     const pointClassName = "point-" + points.length 
 
 
 
     const pointHTML =
-        `<div class="point ${pointClassName}" onclick='window.markAsteroidClicked(${clickablePlaneIndex})'>\n` +
+        `<div class="point ${pointClassName} unselectable" onclick='window.markAsteroidClicked(${clickablePlaneIndex})'>\n` +
             `<div class="label">${displayNumber}</div>\n` +
         '</div>\n'
 
     document.getElementById('points-container').insertAdjacentHTML("beforeend", pointHTML)
 
     points.push({
-        asteroid: asteroidObj,
+        asteroid: asteroid,
         element: document.querySelector(`.${pointClassName}`)
     })
 
 }
 
-const removePointOverlay = (asteroidObj) => {
-    for(const i in points) {
-        const {asteroid, element} = points[i]
-        if(asteroid===asteroidObj){
-            element.remove()
+const removePointOverlay = asteroid => {
+    points.filter(point => {
+        if (point.asteroid === asteroid) {
+            point.element.remove()
+        } else {
+            return point
         }
-    }
+    })
 }
 
 var frustum = new Frustum();
