@@ -10,7 +10,7 @@ const spaceshipProps = {
     // Default Spaceship Orbit Parameters:
     spaceshipObj: undefined,
     spaceshipDestroyed: false,
-    timeBeforeRespawn: 6,
+    timeBeforeRespawn: 10,
     spaceshipRespawning: false,
     spaceshipSpeed: 9,
     spaceshipRadius: 6,

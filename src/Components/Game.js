@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import { getElapsedTime, getterSetter } from './Helpers'
 import { spaceshipProps, cameraProps, spaceshipRespawn, spaceshipG } from './Spaceship'
-import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
+import { doesAsteroidArrayHaveCurrentWillHit, getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 import {introMessages, tutorialMessages, deathMessages} from './Messages'
@@ -331,7 +331,7 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
         }
 
         await sleep(sleepTime)
-        if(getIsGamePlaying()){
+        if(getIsGamePlaying()){ 
             setIsAskingQuestion(false)
             startLoadingBar(currentPlayTurn, 1)
             spawnPossibleAnswerAsteroids(scene, camera, question)
@@ -364,7 +364,7 @@ const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+1, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+2, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime-1, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
-    spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true,  timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, minSpawnRange:15, maxSpawnRange:15, maxAmplitudeYRange:0, })
+    spawnAsteroid(getElapsedTime(), scene, camera, { timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, minSpawnRange:15, maxSpawnRange:15, maxAmplitudeYRange:0, })
 }
 
 
