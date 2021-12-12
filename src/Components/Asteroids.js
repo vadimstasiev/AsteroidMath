@@ -119,11 +119,13 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         maxRandomOffsetMiss,
         hasOverlay,
         timeBeforeIntersection,
+        keepUpdatingTrajectory,
         onlyForCameraToFollow,
         spawnNumber,
         maxSpawnRange,
         minSpawnRange,
-        maxAmplitudeYRange
+        maxAmplitudeYRange, 
+        updateScore
     } = params
     if(asteroidsScene){
         const frustum = new THREE.Frustum()
@@ -243,12 +245,14 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 intersectionPointVec3: new Vector3(),
                 trajectoryObj,
                 timeout: elapsedTime+duration,
+                keepUpdatingTrajectory,
                 duration, 
                 targetScallarMultiplier,
                 intersectionScalarOffsetMultiplier,
                 hasOverlay,
                 willHit,
-                onlyForCameraToFollow
+                onlyForCameraToFollow,
+                updateScore
             }
             asteroidArray.push(asteroidProps)
         }
@@ -290,12 +294,14 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             trajectoryObj, 
             intersectionPointVec3,
             timeout, 
+            keepUpdatingTrajectory,
             duration,
             targetScallarMultiplier,
             intersectionScalarOffsetMultiplier,
             hasOverlay,
             willHit,
-            onlyForCameraToFollow
+            onlyForCameraToFollow,
+            updateScore
         } = asteroid
         const gameIsPlaying =  getIsGamePlaying()
         if(clickablePlane){
@@ -337,7 +343,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                 }
             } 
             // only update intersectionPointVec3 until asteroidG has reached/passed spaceship position
-            if(trajectoryProgress <= progressToIntersection){
+            if(trajectoryProgress <= progressToIntersection || keepUpdatingTrajectory){
                 intersectionPointVec3.set(...spaceshipProps.latestSpaceshipPosition)
             }
             // calculate vector of the position that is targetScallarMultiplier times away in a straight line from intersectionPointVec3 to spawnPointVec3
@@ -370,7 +376,6 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             if(willHit && gameIsPlaying){
                 // update time before impact (this is used in the overlay to show the seconds left before impact)
                 const liveTimeBeforeIntersection =  Math.floor(duration/targetScallarMultiplier - (trajectoryProgress / progressToIntersection)*(duration/targetScallarMultiplier))
-                console.log(liveTimeBeforeIntersection)
                 setLiveTimeBeforeCollision(liveTimeBeforeIntersection)
             } else if(!gameIsPlaying){
                 setLiveTimeBeforeCollision(0)
@@ -393,6 +398,9 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                     asteroidG.isRemoving = true
                     asteroidObj.visible = false
                     removePointOverlay(asteroidG)
+                    if(updateScore){
+                        updateScore()
+                    }
                 } 
             }
         } else {
@@ -408,7 +416,6 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
         // elapsedTime-10 is to ensure that the tick has time to remove them from scene
         asteroidArray = asteroidArray.filter( asteroid => asteroid.willHit !== true && asteroid.onlyForCameraToFollow !== true && asteroid.timeout>=elapsedTime-10)
     }
-    console.log(asteroidArray)
 }
 
 
