@@ -87,8 +87,8 @@ body {
 
 .point .label {
   position: absolute;
-  top: -60px;
-  left: -20px;
+  top: -100px;
+  left: -40px;
   width: 80px;
   height: 80px;
   padding-top: 19px;
