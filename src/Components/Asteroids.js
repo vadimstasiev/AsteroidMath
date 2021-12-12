@@ -281,7 +281,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
 
     let cameraAlreadyFollowingSomething = false
     // reverse iteration for convinience of cameraAlreadyFollowingSomething, makes it easier to follow the latest (specific) asteroidG that needs following 
-    asteroidArray.filter( asteroid => {
+    asteroidArray = asteroidArray.filter( asteroid => {
         const {
             asteroidG, 
             asteroidObj,
@@ -384,6 +384,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                 // TODO !! only remove one per turn!!! 
             } else if (willHit && !gameIsPlaying) {
                 removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+                return false
             }
             if(clickablePlane && !asteroidG.isRemoving){
                 // when an asteroid is clicked
@@ -391,13 +392,14 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
                     spawnExplosion(asteroidG)
                     asteroidG.isRemoving = true
                     asteroidObj.visible = false
-                    asteroidObj.willHit = false
                     removePointOverlay(asteroidG)
                 } 
             }
         } else {
             removeAsteroid(scene, asteroidG, hasOverlay, trajectoryObj)
+            return false
         }
+        return true
     })
     explosionsTick(elapsedTime)
     // cleanup the array at the end to avoid weird behaviour and extra overhead 
