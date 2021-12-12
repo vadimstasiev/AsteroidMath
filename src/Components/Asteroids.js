@@ -100,7 +100,7 @@ const spawnExplosion = (scene, asteroidG, i, trajectoryObj) => {
     explosionsArray.push(particles)
     setTimeout(()=> {
         // asteroidG.remove(particlesG)
-        removeAsteroid(scene, asteroidObj, false, trajectoryObj)
+        removeAsteroid(scene, asteroidG, i, false, trajectoryObj)
         explosionsArray.filter(particlesE => particlesE!==particles)
     }, explosionDuration*1000)
 }
@@ -198,9 +198,6 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
             // rotate the calculated asteroidG position on the Y axis around the center of the world and to the right of the camera
             rotateAboutPoint(asteroidGroup, center, axisOfRotation, -spawnAngle)
             scene.add(asteroidGroup)
-
-            
-            
             
             let trajectoryObj
             // show trajectories of asteroids (for dev and troubleshooting)
@@ -255,8 +252,6 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
                 onlyForCameraToFollow
             }
             asteroidArray.push(asteroidProps)
-            
-
         }
     }
 }
