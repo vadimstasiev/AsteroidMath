@@ -345,6 +345,9 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
             // only update intersectionPointVec3 until asteroidG has reached/passed spaceship position
             if(trajectoryProgress <= progressToIntersection || keepUpdatingTrajectory){
                 intersectionPointVec3.set(...spaceshipProps.latestSpaceshipPosition)
+            } 
+            if(hasOverlay && trajectoryProgress > progressToIntersection){
+                removePointOverlay(asteroidG)
             }
             // calculate vector of the position that is targetScallarMultiplier times away in a straight line from intersectionPointVec3 to spawnPointVec3
             const targetPointVec3 = intersectionPointVec3.clone()

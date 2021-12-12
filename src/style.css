@@ -87,7 +87,7 @@ body {
 
 .point .label {
   position: absolute;
-  top: -100px;
+  top: -50px;
   left: -40px;
   width: 80px;
   height: 80px;
@@ -129,6 +129,10 @@ body {
 .point.visible .label {
   transform: scale(1, 1);
   cursor: pointer;
+}
+.point .hide {
+  transform: scale(0, 0);
+  transition: transform 0.3s;
 }
 
 .mobile-buttons {
@@ -222,6 +226,23 @@ body {
 }
 
 .math-question .question.show {
+  opacity: 1;
+  transition: opacity 1s;
+}
+
+.score-title {
+  position: absolute;
+  top: 20%;
+  width: 100%;
+  color: #ffffff;
+  font-family: Pixelated;
+  opacity: 0;
+  transition: opacity 1s;
+  display: flex;
+  justify-content: center;
+}
+
+.score-title.show {
   opacity: 1;
   transition: opacity 1s;
 }

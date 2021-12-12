@@ -28,18 +28,16 @@ const spawnPointOverlay = (asteroid, displayNumber, clickablePlaneIndex) => {
         asteroid: asteroid,
         element: document.querySelector(`.${pointClassName}`)
     })
-
 }
 
-const removePointOverlay = asteroid => {
-    points.filter(point => {
-        if (point.asteroid === asteroid) {
-            point.element.remove()
-        } else {
-            return point
-        }
-    })
-}
+const removePointOverlay = asteroid => points.filter(point => {
+    if (point.asteroid === asteroid) {
+        point.element.remove()
+    } else {
+        return point
+    }
+})
+
 
 var frustum = new Frustum();
 const pointOverlayTick = (camera, sizes) => {

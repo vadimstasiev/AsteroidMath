@@ -202,6 +202,7 @@ const quitGame = async () => {
 const gameOver = async scene => {
     setIsGamePlaying(false)
     showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
+    titleShowScore()
     // TODO show score
     await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
     setGameScore(0)
@@ -278,6 +279,8 @@ const generateRandomQuestion = (minNumber = 2, maxNumber = 9, maxNumberOfOperati
     } else {
         answer = eval(question)
     }
+
+    // todo optimize wrong answers, make addition and subraction wrong answers be closer to real answer, (maybe random percentage offset?)
 
     const getWrongAnswer = (minOffset=1, maxOffset=100) => {
         const wrongAnswer = (Math.random()>0.5)?(answer+getRandomInt(minOffset, maxOffset)):(answer-getRandomInt(1, 100))
@@ -369,12 +372,50 @@ const startGameChallenge = async(currentPlayTurn, sleepTime, scene, camera) => {
 const spawnPossibleAnswerAsteroids = (scene, camera, question) => {
     const {answer, getWrongAnswer} = question
     // TODO improve questions, create random spawner of the bellow
+    // TODO only follow copy existing willhit asteroid instead 
     spawnAsteroid(getElapsedTime(), scene, camera, { willHit: true, hasOverlay: true, timeBeforeIntersection: answerTime, spawnNumber: answer, updateScore: ()=> setGameScore(getGameScore()+1)})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+1, keepUpdatingTrajectory:true, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
-    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+2, keepUpdatingTrajectory:true, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
+    // spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime+1,  minSpawnRange:13, maxSpawnRange:13, maxAmplitudeYRange:0, keepUpdatingTrajectory:true, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
+    spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime-2,  minSpawnRange:15, maxSpawnRange:15, maxAmplitudeYRange:0, keepUpdatingTrajectory:true, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
     spawnAsteroid(getElapsedTime(), scene, camera, { hasOverlay: true,  timeBeforeIntersection: answerTime-1, maxRandomOffsetMiss: 5, spawnNumber: getWrongAnswer()})
-    spawnAsteroid(getElapsedTime(), scene, camera, { timeBeforeIntersection: answerTime+2, onlyForCameraToFollow:true, maxAmplitudeYRange:0, })
+    spawnAsteroid(getElapsedTime(), scene, camera, { timeBeforeIntersection: answerTime, onlyForCameraToFollow:true, maxAmplitudeYRange:0, })
+}
+
+const titleShowScore = async () => {
+    const score = getGameScore()
+    let titleElement
+    for(const element of document.getElementsByClassName('score-title')){
+        titleElement = element
+    }
+
+    titleElement.classList.add("show")
+    titleElement.innerHTML=`Score: ${score}`
+
+    const resetTitle = async () => {
+        // remove elements
+        titleElement.classList.remove("show")
+        // wait for the element's to dissapear before removing text
+        await sleep(2)
+        titleElement.innerHTML = ""
+    }
+
+    let alreadyReset = false
+    const showTime = 5
+
+    const showTimeout = () => {
+        setTimeout(async ()=>{
+            if(getIsGamePlaying()){
+                resetTitle()
+                alreadyReset = true;
+            } 
+        }, 100)
+    }
+    showTimeout()
+    setTimeout(() => {
+        if(!alreadyReset){
+            resetTitle()
+        }
+    }, showTime*1000);
 }
 
 
