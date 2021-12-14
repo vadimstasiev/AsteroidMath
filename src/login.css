@@ -12,6 +12,13 @@
   margin-left: auto;
   margin-right: auto;
   top: 10%;
+  opacity: 0;
+  /* transition: opacity 3s; */
+}
+
+.card.show {
+  opacity: 1;
+  transition: opacity 3s;
 }
 
 .social_icon span {
