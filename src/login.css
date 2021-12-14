@@ -21,6 +21,11 @@
   transition: opacity 3s;
 }
 
+.card.hide {
+  opacity: 0;
+  transition: opacity 3s;
+}
+
 .social_icon span {
   font-size: 60px;
   margin-left: 10px;

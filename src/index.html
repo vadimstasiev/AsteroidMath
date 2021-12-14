@@ -38,18 +38,59 @@
 				</li>
 			</ul>
 				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-					<a href="register.html" class="form-control mr-sm-2 button-login">Sign Up</a>
+					<span class="form-control mr-sm-2 button-login" onClick="window.showRegister()">Register</span>
 				</div>
 				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-					<a href='login.html' class="form-control mr-sm-2 button-login">Log In</a>
+					<span class="form-control mr-sm-2 button-login" onClick="window.showLogin()">Log In</span>
 				</div>
 			</div>
 		</div>
 	</nav>
 	<div style="overflow: hidden;">
-		<div class="card">
+		<div class="card login-card">
 			<div class="card-header">
-				<h3>Sign In</h3>
+				<h3>Log In</h3>
+				<div class="d-flex justify-content-end social_icon">
+					<span><i class="fab fa-facebook-square"></i></span>
+					<span><i class="fab fa-google-plus-square"></i></span>
+					<span><i class="fab fa-twitter-square"></i></span>
+				</div>
+			</div>
+			<div class="card-body">
+				<form>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" placeholder="username"  autocomplete="on">
+					</div>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-key"></i></span>
+						</div>
+						<input type="password" class="form-control" placeholder="password"  autocomplete="on">
+					</div>
+					<div class="row align-items-center remember">
+						<input type="checkbox">Remember Me
+					</div>
+					<div class="form-group">
+						<input type="submit" value="Login" class="btn float-right login_btn">
+					</div>
+				</form>
+			</div>
+			<div class="card-footer">
+				<div class="d-flex justify-content-center links">
+					Don't have an account?<a href="#">Register</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<a href="#">Forgot your password?</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="card register-card">
+			<div class="card-header">
+				<h3>Register</h3>
 				<div class="d-flex justify-content-end social_icon">
 					<span><i class="fab fa-facebook-square"></i></span>
 					<span><i class="fab fa-google-plus-square"></i></span>
@@ -63,25 +104,24 @@
 							<span class="input-group-text"><i class="fas fa-user"></i></span>
 						</div>
 						<input type="text" class="form-control" placeholder="username">
-						
 					</div>
 					<div class="input-group form-group">
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-key"></i></span>
 						</div>
-						<input type="password" class="form-control" placeholder="password">
+						<input type="password" class="form-control" placeholder="password"  autocomplete="on">
 					</div>
 					<div class="row align-items-center remember">
 						<input type="checkbox">Remember Me
 					</div>
 					<div class="form-group">
-						<input type="submit" value="Login" class="btn float-right login_btn">
+						<input type="submit" value="Register" class="btn float-right login_btn"  autocomplete="on">
 					</div>
 				</form>
 			</div>
 			<div class="card-footer">
 				<div class="d-flex justify-content-center links">
-					Don't have an account?<a href="#">Sign Up</a>
+					Don't have an account?<a href="#">Register</a>
 				</div>
 				<div class="d-flex justify-content-center">
 					<a href="#">Forgot your password?</a>
