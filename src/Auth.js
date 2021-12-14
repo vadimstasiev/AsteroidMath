@@ -44,6 +44,7 @@ const login = () => {
 }
 
 const setupLoginRegister = async () => {
+	// add both before anything else, these are not added by default o prevent them from appearing before anything else loads 
     for(const element of document.getElementsByClassName('register-card')){
         element.classList.add("show")
         element.classList.add("hide")
@@ -57,20 +58,21 @@ const setupLoginRegister = async () => {
 const transitionWait = 1.5
 let isTransitioning = false
 
-const showLogin = async () => {
+const showForm = async (show = 'register-card', hide = 'login-card') => {
 	if(!isTransitioning){
 		let wait = transitionWait
 		isTransitioning = true
-		for(const element of document.getElementsByClassName('register-card')){
-			if(!element.classList.contains("hide")){
-				element.classList.add("hide")
-				element.setAttribute("pointer-events","none")
-			} else {
-				wait = 0
-			}
+		for(const element of document.getElementsByClassName(hide)){
+			// if element already hiden there is no need to wait for transition
+			if(element.classList.contains("hide")) { wait = 0 } 
+			element.classList.add("hide")
+			// make it unclickable if not visible
+			element.setAttribute("pointer-events","none")
+			await sleep(wait)
+			element.style.top = "1000%"
 		}
-		await sleep(wait)
-		for(const element of document.getElementsByClassName('login-card')){
+		for(const element of document.getElementsByClassName(show)){
+			element.style.top = "10%"
 			element.classList.remove("hide")
 			element.setAttribute("pointer-events","auto")
 		}
@@ -78,25 +80,4 @@ const showLogin = async () => {
 	}
 }
 
-const showRegister = async () => {
-	if(!isTransitioning){
-		let wait = transitionWait
-		isTransitioning = true
-		for(const element of document.getElementsByClassName('login-card')){
-			if(!element.classList.contains("hide")){
-				element.classList.add("hide")
-				element.setAttribute("pointer-events","none")
-			} else {
-				wait = 0
-			}
-		}
-		await sleep(wait)
-		for(const element of document.getElementsByClassName('register-card')){
-			element.classList.remove("hide")
-			element.setAttribute("pointer-events","auto")
-		}
-		isTransitioning = false
-	}
-}
-
-export {setupLoginRegister, showLogin, showRegister}
+export {setupLoginRegister, showForm}
