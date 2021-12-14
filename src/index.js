@@ -1,9 +1,11 @@
-import './style.css'
-import "jquery";
-import "popper.js";
-import "bootstrap/dist/js/bootstrap.min";
+//scripts
+import "jquery"
+import "popper.js"
+import "bootstrap/dist/js/bootstrap.min"
 
-import "bootstrap/dist/css/bootstrap.min.css";
+// Styles
+import "bootstrap/dist/css/bootstrap.min.css"
+import './style.css'
 
 import * as THREE from 'three'
 import setupRenderer from './Components/Renderer'
