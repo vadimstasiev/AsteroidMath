@@ -3,31 +3,44 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
+const pages = ["index", "login", "register"]
+
 module.exports = {
-    entry: path.resolve(__dirname, '../src/index.js'),
-    output:
-    {
+    entry: pages.reduce((config, page) => {
+        config[page] = `./src/${page}.js`;
+        return config;
+      }, {}),
+    // entry: path.resolve(__dirname, '../src/index.js'),
+    output: {
         filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, '../dist')
     },
     devtool: 'source-map',
+    optimization: {
+        splitChunks: {
+          chunks: "all",
+        },
+    },
     plugins:
-    [
+     [
         new CopyWebpackPlugin({
             patterns: [
                 { from: path.resolve(__dirname, '../static') }
             ]
         }),
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, '../src/index.html'),
-            minify: true
-        }),
+        ...pages.map( (page) => 
+            new HtmlWebpackPlugin({
+                inject:true,
+                template: `./src/${page}.html`,
+                filename: `${page}.html`,
+                minify: true,
+                chunks: [page]
+            })
+        ),
         new MiniCSSExtractPlugin()
     ],
-    module:
-    {
-        rules:
-        [
+    module: {
+        rules: [
             // HTML
             {
                 test: /\.(html)$/,
