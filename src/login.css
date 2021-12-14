@@ -16,6 +16,10 @@
   /* transition: opacity 3s; */
 }
 
+.card.register-card {
+  height: 400px;
+}
+
 .card.show {
   opacity: 1;
   transition: opacity 3s;

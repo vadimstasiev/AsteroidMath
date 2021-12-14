@@ -55,35 +55,48 @@ const setupLoginRegister = async () => {
 }
 
 const transitionWait = 1.5
+let isTransitioning = false
 
 const showLogin = async () => {
-	let wait = transitionWait
-	for(const element of document.getElementsByClassName('register-card')){
-		if(!element.classList.contains("hide")){
-			element.classList.add("hide")
-		} else {
-			wait = 0
+	if(!isTransitioning){
+		let wait = transitionWait
+		isTransitioning = true
+		for(const element of document.getElementsByClassName('register-card')){
+			if(!element.classList.contains("hide")){
+				element.classList.add("hide")
+				element.setAttribute("pointer-events","none")
+			} else {
+				wait = 0
+			}
 		}
+		await sleep(wait)
+		for(const element of document.getElementsByClassName('login-card')){
+			element.classList.remove("hide")
+			element.setAttribute("pointer-events","auto")
+		}
+		isTransitioning = false
 	}
-	await sleep(wait)
-    for(const element of document.getElementsByClassName('login-card')){
-        element.classList.remove("hide")
-    }
 }
 
 const showRegister = async () => {
-	let wait = transitionWait
-	for(const element of document.getElementsByClassName('login-card')){
-		if(!element.classList.contains("hide")){
-			element.classList.add("hide")
-		} else {
-			wait = 0
+	if(!isTransitioning){
+		let wait = transitionWait
+		isTransitioning = true
+		for(const element of document.getElementsByClassName('login-card')){
+			if(!element.classList.contains("hide")){
+				element.classList.add("hide")
+				element.setAttribute("pointer-events","none")
+			} else {
+				wait = 0
+			}
 		}
+		await sleep(wait)
+		for(const element of document.getElementsByClassName('register-card')){
+			element.classList.remove("hide")
+			element.setAttribute("pointer-events","auto")
+		}
+		isTransitioning = false
 	}
-	await sleep(wait)
-	for(const element of document.getElementsByClassName('register-card')){
-		element.classList.remove("hide")
-    }
 }
 
 export {setupLoginRegister, showLogin, showRegister}
