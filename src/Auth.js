@@ -55,26 +55,34 @@ const setupLoginRegister = async () => {
     }
 }
 
-const transitionWait = 1.5
+const transitionWait = 0.75
 let isTransitioning = false
 
 const showForm = async (show = 'register-card', hide = 'login-card') => {
 	if(!isTransitioning){
-		let wait = transitionWait
 		isTransitioning = true
 		for(const element of document.getElementsByClassName(hide)){
+			let wait = transitionWait
 			// if element already hiden there is no need to wait for transition
-			if(element.classList.contains("hide")) { wait = 0 } 
+			if(element.classList.contains("hide")) {
+				// wait = 0
+			} 
 			element.classList.add("hide")
-			// make it unclickable if not visible
-			element.setAttribute("pointer-events","none")
 			await sleep(wait)
 			element.style.top = "1000%"
 		}
 		for(const element of document.getElementsByClassName(show)){
-			element.style.top = "10%"
-			element.classList.remove("hide")
-			element.setAttribute("pointer-events","auto")
+			let wait = transitionWait
+			// show it if already hiding else hide it if already showing
+			if(element.classList.contains("hide")){
+				element.style.top = "10%"
+				element.classList.remove("hide")
+				await sleep(wait)
+			} else {
+				element.classList.add("hide")
+				await sleep(wait)
+				element.style.top = "1000%"
+			}
 		}
 		isTransitioning = false
 	}
