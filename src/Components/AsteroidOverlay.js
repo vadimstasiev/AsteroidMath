@@ -1,4 +1,4 @@
-import {PlaneBufferGeometry, ShaderMaterial, Mesh, Frustum, Matrix4} from 'three'
+import { PlaneBufferGeometry, ShaderMaterial, Mesh, Frustum, Matrix4 } from 'three'
 
 let points = []
 

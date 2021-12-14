@@ -1,6 +1,5 @@
 // This galaxy generator was based off of this source: https://github.com/the-halfbloodprince/GalaxyM1199
 import * as THREE from 'three'
-import { Vector3 } from 'three'
 
 const materialDefault = new THREE.PointsMaterial({
     sizeAttenuation: false,

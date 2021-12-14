@@ -1,7 +1,7 @@
-import * as THREE from 'three'
 import gsap from 'gsap'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import * as THREE from 'three'
 import { Vector3, Vector2, Group } from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { rotateAboutPoint, getRandomInt, getRandomArbitrary, getterSetter } from './Helpers'
 import { spaceshipProps, cameraProps, spaceshipDestroy } from './Spaceship'
 import { spawnPointOverlay, removePointOverlay } from './AsteroidOverlay'
@@ -23,7 +23,7 @@ let explosionsArray = []
 /**
  * Mouse
  */
-const mouse = new THREE.Vector2()
+const mouse = new Vector2()
 let currentIntersect = null
 const mouseRaycaster = new THREE.Raycaster()
 let asteroidArrayClickable = []
@@ -155,7 +155,7 @@ const spawnAsteroid = async (elapsedTime, scene, camera, params={}) => {
         // account for the early impact adjustment 
         duration = duration + duration*(1-intersectionTrajectoryPercentageToPhysicalHit)
 
-        const asteroidGroup = new THREE.Group()
+        const asteroidGroup = new Group()
         const asteroidObj = asteroidsScene.children[getRandomInt(0, 8)].clone()
         if(!onlyForCameraToFollow){
             asteroidObj.position.set(0,0,0)
@@ -305,7 +305,7 @@ const asteroidTick = (elapsedTime, scene, camera, dev_freeView) => {
         } = asteroid
         const gameIsPlaying =  getIsGamePlaying()
         if(clickablePlane){
-            asteroidG.quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 )
+            asteroidG.quaternion.setFromAxisAngle( new Vector3( 0, 1, 0 ), Math.PI / 2 )
             asteroidG.lookAt(camera.position)
         }
         if(elapsedTime<timeout){

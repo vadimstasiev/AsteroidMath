@@ -10,16 +10,16 @@ import './login.css'
 
 
 import * as THREE from 'three'
-import setupRenderer from './Components/Renderer'
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
-import {gsap} from 'gsap'
-import {setupSpaceship, spaceshipTick} from './Components/Spaceship'
-import {setupAsteroids, asteroidTick} from './Components/Asteroids'
-import {setupGalaxyScene, galaxiesTick} from './Components/Galaxies'
-import {setupPointsOverlay, pointOverlayTick} from './Components/AsteroidOverlay'
-import {setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick} from './Components/Game'
-import {setupSpaceshipOverlay, spaceshipOverlayTick} from './Components/SpaceshipOverlay'
+import { gsap } from 'gsap'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { setElapsedTime } from './Components/Helpers'
+import setupRenderer from './Components/Renderer'
+import { setupGalaxyScene, galaxiesTick } from './Components/Galaxies'
+import { setupSpaceship, spaceshipTick } from './Components/Spaceship'
+import { setupSpaceshipOverlay, spaceshipOverlayTick } from './Components/SpaceshipOverlay'
+import { setupAsteroids, asteroidTick } from './Components/Asteroids'
+import { setupPointsOverlay, pointOverlayTick } from './Components/AsteroidOverlay'
+import { setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick } from './Components/Game'
 
 
 // If dev_freeView is enabled then the camera can be panned around manually

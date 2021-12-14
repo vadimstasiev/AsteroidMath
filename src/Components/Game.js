@@ -1,10 +1,9 @@
 import gsap from 'gsap'
-import { getElapsedTime, getterSetter } from './Helpers'
-import { spaceshipProps, cameraProps, spaceshipRespawn, spaceshipG } from './Spaceship'
-import { doesAsteroidArrayHaveCurrentWillHit, getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
-import { getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
+import { getElapsedTime, getterSetter, getRandomInt, sleep, strReplaceAllOccurences } from './Helpers'
+import { spaceshipProps, cameraProps, spaceshipRespawn } from './Spaceship'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
-import {introMessages, tutorialMessages, deathMessages} from './Messages'
+import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
+import { introMessages, tutorialMessages, deathMessages } from './Messages'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting

@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import { Vector3, Group } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import generatePropulsionParticles from './PropulsionParticles'
-import { gameOver,  getIsGamePlaying, windowHasFocus } from './Game'
 import { sleep } from './Helpers'
+import { gameOver,  getIsGamePlaying } from './Game'
+import generatePropulsionParticles from './PropulsionParticles'
 
 const spaceshipG = new Group()
 const spaceshipProps = {
