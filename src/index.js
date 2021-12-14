@@ -6,6 +6,8 @@ import "bootstrap/dist/js/bootstrap.min"
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css"
 import './style.css'
+import './login.css'
+
 
 import * as THREE from 'three'
 import setupRenderer from './Components/Renderer'

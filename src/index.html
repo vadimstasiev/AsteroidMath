@@ -5,74 +5,114 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Asteroid Math</title>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-	<div class="navbar-brand logo unselectable">Asteroid Math</div>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-	        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	
-	<div class="collapse navbar-collapse unselectable" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto play-and-leaderboard">
-			<li class="nav-item active" onClick="window.playClicked()">
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated">Play<span class="sr-only"></span></div>
-			</li>
-			<li class="nav-item">
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated">Leaderboard</div>
-			</li>
-		</ul>
-		<ul class="navbar-nav mr-auto score-skip-quit">
-			<li class="nav-item active"	>
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated">
-					<div class="score">Score: 0</div>
+<body scroll="no">
+	<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+		<div class="navbar-brand logo unselectable">Asteroid Math</div>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse unselectable" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto play-and-leaderboard">
+				<li class="nav-item active" onClick="window.playClicked()">
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated">Play<span class="sr-only"></span></div>
+				</li>
+				<li class="nav-item">
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated">Leaderboard</div>
+				</li>
+			</ul>
+			<ul class="navbar-nav mr-auto score-skip-quit">
+				<li class="nav-item active"	>
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated">
+						<div class="score">Score: 0</div>
+					</div>
+				</li>
+				<li class="nav-item quit" onClick="window.quitGame()">
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Quit</div>
+				</li>
+				<li class="nav-item skip-intro" onClick="window.skipIntroduction()">
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Skip Introducion</div>
+				</li>
+				<li class="nav-item skip-tut" onClick="window.skipTutorial()">
+					<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Skip Tutorial</div>
+				</li>
+			</ul>
+				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
+					<a href="register.html" class="form-control mr-sm-2 button-login">Sign Up</a>
 				</div>
-			</li>
-			<li class="nav-item quit" onClick="window.quitGame()">
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Quit</div>
-			</li>
-      		<li class="nav-item skip-intro" onClick="window.skipIntroduction()">
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Skip Introducion</div>
-			</li>
-      		<li class="nav-item skip-tut" onClick="window.skipTutorial()">
-				<div class="nav-link d-none d-lg-block d-xl-block pixelated" style="cursor: pointer">Skip Tutorial</div>
-			</li>
-		</ul>
-			<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-				<a href="register.html" class="form-control mr-sm-2 button-login">Sign Up</a>
-			</div>
-			<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-				<a href='login.html' class="form-control mr-sm-2 button-login">Log In</a>
+				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
+					<a href='login.html' class="form-control mr-sm-2 button-login">Log In</a>
+				</div>
 			</div>
 		</div>
+	</nav>
+	<div style="overflow: hidden;">
+		<div class="card">
+			<div class="card-header">
+				<h3>Sign In</h3>
+				<div class="d-flex justify-content-end social_icon">
+					<span><i class="fab fa-facebook-square"></i></span>
+					<span><i class="fab fa-google-plus-square"></i></span>
+					<span><i class="fab fa-twitter-square"></i></span>
+				</div>
+			</div>
+			<div class="card-body">
+				<form>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input type="text" class="form-control" placeholder="username">
+						
+					</div>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-key"></i></span>
+						</div>
+						<input type="password" class="form-control" placeholder="password">
+					</div>
+					<div class="row align-items-center remember">
+						<input type="checkbox">Remember Me
+					</div>
+					<div class="form-group">
+						<input type="submit" value="Login" class="btn float-right login_btn">
+					</div>
+				</form>
+			</div>
+			<div class="card-footer">
+				<div class="d-flex justify-content-center links">
+					Don't have an account?<a href="#">Sign Up</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<a href="#">Forgot your password?</a>
+				</div>
+			</div>
+		</div>
+
+		<canvas class="webgl"></canvas>
+		<div class="loading-bar"></div>
+
+		<div class="game-ui">
+			<div class="game-ui-timerbar-container">
+				<div class="game-ui-timerbar"></div>
+			</div>
+			<h4 class="score-title"></h4>
+			<div class="math-question unselectable">
+				<h4 class="title"></h4>
+				<p class="question"></p>
+			</div>
+		</div>
+
+		<div class="mobile-buttons play-and-leaderboard">
+			<button type="button" class="btn btn-dark btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated"
+					onClick="window.playClicked()">Play
+			</button>
+			<button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated">
+				Leaderboard
+			</button>
+		</div>
+
+		<div id="points-container"></div>
 	</div>
-</nav>
-
-<canvas class="webgl"></canvas>
-<div class="loading-bar"></div>
-
-<div class="game-ui">
-	<div class="game-ui-timerbar-container">
-		<div class="game-ui-timerbar"></div>
-	</div>
-	<h4 class="score-title"></h4>
-	<div class="math-question unselectable">
-		<h4 class="title"></h4>
-		<p class="question"></p>
-	</div>
-</div>
-
-<div class="mobile-buttons play-and-leaderboard">
-	<button type="button" class="btn btn-dark btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated"
-	        onClick="window.playClicked()">Play
-	</button>
-	<button type="button" class="btn btn-secondary btn-lg btn-block d-block d-sm-block d-md-block d-lg-none pixelated">
-		Leaderboard
-	</button>
-</div>
-
-<div id="points-container"></div>
-
-
 </body>
 </html>

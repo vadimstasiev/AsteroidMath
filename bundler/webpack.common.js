@@ -3,14 +3,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
-const pages = ["index", "login", "register"]
+const pages = [
+    "index", 
+    // "login", 
+    // "register"
+]
 
 module.exports = {
     entry: pages.reduce((config, page) => {
         config[page] = `./src/${page}.js`;
         return config;
       }, {}),
-    // entry: path.resolve(__dirname, '../src/index.js'),
     output: {
         filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, '../dist')
