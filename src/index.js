@@ -1,4 +1,10 @@
 import './style.css'
+import "jquery";
+import "popper.js";
+import "bootstrap/dist/js/bootstrap.min";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import * as THREE from 'three'
 import setupRenderer from './Components/Renderer'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
