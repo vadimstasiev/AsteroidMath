@@ -5,7 +5,7 @@
   margin-top: auto;
   margin-bottom: auto;
   width: 400px;
-  background-color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
   position: absolute;
   left: 0;
   right: 0;
@@ -53,7 +53,7 @@
 
 .input-group-prepend span {
   width: 50px;
-  background-color: #ffc312;
+  background-color: #575959;
   color: black;
   border: 0 !important;
 }
@@ -74,9 +74,16 @@ input:focus {
   margin-right: 5px;
 }
 
+.submit-custom {
+  background-color: #1d1f20;
+  text-align: center;
+  color: #ffffff;
+  width: 7em;
+}
+
 .login_btn {
   color: black;
-  background-color: #ffc312;
+  background-color: #1d1f20;
   width: 100px;
 }
 

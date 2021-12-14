@@ -161,7 +161,7 @@ body {
 
 .game-ui {
   opacity: 0;
-  transition: opacity 3s;
+  /* transition: opacity 3s; */
 }
 
 .game-ui.show {
