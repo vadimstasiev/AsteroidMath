@@ -11,6 +11,7 @@ import { getterSetter, sleep } from "./Helpers"
 const [getIsShowingRegisterOrLogin, setIsShowingRegisterOrLogin] = getterSetter(false)
 
 const login = () => {
+	hideError()
 	let email, password = ''
 	document.getElementById('email').addEventListener('change', (event) => {
 		email = document.getElementById('email').value
@@ -49,6 +50,18 @@ const setupLoginRegister = async () => {
 const transitionWait = 0.75
 let isTransitioning = false
 
+const hideError = () => {
+	for(const element of document.getElementsByClassName('error')){
+        element.innerHTML = ""
+    }
+}
+
+const setError = (error="") => {
+	for(const element of document.getElementsByClassName('error')){
+        element.innerHTML = error
+    }
+}
+
 const showForm = async (show = 'register-card', hide = 'login-card') => {
 	if(!isTransitioning){
 		isTransitioning = true
@@ -57,10 +70,11 @@ const showForm = async (show = 'register-card', hide = 'login-card') => {
 			let wait = transitionWait
 			// if element already hiden there is no need to wait for transition
 			if(element.classList.contains("hide")) {
-				// wait = 0
+				wait = 0
 			} 
 			element.classList.add("hide")
 			await sleep(wait)
+			hideError()
 			element.style.top = "1000%"
 		}
 		for(const element of document.getElementsByClassName(show)){
