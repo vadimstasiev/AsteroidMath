@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.min"
 import "bootstrap/dist/css/bootstrap.min.css"
 import './style.css'
 import './login.css'
+import './leaderboard.css'
 
 
 import * as THREE from 'three'

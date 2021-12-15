@@ -1,0 +1,51 @@
+.leaderboard-card-container {
+  background-color: rgba(0, 0, 0, 0.541) !important;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff;
+  /* height: 400px; */
+  width: 400px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  top: 10%;
+  /* opacity: 0; */
+  opacity: 1;
+}
+
+.leaderboard-card table {
+  padding: 5px;
+  color: #ffffff;
+}
+
+.leaderboard-card.show {
+  opacity: 1;
+  transition: opacity 3s;
+}
+
+.leaderboard-card.hide {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.leaderboard-card-header h3 {
+  color: white;
+  display: inline;
+}
+
+.leaderboard-card-header div {
+  float: right;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.leaderboard-card-footer div {
+  color: #ffffff;
+  font-size: 1.2em;
+  font-weight: 900;
+}

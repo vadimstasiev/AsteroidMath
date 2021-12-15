@@ -50,7 +50,7 @@
 		</div>
 	</nav>
 	<div style="overflow: hidden;">
-		<div class="card login-card">
+		<div class="card login-card hide">
 			<div class="card-header"><h3>Log In</h3><div onClick="window.showLogin()">x</div></div>
 			<div class="card-body">
 				<form>
@@ -74,7 +74,7 @@
 			<div class="card-footer"><div class="message">message goes here</div></div>
 		</div>
 
-		<div class="card register-card">
+		<div class="card register-card hide">
 			<div class="card-header"><h3>Register</h3><div onClick="window.showRegister()">x</div></div>
 			<div class="card-body">
 				<form>
@@ -102,6 +102,44 @@
 				</form>
 			</div>
 			<div class="card-footer"><div class="message">message goes here</div></div>
+		</div>
+
+		<div class="leaderboard-card-container">
+			<div class="leaderboard-card">
+				<div class="card-header"><h3>Leaderboard</h3><div onClick="window.showRegister()">x</div></div>
+
+				<table class="table card-body">
+					<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">First</th>
+						<th scope="col">Last</th>
+						<th scope="col">Handle</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<th scope="row">1</th>
+						<td>Mark</td>
+						<td>Otto</td>
+						<td>@mdo</td>
+					</tr>
+					<tr>
+						<th scope="row">2</th>
+						<td>Jacob</td>
+						<td>Thornton</td>
+						<td>@fat</td>
+					</tr>
+					<tr>
+						<th scope="row">3</th>
+						<td>Larry</td>
+						<td>the Bird</td>
+						<td>@twitter</td>
+					</tr>
+					</tbody>
+				</table>
+		
+			</div>
 		</div>
 
 		<canvas class="webgl"></canvas>

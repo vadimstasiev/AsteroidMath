@@ -1,7 +1,5 @@
 .card {
   height: 275px;
-  margin-top: auto;
-  margin-bottom: auto;
   width: 400px;
   background-color: rgba(0, 0, 0, 0.541) !important;
   border-color: #ffffff;
@@ -12,7 +10,6 @@
   margin-right: auto;
   top: 10%;
   opacity: 0;
-  transition: opacity 3s;
 }
 
 .card.register-card {
