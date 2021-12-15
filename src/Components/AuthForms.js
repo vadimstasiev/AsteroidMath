@@ -8,7 +8,7 @@ const [getIsShowingRegisterOrLogin, setIsShowingRegisterOrLogin] = getterSetter(
 const login = () => {
 	hideMessage()
 	let email, password = ''
-	let emailEl, passwordEl = ''
+	let emailEl, passwordEl
 	for(const element of document.getElementsByClassName('email-login')){
 		emailEl = element
         email = element.value
@@ -18,6 +18,7 @@ const login = () => {
 		password = element.value
     }
 	if(email.length && password.length){
+		setMessage("Logging in...")
 		signInWithEmailAndPassword(auth, email, password)
 			.then(async userCredential => {
 				setMessage("Login Successful")
@@ -39,7 +40,7 @@ const login = () => {
 const register = () => {
 	hideMessage()
 	let email, password, confirmPassword = ''
-	let emailEl, passwordEl, confirmPasswordEl = ''
+	let emailEl, passwordEl, confirmPasswordEl
 	for(const element of document.getElementsByClassName('email-register')){
 		emailEl = element
         email = element.value
@@ -48,28 +49,34 @@ const register = () => {
 		passwordEl = element
 		password = element.value
     }
-	for(const element of document.getElementsByClassName('confirm-password-register')){
+	for(const element of document.getElementsByClassName('password-confirm-register')){
 		confirmPasswordEl = element
 		confirmPassword = element.value
     }
 	if(email.length && password.length){
-		createUserWithEmailAndPassword(auth, email, password)
-			.then(async userCredential => {
-				setMessage("Register Successful")
-				await sleep(1)
-				emailEl.innerHTML = ""
-				passwordEl.innerHTML = ""
-				showOrHideForm('register-card', 'login-card')
-			})
-			.catch((error) => {
-				// remove "auth/" from the returned error message and replace dashes with spaces
-				let errorMessageFormated = error.code.replace('auth/','').replace(/-/g, " ")
-				// Capitalize first letter
-				errorMessageFormated = errorMessageFormated.charAt(0).toUpperCase() + errorMessageFormated.slice(1)
-				setMessage(errorMessageFormated)
-			})
+		if(password==confirmPassword){
+			setMessage("Registering...")
+			createUserWithEmailAndPassword(auth, email, password)
+				.then(async userCredential => {
+					setMessage("Register Successful")
+					await sleep(1)
+					emailEl.innerHTML = ""
+					passwordEl.innerHTML = ""
+					confirmPasswordEl.innerHTML = ""
+					showOrHideForm('register-card', 'login-card')
+				})
+				.catch((error) => {
+					// remove "auth/" from the returned error message and replace dashes with spaces
+					let errorMessageFormated = error.code.replace('auth/','').replace(/-/g, " ")
+					// Capitalize first letter
+					errorMessageFormated = errorMessageFormated.charAt(0).toUpperCase() + errorMessageFormated.slice(1)
+					setMessage(errorMessageFormated)
+				})
+		} else {
+			setMessage("Please enter the same password")
+		}
 	} else {
-		setMessage("Please fill both fields")
+		setMessage("Please fill all fields")
 	}
 }
 
