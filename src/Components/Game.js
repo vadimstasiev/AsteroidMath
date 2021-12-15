@@ -436,9 +436,16 @@ const titleShowScore = async () => {
 
 const submitGameScore = async () => {
     if(!getUserIsLoggedIn()) { return }
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = dd + '/' + mm + '/' + yyyy;
     await addDoc(collection(db, "leaderboard"), {
         email: getEmail(),
         score: getGameScore(),
+        day: today
     })
 }
 
