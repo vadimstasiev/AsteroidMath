@@ -1,4 +1,5 @@
-import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./Firebase"
+import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, getEmail } from "./Firebase"
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore"; 
 import { quitGame } from "./Game"
 import { getterSetter, sleep } from "./Helpers"
 
@@ -145,13 +146,38 @@ const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 	}
 }
 
-const showLeaderboard = () => {
-	// firestore.collection("profile").orderBy('highestScore', 'desc')
-    //         .limit(5).onSnapshot((querySnapshot) => {
-    //         setUsers(querySnapshot.docs.map((doc) => {
-    //             return doc.data()
-    //         }))
-    //     })
+const showLeaderboard = async () => {
+	// collection(db, "leaderboard").orderBy('score', 'desc')
+	// 	.limit(10).onSnapshot((querySnapshot) => {
+	// 		// setUsers(querySnapshot.docs.map((doc) => {
+	// 		// 	return doc.data()
+	// 		// 	})
+	// 		// )
+	// 		console.log(querySnapshot)
+	// 	})
+
+	const titles = `<thead><tr><th scope="col">#</th><th scope="col">Score</th><th scope="col">Day</th></tr></thead>`
+	let tableContent = titles + "<tbody>"
+	let i = 0 
+
+	const leaderboardRef = collection(db, "leaderboard")
+
+	const result = query(leaderboardRef, orderBy("score", "desc"), limit(10));
+
+	const querySnapshot = await getDocs(result)
+	querySnapshot.forEach((doc) => {
+		i++
+		const data = doc.data()
+		if(data.email == getEmail()){
+			tableContent += `<tr><th scope="row">${i}</th><td>${data.score}</td><td>${data.day}</td></tr>`
+			console.log(data)
+		}
+	})
+
+	tableContent += "</tbody>"
+	for(const element of document.getElementsByClassName('leaderboard-table')){
+        element.innerHTML = tableContent
+    }
 }
 
 export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register, showLeaderboard}

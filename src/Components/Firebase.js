@@ -1,4 +1,4 @@
-import * as firebase from "firebase/app"
+import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
 import { getterSetter } from "./Helpers"
@@ -17,9 +17,9 @@ const firebaseConfig = {
 const [getUserIsLoggedIn, setUserIsLoggedIn] = getterSetter(false)
 const [getEmail, setEmail] = getterSetter("")
 
-firebase.initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 const auth = getAuth()
-const db = getFirestore()
+const db = getFirestore(app)
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
