@@ -83,6 +83,7 @@ const setupGame = (scene, camera) => {
             // hide
             for(const element of document.getElementsByClassName('play-and-leaderboard')){
                 element.style.display = 'none'
+                element.style.pointerEvents = "none"
             }
             // show
             for(const element of document.getElementsByClassName('score-skip-quit')){
@@ -98,10 +99,20 @@ const setupGame = (scene, camera) => {
             // show
             for(const element of document.getElementsByClassName('play-and-leaderboard')){
                 element.style.display = ''
+                element.style.opacity = '1'
+                element.style.pointerEvents = "auto"
             }
             // hide
             for(const element of document.getElementsByClassName('score-skip-quit')){
                 element.style.display = 'none'
+            }
+        }
+
+        if(getIsShowingRegisterOrLogin()){
+            // hide play-and-leaderboard buttons
+            for(const element of document.getElementsByClassName('play-and-leaderboard')){
+                element.style.opacity = '0'
+                element.style.pointerEvents = "none"
             }
         }
         

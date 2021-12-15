@@ -63,7 +63,7 @@ body {
   top: 0;
   left: 0;
   outline: none;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .loading-bar {
@@ -182,7 +182,7 @@ body {
   border-radius: 15px;
   opacity: 0;
   transition: opacity 1s;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .game-ui-timerbar-container.show {
