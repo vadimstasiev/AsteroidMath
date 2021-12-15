@@ -5,7 +5,8 @@ import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { introMessages, tutorialMessages, deathMessages } from './Messages'
 import { getIsShowingRegisterOrLogin } from './AuthForms'
-
+import { getUserIsLoggedIn, db, getEmail } from './Firebase'
+import { addDoc, collection } from "firebase/firestore"; 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
 const dev_hideMessages = false
@@ -217,6 +218,7 @@ const gameOver = async scene => {
     setIsGamePlaying(false)
     showDeathMessages([deathMessages[getRandomInt(0,deathMessages.length-1)]], getElapsedTime)
     titleShowScore()
+    submitGameScore()
     // TODO show score
     await spaceshipRespawn(scene, spaceshipProps.timeBeforeRespawn)
     setGameScore(0)
@@ -432,12 +434,20 @@ const titleShowScore = async () => {
     }, showTime*1000);
 }
 
+const submitGameScore = async () => {
+    if(!getUserIsLoggedIn()) { return }
+    await addDoc(collection(db, "leaderboard"), {
+        email: getEmail(),
+        score: getGameScore(),
+    })
+}
+
 
 const playTick = (elapsedTime, scene, camera) => {
-    // if(!windowHasFocus()){
-    //     quitGame()
-    //     spaceshipRespawn(scene, 1)
-    // }
+    if(!windowHasFocus()){
+        quitGame()
+        spaceshipRespawn(scene, 1)
+    }
     if(getIsGamePlaying()){
         const nextSpawn = getNextSpawn()
         if(nextSpawn!==null && nextSpawn < elapsedTime){
