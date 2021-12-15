@@ -4,7 +4,7 @@ import { spaceshipProps, cameraProps, spaceshipRespawn } from './Spaceship'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { introMessages, tutorialMessages, deathMessages } from './Messages'
-import { getIsShowingRegisterOrLogin } from '../Auth'
+import { getIsShowingRegisterOrLogin } from './AuthForms'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
