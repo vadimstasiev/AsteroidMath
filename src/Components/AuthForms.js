@@ -1,4 +1,5 @@
 import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./Firebase"
+import { quitGame } from "./Game"
 import { getterSetter, sleep } from "./Helpers"
 
 
@@ -7,20 +8,63 @@ const [getIsShowingRegisterOrLogin, setIsShowingRegisterOrLogin] = getterSetter(
 const login = () => {
 	hideMessage()
 	let email, password = ''
+	let emailEl, passwordEl = ''
 	for(const element of document.getElementsByClassName('email-login')){
+		emailEl = element
         email = element.value
     }
 	for(const element of document.getElementsByClassName('password-login')){
+		passwordEl = element
 		password = element.value
     }
 	if(email.length && password.length){
 		signInWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				// Signed in
-				console.log(userCredential, email, password)
+			.then(async userCredential => {
+				setMessage("Login Successful")
+				await sleep(1)
+				emailEl.innerHTML = ""
+				passwordEl.innerHTML = ""
+				showOrHideForm('login-card', 'register-card')
 			})
 			.catch((error) => {
 				let errorMessageFormated = error.code.replace('auth/','').replace(/-/g, " ")
+				errorMessageFormated = errorMessageFormated.charAt(0).toUpperCase() + errorMessageFormated.slice(1)
+				setMessage(errorMessageFormated)
+			})
+	} else {
+		setMessage("Please fill both fields")
+	}
+}
+
+const register = () => {
+	hideMessage()
+	let email, password, confirmPassword = ''
+	let emailEl, passwordEl, confirmPasswordEl = ''
+	for(const element of document.getElementsByClassName('email-register')){
+		emailEl = element
+        email = element.value
+    }
+	for(const element of document.getElementsByClassName('password-register')){
+		passwordEl = element
+		password = element.value
+    }
+	for(const element of document.getElementsByClassName('confirm-password-register')){
+		confirmPasswordEl = element
+		confirmPassword = element.value
+    }
+	if(email.length && password.length){
+		createUserWithEmailAndPassword(auth, email, password)
+			.then(async userCredential => {
+				setMessage("Register Successful")
+				await sleep(1)
+				emailEl.innerHTML = ""
+				passwordEl.innerHTML = ""
+				showOrHideForm('register-card', 'login-card')
+			})
+			.catch((error) => {
+				// remove "auth/" from the returned error message and replace dashes with spaces
+				let errorMessageFormated = error.code.replace('auth/','').replace(/-/g, " ")
+				// Capitalize first letter
 				errorMessageFormated = errorMessageFormated.charAt(0).toUpperCase() + errorMessageFormated.slice(1)
 				setMessage(errorMessageFormated)
 			})
@@ -56,7 +100,8 @@ const setMessage = (message="") => {
     }
 }
 
-const showForm = async (show = 'register-card', hide = 'login-card') => {
+const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
+	quitGame()
 	if(!isTransitioning){
 		isTransitioning = true
 		setIsShowingRegisterOrLogin(true)
@@ -94,4 +139,4 @@ const showForm = async (show = 'register-card', hide = 'login-card') => {
 	}
 }
 
-export {setupLoginRegister, showForm, getIsShowingRegisterOrLogin, login}
+export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register}

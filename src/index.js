@@ -20,7 +20,7 @@ import { setupSpaceshipOverlay, spaceshipOverlayTick } from './Components/Spaces
 import { setupAsteroids, asteroidTick } from './Components/Asteroids'
 import { setupPointsOverlay, pointOverlayTick } from './Components/AsteroidOverlay'
 import { setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick } from './Components/Game'
-import { setupLoginRegister, showForm, login } from './Components/AuthForms'
+import { setupLoginRegister, showOrHideForm, login } from './Components/AuthForms'
 
 
 // If dev_freeView is enabled then the camera can be panned around manually
@@ -95,11 +95,11 @@ const loadingManager = new THREE.LoadingManager(
 			const navBarToggler = document.getElementsByClassName("navbar-collapse")[0]
 			window.showLogin = () => {
 				navBarToggler.classList.remove("show")
-				showForm('login-card', 'register-card')
+				showOrHideForm('login-card', 'register-card')
 			}
 			window.showRegister = () => {
 				navBarToggler.classList.remove("show")
-				showForm('register-card', 'login-card')
+				showOrHideForm('register-card', 'login-card')
 			}
 			window.login = () => login()
 		}, 2000)
