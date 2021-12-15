@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
 .card {
-  height: 370px;
+  height: 300px;
   margin-top: auto;
   margin-bottom: auto;
   width: 400px;
-  background-color: rgba(0, 0, 0, 0) !important;
+  background-color: rgba(0, 0, 0, 0.541) !important;
+  border-color: #ffffff;
   position: absolute;
   left: 0;
   right: 0;
@@ -17,7 +18,7 @@
 }
 
 .card.register-card {
-  height: 400px;
+  height: 350px;
 }
 
 .card.show {

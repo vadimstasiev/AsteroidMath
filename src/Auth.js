@@ -2,7 +2,7 @@
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-import { sleep } from "./Components/Helpers";
+import { getterSetter, sleep } from "./Components/Helpers";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,6 +18,7 @@ const firebaseConfig = {
 // Initialize Firebase
 // const app = firebase.initializeApp(firebaseConfig)
 
+const [getIsShowingRegisterOrLogin, setIsShowingRegisterOrLogin] = getterSetter(false)
 
 const login = () => {
 	let email, password = ''
@@ -61,6 +62,7 @@ let isTransitioning = false
 const showForm = async (show = 'register-card', hide = 'login-card') => {
 	if(!isTransitioning){
 		isTransitioning = true
+		setIsShowingRegisterOrLogin(true)
 		for(const element of document.getElementsByClassName(hide)){
 			let wait = transitionWait
 			// if element already hiden there is no need to wait for transition
@@ -82,10 +84,11 @@ const showForm = async (show = 'register-card', hide = 'login-card') => {
 				element.classList.add("hide")
 				await sleep(wait)
 				element.style.top = "1000%"
+				setIsShowingRegisterOrLogin(false)
 			}
 		}
 		isTransitioning = false
 	}
 }
 
-export {setupLoginRegister, showForm}
+export {setupLoginRegister, showForm, getIsShowingRegisterOrLogin}

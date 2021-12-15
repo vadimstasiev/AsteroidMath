@@ -31,7 +31,10 @@ body {
 }
 
 .navbar-custom {
-  /* background-color: #313335; */
+  background-color: #3133358a;
+  border-bottom-color: #8d8d8dda;
+  border-width: 1px;
+  border-style: solid;
   padding-top: 0;
   padding-bottom: 0;
   position: absolute;

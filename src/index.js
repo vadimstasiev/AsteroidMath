@@ -92,8 +92,15 @@ const loadingManager = new THREE.LoadingManager(
 			window.quitGame = () => quitGame()
 			window.skipIntroduction = () => setIsIntroSkipped(true)
 			window.skipTutorial = () => setIsTutSkipped(true)
-			window.showLogin = () => showForm('login-card', 'register-card')
-			window.showRegister = () => showForm('register-card', 'login-card')
+			const navBarToggler = document.getElementsByClassName("navbar-collapse")[0]
+			window.showLogin = () => {
+				navBarToggler.classList.remove("show")
+				showForm('login-card', 'register-card')
+			}
+			window.showRegister = () => {
+				navBarToggler.classList.remove("show")
+				showForm('register-card', 'login-card')
+			}
 		}, 2000)
 	},
 

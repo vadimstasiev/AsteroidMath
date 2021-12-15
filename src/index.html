@@ -38,10 +38,10 @@
 				</li>
 			</ul>
 				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-					<span class="form-control mr-sm-2 button-login" onClick="window.showRegister()">Register</span>
+					<span class="form-control mr-sm-2 button-login unselectable" onClick="window.showRegister()">Register</span>
 				</div>
 				<div class="div-inline my-2 my-lg-0" style="margin-right: 15px;cursor: pointer">
-					<span class="form-control mr-sm-2 button-login" onClick="window.showLogin()">Log In</span>
+					<span class="form-control mr-sm-2 button-login unselectable" onClick="window.showLogin()">Log In</span>
 				</div>
 			</div>
 		</div>
@@ -49,7 +49,7 @@
 	<div style="overflow: hidden;">
 		<div class="card login-card">
 			<div class="card-header">
-				<h3>Log In</h3>
+				<h3 class="unselectable">Log In</h3>
 			</div>
 			<div class="card-body">
 				<form>
@@ -66,7 +66,7 @@
 						<input type="password" class="form-control" placeholder="password"  autocomplete="on">
 					</div>
 					<div class="form-group" style="cursor: pointer">
-						<span class="form-control float-right submit-custom" onClick="">Login</span>
+						<span class="form-control float-right submit-custom unselectable" onClick="">Log in</span>
 					</div>
 				</form>
 			</div>
@@ -74,7 +74,7 @@
 
 		<div class="card register-card">
 			<div class="card-header">
-				<h3>Register</h3>
+				<h3 class="unselectable">Register</h3>
 			</div>
 			<div class="card-body">
 				<form>
@@ -97,7 +97,7 @@
 						<input type="password" class="form-control" placeholder="confirm password"  autocomplete="off">
 					</div>
 					<div class="form-group" style="cursor: pointer">
-						<span class="form-control float-right submit-custom" onClick="">Register</span>
+						<span class="form-control float-right submit-custom unselectable" onClick="">Register</span>
 					</div>
 				</form>
 			</div>

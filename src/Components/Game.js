@@ -4,6 +4,7 @@ import { spaceshipProps, cameraProps, spaceshipRespawn } from './Spaceship'
 import { showDeathMessages, showMessages} from './SpaceshipOverlay'
 import { getLiveTimeBeforeCollision, spawnAsteroid } from './Asteroids'
 import { introMessages, tutorialMessages, deathMessages } from './Messages'
+import { getIsShowingRegisterOrLogin } from '../Auth'
 
 
 // dev - hide introductory and tutorial messages for faster troubleshooting
@@ -61,7 +62,10 @@ const setupGame = (scene, camera) => {
         if(getIsTutSkipped()){
             setIsTutPlaying(false)
         }
-        if(getIsGamePlaying()){
+        if(getIsShowingRegisterOrLogin()){
+
+        }
+        if(getIsGamePlaying() || getIsShowingRegisterOrLogin()){
             // show /hide mobile login singup toggle 
             for(const element of document.getElementsByClassName('navbar-toggler')){
                 element.classList.remove("show")
@@ -80,7 +84,7 @@ const setupGame = (scene, camera) => {
             for(const element of document.getElementsByClassName('play-and-leaderboard')){
                 element.style.display = 'none'
             }
-            // show TODO update score
+            // show
             for(const element of document.getElementsByClassName('score-skip-quit')){
                 element.style.display = 'flex'
                 if(getIsGamePlaying()){
