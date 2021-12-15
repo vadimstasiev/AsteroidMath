@@ -61,6 +61,7 @@ const showForm = async (show = 'register-card', hide = 'login-card') => {
 		isTransitioning = true
 		setIsShowingRegisterOrLogin(true)
 		for(const element of document.getElementsByClassName(hide)){
+			hideMessage()
 			let wait = transitionWait
 			// if element already hiden there is no need to wait for transition
 			if(element.classList.contains("hide")) {
@@ -68,7 +69,6 @@ const showForm = async (show = 'register-card', hide = 'login-card') => {
 			} 
 			element.classList.add("hide")
 			await sleep(wait)
-			hideMessage()
 			element.classList.add("collapse")
 			element.classList.remove("show")
 			// element.style.top = "1000%"
