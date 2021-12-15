@@ -1,6 +1,9 @@
 import * as firebase from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { getterSetter } from "./Helpers"
+
+const [getUserLoggedIn, setUserLoggedIn] = getterSetter(false)
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,6 +20,15 @@ firebase.initializeApp(firebaseConfig)
 const auth = getAuth()
 const db = getFirestore()
 
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      setUserLoggedIn(true)
+    } else {
+        setUserLoggedIn(false)
+    }
+  });
 
-
-export {auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db}
+export {auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getUserLoggedIn, db}
