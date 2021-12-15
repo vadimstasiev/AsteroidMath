@@ -10,7 +10,7 @@
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 1000%;
+  top: 10%;
   opacity: 0;
   transition: opacity 3s;
 }
@@ -42,10 +42,10 @@
 }
 
 .card-footer div {
-  color: #000000;
+  color: #ffffff;
   font-size: 1.2em;
   font-weight: 900;
-  text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+  /* text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff; */
 }
 
 .input-group-prepend span {

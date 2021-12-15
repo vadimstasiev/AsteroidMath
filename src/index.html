@@ -55,20 +55,20 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"></span>
 						</div>
-						<input type="text" class="form-control" placeholder="email"  autocomplete="on">
+						<input type="text" class="form-control email-login" placeholder="email"  autocomplete="on">
 					</div>
 					<div class="input-group form-group">
 						<div class="input-group-prepend">
 							<span class="input-group-text"></span>
 						</div>
-						<input type="password" class="form-control" placeholder="password"  autocomplete="on">
+						<input type="password" class="form-control password-login" placeholder="password"  autocomplete="on">
 					</div>
 					<div class="form-group" style="cursor: pointer">
-						<span class="form-control float-right submit-custom unselectable" onClick="">Log in</span>
+						<span class="form-control float-right submit-custom unselectable" onClick="window.login()">Log in</span>
 					</div>
 				</form>
 			</div>
-			<div class="card-footer"><div class="error">Error goes here</div></div>
+			<div class="card-footer"><div class="message">message goes here</div></div>
 		</div>
 
 		<div class="card register-card">
@@ -94,7 +94,7 @@
 						<input type="password" class="form-control" placeholder="confirm password"  autocomplete="off">
 					</div>
 					<div class="form-group" style="cursor: pointer">
-						<span class="form-control float-right submit-custom unselectable" onClick="">Register</span>
+						<span class="form-control float-right submit-custom unselectable" onClick="window.register()">Register</span>
 					</div>
 				</form>
 			</div>
