@@ -146,7 +146,12 @@ const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 }
 
 const showLeaderboard = () => {
-	
+	// firestore.collection("profile").orderBy('highestScore', 'desc')
+    //         .limit(5).onSnapshot((querySnapshot) => {
+    //         setUsers(querySnapshot.docs.map((doc) => {
+    //             return doc.data()
+    //         }))
+    //     })
 }
 
 export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register, showLeaderboard}
