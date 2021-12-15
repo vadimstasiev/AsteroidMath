@@ -83,12 +83,12 @@ const register = () => {
 const setupLoginRegister = async () => {
 	// add both before anything else, these are not added by default o prevent them from appearing before anything else loads 
     for(const element of document.getElementsByClassName('register-card')){
-        element.classList.add("show")
-        element.classList.add("hide")
+        // element.classList.add("show")
+        element.classList.add("collapse")
     }
 	for(const element of document.getElementsByClassName('login-card')){
-        element.classList.add("show")
-        element.classList.add("hide")
+        // element.classList.add("show")
+        element.classList.add("collapse")
     }
 }
 
@@ -136,7 +136,6 @@ const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 			} else {
 				element.classList.add("hide")
 				await sleep(wait)
-				element.style.pointerEvents = "none"
 				element.classList.add("collapse")
 				element.classList.remove("show")
 				setIsShowingRegisterOrLogin(false)

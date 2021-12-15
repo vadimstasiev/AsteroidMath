@@ -12,7 +12,7 @@
 				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-collapse unselectable" id="navbarSupportedContent">
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto play-and-leaderboard">
 				<li class="nav-item active" onClick="window.playClicked()">
 					<div class="nav-link d-none d-lg-block d-xl-block pixelated">Play<span class="sr-only"></span></div>
@@ -38,20 +38,20 @@
 				</li>
 			</ul>
 				<div class="div-inline my-2 my-lg-0 user-not-login collapse" style="margin-right: 15px;cursor: pointer">
-					<span class="form-control mr-sm-2 button-login unselectable" onClick="window.showRegister()">Register</span>
+					<span class="form-control mr-sm-2 button-login" onClick="window.showRegister()">Register</span>
 				</div>
 				<div class="div-inline my-2 my-lg-0 user-not-login collapse" style="margin-right: 15px;cursor: pointer">
-					<span class="form-control mr-sm-2 button-login unselectable" onClick="window.showLogin()">Log In</span>
+					<span class="form-control mr-sm-2 button-login" onClick="window.showLogin()">Log In</span>
 				</div>
 				<div class="div-inline my-2 my-lg-0 user-is-login collapse" style="margin-right: 15px;cursor: pointer">
-					<span class="form-control mr-sm-2 button-login unselectable" onClick="window.logOut()">Log Out</span>
+					<span class="form-control mr-sm-2 button-login" onClick="window.logOut()">Log Out</span>
 				</div>
 			</div>
 		</div>
 	</nav>
 	<div style="overflow: hidden;">
 		<div class="card login-card">
-			<div class="card-header"><h3 class="unselectable">Log In</h3><div onClick="window.showLogin()">x</div></div>
+			<div class="card-header"><h3>Log In</h3><div onClick="window.showLogin()">x</div></div>
 			<div class="card-body">
 				<form>
 					<div class="input-group form-group">
@@ -75,7 +75,7 @@
 		</div>
 
 		<div class="card register-card">
-			<div class="card-header"><h3 class="unselectable">Register</h3><div onClick="window.showRegister()">x</div></div>
+			<div class="card-header"><h3>Register</h3><div onClick="window.showRegister()">x</div></div>
 			<div class="card-body">
 				<form>
 					<div class="input-group form-group">
