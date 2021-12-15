@@ -1,9 +1,6 @@
 import * as firebase from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
-import { getterSetter } from "./Helpers"
-
-const [getUserLoggedIn, setUserLoggedIn] = getterSetter(false)
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -24,11 +21,28 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = user.uid;
-      setUserLoggedIn(true)
+      const uid = user.uid
+        for(const element of document.getElementsByClassName('user-not-login')){
+            // element.classList.remove("show")
+            element.classList.add("collapse")
+        }
+        for(const element of document.getElementsByClassName('user-is-login')){
+            // element.classList.remove("show")
+            element.classList.remove("collapse")
+        }
     } else {
-        setUserLoggedIn(false)
+        for(const element of document.getElementsByClassName('user-not-login')){
+            // element.classList.remove("show")
+            element.classList.remove("collapse")
+        }
+        for(const element of document.getElementsByClassName('user-is-login')){
+            // element.classList.remove("show")
+            element.classList.add("collapse")
+        }
     }
-  });
+})
 
-export {auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getUserLoggedIn, db}
+window.logOut = () => signOut(auth)
+
+
+export {auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db}
