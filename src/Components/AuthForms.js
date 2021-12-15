@@ -145,4 +145,8 @@ const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 	}
 }
 
-export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register}
+const showLeaderboard = () => {
+	
+}
+
+export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register, showLeaderboard}

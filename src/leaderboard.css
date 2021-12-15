@@ -14,22 +14,21 @@
   margin-right: auto;
   top: 10%;
   /* opacity: 0; */
+}
+
+.leaderboard-card-container.show {
   opacity: 1;
+  transition: opacity 3s;
+}
+
+.leaderboard-card-container.hide {
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 .leaderboard-card table {
   padding: 5px;
   color: #ffffff;
-}
-
-.leaderboard-card.show {
-  opacity: 1;
-  transition: opacity 3s;
-}
-
-.leaderboard-card.hide {
-  opacity: 0;
-  transition: opacity 1s;
 }
 
 .leaderboard-card-header h3 {

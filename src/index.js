@@ -21,7 +21,7 @@ import { setupSpaceshipOverlay, spaceshipOverlayTick } from './Components/Spaces
 import { setupAsteroids, asteroidTick } from './Components/Asteroids'
 import { setupPointsOverlay, pointOverlayTick } from './Components/AsteroidOverlay'
 import { setupGame, playClicked, quitGame, setIsIntroSkipped, setIsTutSkipped, playTick } from './Components/Game'
-import { setupLoginRegister, showOrHideForm, login, register } from './Components/AuthForms'
+import { setupLoginRegister, showOrHideForm, login, register, showLeaderboard } from './Components/AuthForms'
 
 
 // If dev_freeView is enabled then the camera can be panned around manually
@@ -104,6 +104,7 @@ const loadingManager = new THREE.LoadingManager(
 			}
 			window.login = () => login()
 			window.register = () => register()
+			window.showLeaderboard = () => showLeaderboard()
 		}, 2000)
 	},
 

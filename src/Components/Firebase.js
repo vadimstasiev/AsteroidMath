@@ -23,8 +23,7 @@ const db = getFirestore()
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
+        setEmail(user.email)
         setUserIsLoggedIn(true)
         const uid = user.uid
         for(const element of document.getElementsByClassName('user-not-login')){
@@ -35,7 +34,10 @@ onAuthStateChanged(auth, (user) => {
             // element.classList.remove("show")
             element.classList.remove("collapse")
         }
-        setEmail(user.email)
+        for(const element of document.getElementsByClassName('leaderboard')){
+            // element.classList.remove("show")
+            element.classList.remove("collapse")
+        }
     } else {
         setUserIsLoggedIn(false)
         for(const element of document.getElementsByClassName('user-not-login')){
@@ -43,6 +45,14 @@ onAuthStateChanged(auth, (user) => {
             element.classList.remove("collapse")
         }
         for(const element of document.getElementsByClassName('user-is-login')){
+            // element.classList.remove("show")
+            element.classList.add("collapse")
+        }
+        for(const element of document.getElementsByClassName('leaderboard')){
+            // element.classList.remove("show")
+            element.classList.add("collapse")
+        }
+        for(const element of document.getElementsByClassName('leaderboard-card-container')){
             // element.classList.remove("show")
             element.classList.add("collapse")
         }
