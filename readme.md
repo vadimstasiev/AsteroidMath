@@ -1,6 +1,6 @@
 ## Demo Available
 
-https://fir-auth-97b17.web.app/index
+https://fir-auth-97b17.web.app
 
 ## Setup
 
