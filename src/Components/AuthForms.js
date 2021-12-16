@@ -110,52 +110,49 @@ const setMessage = (message="") => {
 
 const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 	quitGame()
-	if(!isTransitioning){
-		isTransitioning = true
-		setIsShowingRegisterOrLogin(true)
-		for(const element of document.getElementsByClassName(hide)){
-			hideMessage()
-			let wait = transitionWait
-			// if element already hiden there is no need to wait for transition
-			if(element.classList.contains("hide")) {
-				wait = 0
-			} 
-			element.classList.add("hide")
-			await sleep(wait)
-			element.classList.add("collapse")
-			element.classList.remove("show")
-			// element.style.top = "1000%"
-		}
-		for(const element of document.getElementsByClassName(show)){
-			let wait = transitionWait
-			// show it if already hiding else hide it if already showing
-			if(element.classList.contains("hide")){
-				element.classList.remove("collapse")
-				element.classList.add("show")
-				await sleep(wait)
-				element.classList.remove("hide")
-			} else {
-				element.classList.add("hide")
-				await sleep(wait)
-				element.classList.add("collapse")
-				element.classList.remove("show")
-				setIsShowingRegisterOrLogin(false)
-			}
-		}
-		isTransitioning = false
+	if(isTransitioning){ return }
+
+	let elementToHide
+	for(const element of document.getElementsByClassName(hide)){
+		elementToHide = element
 	}
+	let elementToShow
+	for(const element of document.getElementsByClassName(show)){
+		elementToShow = element
+	}
+	
+	isTransitioning = true
+	setIsShowingRegisterOrLogin(true)
+	hideMessage()
+	let wait = transitionWait
+	// if elementToHide already hiden there is no need to wait for transition
+	if(elementToHide.classList.contains("hide")) {
+		wait = 0
+	} 
+	elementToHide.classList.add("hide")
+	await sleep(wait)
+	elementToHide.classList.add("collapse")
+	elementToHide.classList.remove("show")
+	wait = transitionWait
+	// show it if already hiding else hide it if already showing
+	if(elementToShow.classList.contains("hide")){
+		elementToShow.classList.remove("collapse")
+		elementToShow.classList.add("show")
+		await sleep(wait)
+		elementToShow.classList.remove("hide")
+	} else {
+		elementToShow.classList.add("hide")
+		await sleep(wait)
+		elementToShow.classList.add("collapse")
+		elementToShow.classList.remove("show")
+		setIsShowingRegisterOrLogin(false)
+	}
+	isTransitioning = false
 }
 
 const showLeaderboard = async () => {
-	// collection(db, "leaderboard").orderBy('score', 'desc')
-	// 	.limit(10).onSnapshot((querySnapshot) => {
-	// 		// setUsers(querySnapshot.docs.map((doc) => {
-	// 		// 	return doc.data()
-	// 		// 	})
-	// 		// )
-	// 		console.log(querySnapshot)
-	// 	})
-
+	quitGame()
+	
 	const titles = `<thead><tr><th scope="col">#</th><th scope="col">Score</th><th scope="col">Day</th></tr></thead>`
 	let tableContent = titles + "<tbody>"
 	let i = 0 
@@ -177,6 +174,13 @@ const showLeaderboard = async () => {
 	tableContent += "</tbody>"
 	for(const element of document.getElementsByClassName('leaderboard-table')){
         element.innerHTML = tableContent
+    }
+	for(const element of document.getElementsByClassName('leaderboard-card-container')){
+        if(element.classList.contains("collapse")){
+			element.classList.remove("collapse")
+		} else {
+			element.classList.add("collapse")
+		}
     }
 }
 
