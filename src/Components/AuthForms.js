@@ -150,7 +150,7 @@ const showOrHideForm = async (show = 'register-card', hide = 'login-card') => {
 	isTransitioning = false
 }
 
-const showLeaderboard = async () => {
+const showOrHideLeaderboard = async () => {
 	quitGame()
 	
 	const titles = `<thead><tr><th scope="col">#</th><th scope="col">Score</th><th scope="col">Day</th></tr></thead>`
@@ -162,14 +162,22 @@ const showLeaderboard = async () => {
 	const result = query(leaderboardRef, orderBy("score", "desc"), limit(10));
 
 	const querySnapshot = await getDocs(result)
+
+	let isNoContent = true
+
 	querySnapshot.forEach((doc) => {
 		i++
 		const data = doc.data()
 		if(data.email == getEmail()){
+			isNoContent = false
 			tableContent += `<tr><th scope="row">${i}</th><td>${data.score}</td><td>${data.day}</td></tr>`
 			console.log(data)
 		}
 	})
+
+	if(isNoContent){
+		tableContent += `<tr><th scope="row">1</th><td>No games played</td><td>-</td></tr>`
+	}
 
 	tableContent += "</tbody>"
 	for(const element of document.getElementsByClassName('leaderboard-table')){
@@ -184,4 +192,4 @@ const showLeaderboard = async () => {
     }
 }
 
-export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register, showLeaderboard}
+export {setupLoginRegister, showOrHideForm, getIsShowingRegisterOrLogin, login, register, showOrHideLeaderboard}
