@@ -13,16 +13,16 @@ https://fir-auth-97b17.web.app
 
 ## Setup
 
-Download [Node.js](https://nodejs.org/en/download/).
+Download [Node.js](https://nodejs.org/en/download/) and Yarn(`npm install --global yarn`).
 Run the following commands:
 
 ```bash
 # Install dependencies (only the first time)
-npm i
+yarn
 
 # Run the local server at localhost:8080
-npm run dev
+yarn run dev
 
 # Build for production in the dist/ directory
-npm run build
+yarn run build
 ```
